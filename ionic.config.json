@@ -1,0 +1,8 @@
+{
+  "name": "WeTrip",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "id": "0e06c9ce"
+}
