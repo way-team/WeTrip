@@ -1,0 +1,1 @@
+python TravelMate-server/manage.py runserver
