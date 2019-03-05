@@ -18,6 +18,17 @@
         {{item.note}}
       </div>
     </ion-item>
+    <ion-item>
+        <div *ngIf="response">
+          {{response.text}}
+        </div>
+        <div *ngIf="!response"> 
+          <ion-button (click)="getText()">
+            Get text from Django
+          </ion-button>
+        </div>
+        
+    </ion-item>
   </ion-list>
   <!--
     <div *ngIf="selectedItem" padding>
