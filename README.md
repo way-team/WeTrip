@@ -1,1 +1,1 @@
-# WeTrip
+# TravelMate
