@@ -13,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DataManagement } from './services/dataManagement';
 import { RestWS } from './services/restService';
 import { ConfigService } from 'src/config/configService';
-import { HttpClientModule } from '@angular/common/http';
+
 
 // Modal Pages
 import { ImagePageModule } from './pages/modal/image/image.module';
