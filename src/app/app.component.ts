@@ -40,7 +40,14 @@ export class AppComponent {
         url: '/settings',
         direct: 'forward',
         icon: 'cog'
+      },
+       {
+        title: 'Trips',
+        url: '/trips-results',
+        direct: 'forward',
+        icon: 'compass'
       }
+
     ];
 
     this.initializeApp();
