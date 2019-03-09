@@ -4,8 +4,7 @@
       <ion-menu-button color="secondary"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-        <ion-text color="light">
-          <ion-text color="light" class="fw700">Ionic 4 Start</ion-text>
+        <ion-text color="light">Trips
         </ion-text>
     </ion-title>
     <ion-buttons slot="end">
@@ -30,7 +29,7 @@
     <ion-item lines="none" color="medium">
       <ion-label>
         <h2 no-margin class="fw500 no-margin">
-          <ion-text color="dark">Alert / Toast test</ion-text>
+          <ion-text color="dark"></ion-text>
         </h2>
 
         <p class="text-11x no-margin">
@@ -45,14 +44,19 @@
   </ion-card>
 
   <ion-card class="bg-white">
-    <ion-img [src]="themeCover"></ion-img>
+    <img src="assets/img/trip_2.jpg" class="user-avatar">
     <ion-button expand="full" color="dark" (click)="presentImage(themeCover)" no-margin>
-      Modal 1: Modal Image
+      Brasil
+    </ion-button>
+    <br>
+     <img src="assets/img/trip_4.jpg" class="user-avatar">
+    <ion-button expand="full" color="dark" (click)="presentImage(themeCover)" no-margin>
+      Cancún
     </ion-button>
   </ion-card>
 
   <ion-button margin shape="round" expand="full" color="secondary" (click)="searchFilter()">
-    Modal 2: Search Filter
+    Filter
   </ion-button>
   
   <popmenu></popmenu>

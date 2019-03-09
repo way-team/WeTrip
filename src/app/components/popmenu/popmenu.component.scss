@@ -10,8 +10,7 @@
     visibility: hidden;
     -webkit-transition: all 0.15s ease-in-out;
     transition: all 0.15s ease-in-out;
-    background-image: -webkit-linear-gradient(rgba(79,36,172, .85) 0%, rgba(79,36,172, .65) 100%);
-    background-image: linear-gradient(rgba(79,36,172, .85) 0%, rgba(79,36,172, .65) 100%);
+
     &.in {
         opacity: 1;
         visibility: visible;

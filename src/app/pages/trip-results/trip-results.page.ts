@@ -14,11 +14,11 @@ import { ImagePage } from './../modal/image/image.page';
 import { NotificationsComponent } from './../../components/notifications/notifications.component';
 
 @Component({
-  selector: 'app-home-results',
-  templateUrl: './trips-results.page.html',
-  styleUrls: ['./trips-results.page.scss']
+  selector: 'app-trip-results',
+  templateUrl: './trip-results.page.html',
+  styleUrls: ['./trip-results.page.scss']
 })
-export class TripsResultsPage {
+export class TripResultsPage {
   searchKey = '';
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';

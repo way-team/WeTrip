@@ -10,7 +10,7 @@ export class ConfigService {
 		let urlPrefix = 'http://192.168.1.135:8000/';
 		let urlAPI = '';
 		if (environment.production) {
-			urlPrefix = 'https://herokuapp.com/nuestraAppEsLaCanya/'
+			urlPrefix = 'https://herokuapp.com/nuestraApp/'
 			urlAPI = 'api/v1/'
 		}
 		// pathFiles for Storage provider
