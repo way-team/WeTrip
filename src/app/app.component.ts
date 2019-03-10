@@ -21,7 +21,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public navCtrl: NavController,
-    private translate: TranslateService
+    private _translate: TranslateService
   ) {
 
     this.appPages = [
@@ -54,15 +54,16 @@ export class AppComponent {
     ];
 
     this.initializeApp();
+    let userLang = navigator.language.split('-')[0];
+    userLang = /(en|de|it|fr|es|be)/gi.test(userLang) ? userLang : 'en';
+    this._translate.use(userLang);
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-                //language
-          this.translate.setDefaultLang('es');
-          this.translate.use('es');
+
     }).catch(() => {});
   }
 

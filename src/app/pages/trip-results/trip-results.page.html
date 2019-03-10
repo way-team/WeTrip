@@ -14,6 +14,9 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-button color="primary" (click)="cambiaIdioma('es')">es</ion-button>
+  <ion-button color="secondary" (click)="cambiaIdioma('en')">{{ 'FORGOT' | translate }}</ion-button>
   <ion-toolbar color="dark">
     <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
     <ion-buttons slot="end">

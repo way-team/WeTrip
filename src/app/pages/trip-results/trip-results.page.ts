@@ -12,6 +12,7 @@ import { SearchFilterPage } from '../../pages/modal/search-filter/search-filter.
 import { ImagePage } from './../modal/image/image.page';
 // Call notifications test by Popover and Custom Component.
 import { NotificationsComponent } from './../../components/notifications/notifications.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trip-results',
@@ -29,11 +30,15 @@ export class TripResultsPage {
     public popoverCtrl: PopoverController,
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
-    public toastCtrl: ToastController
+    public toastCtrl: ToastController,
+    private _translate: TranslateService
   ) {
 
   }
-
+   cambiaIdioma(idioma: string) {
+   console.log(`Traduzco a: ${idioma}`);
+   this._translate.use(idioma);
+ }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
   }

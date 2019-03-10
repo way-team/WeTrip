@@ -7,7 +7,12 @@ import { IonicModule } from '@ionic/angular';
 import { PopmenuComponent } from './../../components/popmenu/popmenu.component';
 
 import { TripResultsPage } from './trip-results.page';
+// Componentes externos que realizan peticiones
+import { HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
+// Configuración de traducción
+import { createTranslateLoader } from './../../app.module';
 const routes: Routes = [
   {
     path: '',
@@ -21,6 +26,13 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+      TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      }
+    }),
     RouterModule.forChild(routes)
   ],
   declarations: [TripResultsPage, PopmenuComponent]

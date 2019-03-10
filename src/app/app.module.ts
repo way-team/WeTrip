@@ -23,7 +23,6 @@ import { SearchFilterPageModule } from './pages/modal/search-filter/search-filte
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import{HttpModule, Http} from "@angular/http";
 
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
@@ -39,7 +38,7 @@ import{HttpModule, Http} from "@angular/http";
     TranslateModule.forRoot({
           loader:{
             provide:TranslateLoader,
-            useFactory: (createTranslateLoader)  ,
+            useFactory: createTranslateLoader  ,
               deps: [HttpClient]
           }
           })
