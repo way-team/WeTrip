@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { Pages } from './interfaces/pages';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,10 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    private translate: TranslateService
   ) {
+
     this.appPages = [
       {
         title: 'Trips',
@@ -57,6 +60,9 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+                //language
+          this.translate.setDefaultLang('es');
+          this.translate.use('es');
     }).catch(() => {});
   }
 

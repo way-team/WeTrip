@@ -21,7 +21,9 @@ import { SearchFilterPageModule } from './pages/modal/search-filter/search-filte
 
 // Components
 import { NotificationsComponent } from './components/notifications/notifications.component';
-
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import{HttpModule, Http} from "@angular/http";
 
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
@@ -33,7 +35,14 @@ import { NotificationsComponent } from './components/notifications/notifications
     AppRoutingModule,
     HttpClientModule,
     ImagePageModule,
-    SearchFilterPageModule
+    SearchFilterPageModule,
+    TranslateModule.forRoot({
+          loader:{
+            provide:TranslateLoader,
+            useFactory: (createTranslateLoader)  ,
+              deps: [HttpClient]
+          }
+          })
   ],
   entryComponents: [NotificationsComponent],
   providers: [
@@ -48,3 +57,7 @@ import { NotificationsComponent } from './components/notifications/notifications
 })
 
 export class AppModule {}
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}

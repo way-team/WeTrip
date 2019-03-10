@@ -43,14 +43,14 @@
 
     <p text-right tappable (click)="forgotPass()" class="paz">
       <ion-text color="light">
-        <strong>Forgot Pass?</strong>
+        <strong>{{ 'FORGOT' | translate}}</strong>
       </ion-text>
     </p>
 
     <div>
       <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="goToHome()" [disabled]="!onLoginForm.valid" tappable>
         <ion-icon name="log-in"></ion-icon>
-        Signin
+        {{ 'SIGNIN' | translate}}
       </ion-button>
 
       <p text-center>
