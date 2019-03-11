@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {TripdetailPage} from "../../pages/trip-detail/trip-detail.page";
 import {
   NavController,
   AlertController,
@@ -35,6 +36,11 @@ export class TripResultsPage {
   ) {
 
   }
+     // view trip detail
+  viewDetail(id) {
+    this.navCtrl.navigateForward('/trip-detail');
+  }
+
    cambiaIdioma(idioma: string) {
    console.log(`Traduzco a: ${idioma}`);
    this._translate.use(idioma);
