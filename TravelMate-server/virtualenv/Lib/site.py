@@ -310,7 +310,7 @@ def addusersitepackages(known_paths):
     """Add a per user site-package to sys.path
 
     Each user has its own python directory with site-packages in the
-    home directory.
+    contacts directory.
 
     USER_BASE is the root directory for all Python versions
 
@@ -724,7 +724,7 @@ def enablerlcompleter():
                 try:
                     readline.write_history_file(history)
                 except (FileNotFoundError, PermissionError):
-                    # home directory does not exist or is not writable
+                    # contacts directory does not exist or is not writable
                     # https://bugs.python.org/issue19891
                     pass
 

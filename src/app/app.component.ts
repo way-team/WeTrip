@@ -26,10 +26,16 @@ export class AppComponent {
 
     this.appPages = [
       {
-        title: 'Trips',
-        url: '/trip-results',
+        title: 'Discover',
+        url: '/discover',
         direct: 'root',
         icon: 'compass'
+      },
+       {
+        title: 'Contacts',
+        url: '/contacts',
+        direct: 'forward',
+        icon: 'contact'
       },
       {
         title: 'About',
@@ -43,12 +49,6 @@ export class AppComponent {
         url: '/settings',
         direct: 'forward',
         icon: 'cog'
-      },
-       {
-        title: 'Home',
-        url: '/home',
-        direct: 'forward',
-        icon: 'home'
       }
 
     ];

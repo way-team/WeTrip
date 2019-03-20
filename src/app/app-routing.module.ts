@@ -5,10 +5,10 @@ const routes: Routes = [
   { path: '', loadChildren: './pages/login/login.module#LoginPageModule' },
   { path: 'register', loadChildren: './pages/register/register.module#RegisterPageModule' },
   { path: 'about', loadChildren: './pages/about/about.module#AboutPageModule' },
-  { path: 'home', loadChildren: './pages/home/home.module#HomePageModule' },
+  { path: 'contacts', loadChildren: './pages/contacts/contacts.module#ContactsPageModule' },
   { path: 'settings', loadChildren: './pages/settings/settings.module#SettingsPageModule' },
-  { path: 'edit-profile', loadChildren: './pages/edit-profile/edit-profile.module#EditProfilePageModule' },
-  { path: 'trip-results', loadChildren: './pages/trip-results/trip-results.module#TripResultsPageModule' },
+  { path: 'edit-profile/:id', loadChildren: './pages/edit-profile/edit-profile.module#EditProfilePageModule' },
+  { path: 'discover', loadChildren: './pages/discover/discover.module#DiscoverPageModule' },
   { path: 'trip-detail', loadChildren: './pages/trip-detail/trip-detail.module#TripdetailPageModule' },
 ];
 

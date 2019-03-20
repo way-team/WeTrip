@@ -86,7 +86,7 @@ export class LoginPage implements OnInit {
   }
 
   goToHome() {
-    this.navCtrl.navigateRoot('/trip-results');
+    this.navCtrl.navigateRoot('/discover');
   }
 
 }

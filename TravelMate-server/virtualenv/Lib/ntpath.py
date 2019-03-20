@@ -276,7 +276,7 @@ def ismount(path):
 
 
 # Expand paths beginning with '~' or '~user'.
-# '~' means $HOME; '~user' means that user's home directory.
+# '~' means $HOME; '~user' means that user's contacts directory.
 # If the path doesn't begin with '~', or if the user or $HOME is unknown,
 # the path is returned unchanged (leaving error reporting to whatever
 # function is called with the expanded path as argument).
