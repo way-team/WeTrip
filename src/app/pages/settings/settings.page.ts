@@ -14,7 +14,7 @@ export class SettingsPage implements OnInit {
   enablePromo: any;
   enableHistory: any;
 
-  languages: any = ['English', 'Portuguese', 'French'];
+  languages: any = ['English', 'Spanish'];
   paymentMethods: any = ['Paypal', 'Credit Card'];
   currencies: any = ['USD', 'BRL', 'EUR'];
 
