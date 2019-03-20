@@ -18,4 +18,7 @@ export class ContactsPage implements OnInit {
   chat(id) {
     this.navCtrl.navigateForward('/chat/1');
   }
+      editProfile(id) {
+    this.navCtrl.navigateForward('/edit-profile/2');
+  }
 }

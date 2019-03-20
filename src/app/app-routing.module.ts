@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'discover', loadChildren: './pages/discover/discover.module#DiscoverPageModule' },
   { path: 'trip-detail', loadChildren: './pages/trip-detail/trip-detail.module#TripdetailPageModule' },
   { path: 'chat/:id', loadChildren: './pages/chat/chat.module#ChatPageModule' },
+  { path: 'premium', loadChildren: './pages/premium/premium.module#PremiumPageModule' },
 ];
 
 @NgModule({

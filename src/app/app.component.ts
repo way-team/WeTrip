@@ -37,6 +37,13 @@ export class AppComponent {
         direct: 'forward',
         icon: 'contact'
       },
+
+      {
+        title: 'Premium',
+        url: '/premium',
+        direct: 'forward',
+        icon: 'trophy'
+      },
       {
         title: 'About',
         url: '/about',
