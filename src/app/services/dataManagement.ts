@@ -1,4 +1,4 @@
-import { test } from './../app.data.model';
+import { test, User } from './../app.data.model';
 import { Injectable } from "@angular/core";
 import { RestWS } from "./restService";
 
@@ -18,6 +18,34 @@ export class DataManagement {
 		return new Promise((resolve, reject) => {
 			if (this.hasConnection()) {
 				return this.restService.test().then((data: test) => {
+					resolve(data);
+				}).catch((error) => {
+					reject('error');
+				})
+			} else {
+				reject('error');
+			}
+		});
+	}
+
+	public listFriends(): Promise<any> {
+		return new Promise((resolve, reject) => {
+			if (this.hasConnection()) {
+				return this.restService.listFriends().then((data: any) => {
+					resolve(data);
+				}).catch((error) => {
+					reject('error');
+				})
+			} else {
+				reject('error');
+			}
+		});
+	}
+
+	public listMeetYou(): Promise<any> {
+		return new Promise((resolve, reject) => {
+			if (this.hasConnection()) {
+				return this.restService.listMeetYou().then((data: any) => {
 					resolve(data);
 				}).catch((error) => {
 					reject('error');
