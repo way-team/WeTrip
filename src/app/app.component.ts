@@ -5,7 +5,8 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { Pages } from './interfaces/pages';
-import {TranslateService} from "@ngx-translate/core";
+import { TranslateService } from '@ngx-translate/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,6 @@ import {TranslateService} from "@ngx-translate/core";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
   public appPages: Array<Pages>;
 
   constructor(
@@ -21,9 +21,9 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public navCtrl: NavController,
-    private _translate: TranslateService
+    private _translate: TranslateService,
+    private cookieService: CookieService
   ) {
-
     this.appPages = [
       {
         title: 'Discover',
@@ -31,7 +31,7 @@ export class AppComponent {
         direct: 'root',
         icon: 'compass'
       },
-       {
+      {
         title: 'Contacts',
         url: '/contacts',
         direct: 'forward',
@@ -57,7 +57,6 @@ export class AppComponent {
         direct: 'forward',
         icon: 'cog'
       }
-
     ];
 
     this.initializeApp();
@@ -67,11 +66,17 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+    this.platform
+      .ready()
+      .then(() => {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
 
-    }).catch(() => {});
+        if (this.cookieService.check('token')) {
+          this.navCtrl.navigateForward('discover');
+        }
+      })
+      .catch(() => {});
   }
 
   goToEditProgile() {

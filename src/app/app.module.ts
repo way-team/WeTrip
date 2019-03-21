@@ -14,15 +14,15 @@ import { DataManagement } from './services/dataManagement';
 import { RestWS } from './services/restService';
 import { ConfigService } from 'src/config/configService';
 
-
 // Modal Pages
 import { ImagePageModule } from './pages/modal/image/image.module';
 import { SearchFilterPageModule } from './pages/modal/search-filter/search-filter.module';
 
 // Components
 import { NotificationsComponent } from './components/notifications/notifications.component';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
@@ -36,12 +36,12 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
     ImagePageModule,
     SearchFilterPageModule,
     TranslateModule.forRoot({
-          loader:{
-            provide:TranslateLoader,
-            useFactory: createTranslateLoader  ,
-              deps: [HttpClient]
-          }
-          })
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      }
+    })
   ],
   entryComponents: [NotificationsComponent],
   providers: [
@@ -50,11 +50,11 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
     DataManagement,
     RestWS,
     ConfigService,
+    CookieService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
 })
-
 export class AppModule {}
 
 export function createTranslateLoader(http: HttpClient) {
