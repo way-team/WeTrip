@@ -34,7 +34,3 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 
 TravelMate-server/virtualenv/
-
-TravelMate-server/TravelMateServer/__pycache__/
-
-TravelMate-server/TravelMateServer/API/
