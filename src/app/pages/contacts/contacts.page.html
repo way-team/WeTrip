@@ -22,95 +22,40 @@
         <ion-card class="bg-primary" no-margin>
             <ion-card-content>
 
-                <ion-item class="bg-primary" no-margin>
-                    <ion-buttons slot="end">
-                        <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat()">
-                            <ion-icon name="send" item-right></ion-icon>
 
-                        </ion-button>
-                        <br>
+                <div class="listFriends" *ngFor="let user of friends">
+                    <ion-item class="bg-primary" no-margin>
+                        <ion-buttons slot="end">
+                            <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat(user.id)">
+                                <ion-icon name="send" item-right></ion-icon>
 
-                    </ion-buttons>
+                            </ion-button>
+                            <br>
 
-                    <ion-avatar slot="start">
-                        <img src="assets/img/avatar4.jpeg" class="user-avatar" (click)="editProfile(4)">
+                        </ion-buttons>
 
-                    </ion-avatar>
+                        <ion-avatar slot="start">
+                            <img src="{{user.photo}}" class="user-avatar" (click)="editProfile(user.id)">
 
-                    <ion-label (click)="editProfile(4)">
+                        </ion-avatar>
 
-                        <ion-text color="dark">
-                            <h2>
-                                <strong>Lola martín</strong>
-                            </h2>
-                        </ion-text>
+                        <ion-label (click)="editProfile(user.id)">
 
-                        <ion-text color="tertiary">
-                            <h3>
-                                "The sea is the best!"
-                            </h3>
-                        </ion-text>
-
-                    </ion-label>
-                </ion-item>
-
-                <ion-item class="bg-primary" no-margin>
-                    <ion-buttons slot="end">
-                        <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat()">
-                            <ion-icon name="send" item-right></ion-icon>
-
-                        </ion-button>
-                        <br>
-
-                    </ion-buttons>
-                    <ion-avatar slot="start">
-                        <img src="assets/img/avatar3.jpeg" class="user-avatar">
-                    </ion-avatar>
-                    <ion-label>
-                        <ion-text color="dark">
-                            <h2>
-                                <strong>Julio Romero</strong>
-                            </h2>
-
-                        </ion-text>
-                        <span class="iconic" data-glyph="chat" title="chat" aria-hidden="true"></span>
-
-                        <ion-text color="tertiary">
-                            <h3>
-                                "My next destination is NY"
-                            </h3>
-                        </ion-text>
-                    </ion-label>
-                </ion-item>
-
-                <ion-item class="bg-primary" no-margin>
-                    <ion-buttons slot="end">
-                        <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat()">
-                            <ion-icon name="send" item-right></ion-icon>
-
-                        </ion-button>
-                        <br>
-
-                    </ion-buttons>
-                    <ion-avatar slot="start">
-                        <img src="assets/img/avatar5.jpeg" class="user-avatar">
-                    </ion-avatar>
-                    <ion-label>
-                        <ion-text color="dark">
-                            <h2>
-                                <strong>Guadalupe Mora</strong>
-                            </h2>
+                            <ion-text color="dark">
+                                <h2>
+                                    <strong>{{user.name}}</strong>
+                                </h2>
+                            </ion-text>
                             <ion-text color="tertiary">
                                 <h3>
-                                    "I want to go to the 2019 Japan weekend"
+                                    {{user.description}}
                                 </h3>
                             </ion-text>
+                        </ion-label>
+                    </ion-item>
+                </div>
 
-                        </ion-text>
 
-
-                    </ion-label>
-                </ion-item>
             </ion-card-content>
         </ion-card>
 
@@ -119,86 +64,55 @@
 
 
 
-    <ion-card color="dark" no-margin>
-        <ion-card-content>
-            They want to meet you
-            <ion-icon name="arrow-dropdown"></ion-icon>
-        </ion-card-content>
+<ion-card color="dark" no-margin>
+    <ion-card-content>
+        They want to meet you
+        <ion-icon name="arrow-dropdown"></ion-icon>
+    </ion-card-content>
 
-    </ion-card>
+</ion-card>
 
 
-    <ion-card class="bg-white" no-margin>
-        <ion-card-content>
-            <ion-card class="bg-primary" no-margin>
-                <ion-card-content>
+<ion-card class="bg-white" no-margin>
+    <ion-card-content>
+        <ion-card class="bg-primary" no-margin>
+            <ion-card-content>
 
+                <div class="listMeetYou" *ngFor="let user of meetYou">
                     <ion-item class="bg-primary" no-margin>
                         <ion-avatar slot="start">
-                            <img src="assets/img/avatar6.jpeg" class="user-avatar">
+                            <img src="{{user.photo}}" class="user-avatar">
                         </ion-avatar>
                         <ion-label>
                             <ion-text color="dark">
                                 <h2>
-                                    <strong>Irene Pozo</strong>
+                                    <strong>{{user.name}}</strong>
                                 </h2>
                             </ion-text>
                             <ion-text color="tertiary">
                                 <h3>
-                                    "Nature is waiting for me!"
+                                    {{user.description}}
                                 </h3>
                             </ion-text>
                         </ion-label>
-                                            <ion-buttons slot="end">
-                        <ion-button size="small" shape="round" color="dark" slot="end" (click)="add()">
-                            <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
+                        <ion-buttons slot="end">
+                            <ion-button size="small" shape="round" color="dark" slot="end" (click)="add()">
+                                <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
 
-                        </ion-button>
-                                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject()">
-                            <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
+                            </ion-button>
+                            <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject()">
+                                <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
 
-                        </ion-button>
+                            </ion-button>
 
 
-                    </ion-buttons>
+                        </ion-buttons>
 
                     </ion-item>
+                </div>
 
-                    <ion-item class="bg-primary" no-margin>
-                        <ion-avatar slot="start">
-                            <img src="assets/img/avatar7.jpeg" class="user-avatar">
-                        </ion-avatar>
-                        <ion-label>
-                            <ion-text color="dark">
-                                <h2>
-                                    <strong>Oliver Rodriguez</strong>
-                                </h2>
+            </ion-card-content>
+        </ion-card>
 
-                            </ion-text>
-                            <ion-text color="tertiary">
-                                <h3>
-                                    "Only english language"
-                                </h3>
-                            </ion-text>
-                        </ion-label>
-                                                                    <ion-buttons slot="end">
-                        <ion-button size="small" shape="round" color="dark" slot="end" (click)="add()">
-                            <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
-
-                        </ion-button>
-                                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject()">
-                            <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
-
-                        </ion-button>
-
-
-                    </ion-buttons>
-                    </ion-item>
-
-
-                </ion-card-content>
-            </ion-card>
-
-        </ion-card-content>
-    </ion-card>
-
+    </ion-card-content>
+</ion-card>

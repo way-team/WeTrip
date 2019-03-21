@@ -5,9 +5,21 @@ export class test {
   results: user[];
 }
 
-export class user {
-  url: string;
+export class User {
   username: string;
   email: string;
-  groups: string[];
+  password: string;
+  name: string;
+  lastName: string;
+  birthdate: Date;
+  gender: string;
+  nationality: string;
+  city: string;
+  photo: string;
+  status: boolean;
+  mediumRate: number;
+  numRate: number;
+  isPremium: boolean;
+  isSuperUser: boolean;
+  description: string;
 }
