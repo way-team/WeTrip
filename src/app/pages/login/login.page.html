@@ -16,12 +16,14 @@
     <form [formGroup]="onLoginForm" class="list-form">
       <ion-item no-padding class="animated fadeInUp">
         <ion-label position="floating">
-          <ion-icon name="mail" item-start></ion-icon>
-          Email
+          <ion-icon name="person" item-start></ion-icon>
+          Username
         </ion-label>
-        <ion-input color="secondary" type="email" formControlName="email"></ion-input>
+        <ion-input [(ngModel)]="registerCredentials.username" color="secondary" type="text" formControlName="username">
+        </ion-input>
       </ion-item>
-      <p ion-text class="text08" *ngIf="onLoginForm.get('email').touched && onLoginForm.get('email').hasError('required')">
+      <p ion-text class="text08"
+        *ngIf="onLoginForm.get('username').touched && onLoginForm.get('username').hasError('required')">
         <ion-text color="warning">
           Required Field
         </ion-text>
@@ -32,13 +34,15 @@
           <ion-icon name="lock" item-start></ion-icon>
           Password
         </ion-label>
-        <ion-input color="secondary" type="password" formControlName="password"></ion-input>
+        <ion-input [(ngModel)]="registerCredentials.password" color="secondary" type="password"
+          formControlName="password"></ion-input>
       </ion-item>
-      <p ion-text color="warning" class="text08" *ngIf="onLoginForm.get('password').touched && onLoginForm.get('password').hasError('required')">
+      <p ion-text color="warning" class="text08"
+        *ngIf="onLoginForm.get('password').touched && onLoginForm.get('password').hasError('required')">
         <ion-text color="warning">
           Required Field
         </ion-text>
-        </p>
+      </p>
     </form>
 
     <p text-right tappable (click)="forgotPass()" class="paz">
@@ -48,7 +52,8 @@
     </p>
 
     <div>
-      <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="goToHome()" [disabled]="!onLoginForm.valid" tappable>
+      <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="login()"
+        [disabled]="!onLoginForm.valid" tappable>
         <ion-icon name="log-in"></ion-icon>
         {{ 'SIGNIN' | translate}}
       </ion-button>
