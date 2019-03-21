@@ -84,6 +84,7 @@ export class AppComponent {
   }
 
   logout() {
+    this.cookieService.delete('token');
     this.navCtrl.navigateRoot('/');
   }
 }
