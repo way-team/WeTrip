@@ -1,5 +1,38 @@
-:host {
-    ion-content {
-        --background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light))
-    }
+
+
+.msg-dateLeft{
+  float: right;
+}
+
+.msg-nameRight{
+  float: right;
+}
+
+
+.right-bubble{
+  width: 100%;
+  float: right;
+}
+.card{
+  width: 50%;
+}
+.left-bubble{
+  width: 100%;
+  float: left;
+}
+.cardLeft{
+  background-color: #ffff;
+  width: 50%;
+  float: left;
+}
+.cardRight{
+  background-color: #F9E6F9;
+
+  width: 50%;
+  float: right;
+}
+.list{
+  height: 100%;
+  background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light));
+
 }

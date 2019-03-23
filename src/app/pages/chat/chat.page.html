@@ -1,21 +1,47 @@
 <ion-header>
   <ion-toolbar color="primary">
-       <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+    <ion-buttons slot="start">
+      <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
     <ion-title color="primary">Chat</ion-title>
   </ion-toolbar>
-
 </ion-header>
 
 
-
-
-  <ion-card class="bg-white" no-margin>
-
-    <ion-card-content>
-       <ion-card class="bg-primary" no-margin>
-       </ion-card>
-     </ion-card-content>
+<ion-content class="background">
+  <ion-list class="list">
+    <ion-card class="cardRight" color="primary">
+      <ion-item>
+      <div class="right-bubble">
+        <span class="msg-dateRight" >22:00</span>
+        <span class="msg-nameRight">Me</span>
+        <p text-wrap>hola paco</p>
+      </div>
+    </ion-item>
   </ion-card>
 
+    <ion-card class="cardLeft">
+      <ion-item>
+        <div class="left-bubble">
+          <span class="msg-nameLeft">Paco</span>
+          <span class="msg-dateLeft" >22:00</span>
+          <p text-wrap>wefwefwef</p>
+        </div>
+      </ion-item>
+    </ion-card>
+
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-10>
+        <ion-input type="text" placeholder="Type a message" [(ngModel)]="data.message" name="message"></ion-input>
+      </ion-col>
+      <ion-col col-2 (click)="sendMessage()">
+        <ion-icon name="paper-plane"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
