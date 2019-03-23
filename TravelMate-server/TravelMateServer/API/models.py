@@ -124,22 +124,6 @@ class Advertisement(models.Model):
     
     def __str__(self):
         return self.url
-
-class Country(models.Model):
-    trip = models.ForeignKey("Trip", on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=50)
-    
-    def __str__(self):
-        return self.name
-
-class City(models.Model):
-    country = models.ForeignKey("Country", on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
         
 TRIPTYPE_CHOICES = [('PRIVATE', 'Private'), ('PUBLIC', 'Public')]
 
@@ -158,6 +142,23 @@ class Trip(models.Model):
     def __str__(self):
         return self.title
 
+class Country(models.Model):
+    trip = models.ForeignKey("Trip", on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+    country = models.ForeignKey("Country", on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+        
 class Application(models.Model):
     applicant = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='applicant')
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='trip')
