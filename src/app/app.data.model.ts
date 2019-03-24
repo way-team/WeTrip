@@ -1,9 +1,3 @@
-export class test {
-  count: string;
-  next: string;
-  previous: string;
-  results: user[];
-}
 
 export class User {
   username: string;
@@ -22,4 +16,10 @@ export class User {
   isPremium: boolean;
   isSuperUser: boolean;
   description: string;
+}
+export class test {
+  count: string;
+  next: string;
+  previous: string;
+  results: User[];
 }

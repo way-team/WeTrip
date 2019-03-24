@@ -6,9 +6,7 @@ import { RestWS } from "./restService";
 export class DataManagement {
   constructor(private restService: RestWS) {}
 
-  public hasConnection(): boolean {
-    return true;
-  }
+  
 
   public login(credentials): Promise<any> {
     return this.restService

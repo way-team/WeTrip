@@ -3,7 +3,7 @@ import { ConfigService } from './../../config/configService';
 import { AbstractWS } from './abstractService';
 import { Injectable } from '@angular/core';
 import { User } from '../app.data.model';
-import { resolve } from 'dns';
+
 import { promise } from 'selenium-webdriver';
 
 
