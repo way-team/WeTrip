@@ -47,8 +47,8 @@ class UserProfile(models.Model):
     status = models.CharField(max_length=10, blank=False, default='')
 
     GENDER_OPTIONS = (
-        ('M', 'Man'),
-        ('W', 'Woman'),
+        ('M', 'Male'),
+        ('F', 'Female'),
         ('N', 'Non-binary'),
     )
     gender = models.CharField(max_length=1, choices=GENDER_OPTIONS, null=True)
