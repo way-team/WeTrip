@@ -93,7 +93,7 @@ DATABASES = {
         'NAME': 'travelmate',
         'USER': 'travelmate2',
         'PASSWORD': 'travelmate',
-        'HOST': 'ec2-46-137-113-157.eu-west-1.compute.amazonaws.com',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
