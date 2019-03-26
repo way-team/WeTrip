@@ -34,3 +34,6 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 
 TravelMate-server/virtualenv/
+
+# Migrations
+*000*
