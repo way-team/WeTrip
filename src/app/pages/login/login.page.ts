@@ -10,7 +10,8 @@ import {
   MenuController,
   ToastController,
   AlertController,
-  LoadingController
+  LoadingController,
+  Events
 } from '@ionic/angular';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
@@ -32,7 +33,8 @@ export class LoginPage implements OnInit {
     public loadingCtrl: LoadingController,
     private formBuilder: FormBuilder,
     public dm: DataManagement,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    public events: Events
   ) {}
 
   ionViewWillEnter() {
@@ -104,7 +106,10 @@ export class LoginPage implements OnInit {
         this.showLoading();
         setTimeout(() => {
           this.cookieService.set('token', data.token, this.getTimeToExpire());
-          this.navCtrl.navigateRoot('/discover');
+          this.dm.getUserLogged(data.token).then(user => {
+            this.events.publish('user:logged', user);
+            this.navCtrl.navigateRoot('/discover');
+          });
         }, 1500);
       })
       .catch(error => {

@@ -2,7 +2,7 @@
   <ion-split-pane>
     <ion-menu>
       <ion-header>
-        <ion-toolbar color="dark" class="user-profile">
+        <ion-toolbar *ngIf="userLogged != null" color="dark" class="user-profile">
 
           <ion-item margin-bottom>
             <ion-avatar slot="start" class="user-avatar">
@@ -10,11 +10,11 @@
             </ion-avatar>
             <ion-label>
               <ion-text color="medium">
-                <h1><strong>travelmateUser</strong></h1>
+                <h1><strong>{{ userLogged.user.username }}</strong></h1>
               </ion-text>
               <ion-text color="secondary">
                 <h3>
-                  travelmateUserDirection
+                  {{ userLogged.email }}
                 </h3>
               </ion-text>
               <ion-menu-toggle class="mto" auto-hide="false">
