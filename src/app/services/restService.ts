@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './../../config/configService';
 import { AbstractWS } from './abstractService';
 import { Injectable } from '@angular/core';
-import { User, Trip } from '../app.data.model';
+import { User, Trip, City } from '../app.data.model';
 
 import { promise } from 'selenium-webdriver';
 
@@ -212,4 +212,26 @@ export class RestWS extends AbstractWS {
         return Promise.resolve(trips);
 
     }
+
+
+    public createTrip(title: string, description: string, start_date: Date, end_date: Date, trip_type: string, image: string, city: City): Promise<any> {
+        let fd = new FormData();
+        fd.append('title', title);
+        fd.append('description', description);
+        fd.append('start_date', String(start_date));
+        fd.append('end_date', String(end_date));
+        fd.append('trip_type', trip_type);
+        fd.append('image', image);
+        fd.append('city', String(city.id));
+
+        return this.makePostRequest(this.path + 'createTrip', fd).then((res) => {
+            console.log("Se ha creado exitosamente");
+            return Promise.resolve(res);
+        }).catch((error) => {
+            console.log("Error: " + error);
+            return Promise.reject(error);
+        })
+    }
+
+
 }

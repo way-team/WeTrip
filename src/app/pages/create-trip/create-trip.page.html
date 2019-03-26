@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title color="primary">Create trip</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<div class="container">
+  <ion-title>Create trip</ion-title>
+  <div class="trip-form">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Title</ion-label>
+        <ion-input [(ngModel)]="title" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Description</ion-label>
+        <ion-input [(ngModel)]="description" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Start Date</ion-label>
+        <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start_date"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>End date</ion-label>
+        <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end_date"></ion-datetime>
+      </ion-item>
+      <ion-list radio-group [(ngModel)]="trip_type">
+        <ion-label>Trip Type</ion-label>
+        <ion-item>
+          <ion-label>PUBLIC</ion-label>
+          <ion-radio value="PUBLIC" checked></ion-radio>
+        </ion-item>
+        <ion-item>
+          <ion-label>PRIVATE</ion-label>
+          <ion-radio value="PRIVATE"></ion-radio>
+        </ion-item>
+      </ion-list>
+      <ion-item>
+        <ion-label floating>Image</ion-label>
+        <ion-input [(ngModel)]="image" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>City</ion-label>
+        <ion-select>
+          <ion-select-option *ngFor="let city of cities">{{city.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-list>
+    <button class="botton" ion-button block (click)="createTrip()"> Send </button>
+  </div>
+  <div *ngIf="error !=null" class="error">
+    error
+  </div>
+</div>

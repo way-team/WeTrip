@@ -19,16 +19,20 @@ export class UserProfile {
 }
 
 export class Trip {
+  id: Number;
   title: String;
   description: String;
   startDate: Date;
   endDate: Date;
-  type: String;
+  tripType: String;
   image: String;
   status: Boolean;
-  country: String;
-  city: String;
+  user_id: Number;
+}
 
+export class City {
+  id: Number;
+  name: String;
 }
 
 

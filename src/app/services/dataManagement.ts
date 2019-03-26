@@ -1,4 +1,4 @@
-import { test, User } from './../app.data.model';
+import { test, User, City } from './../app.data.model';
 import { Injectable } from "@angular/core";
 import { RestWS } from "./restService";
 
@@ -77,6 +77,15 @@ export class DataManagement {
 				reject('error');
 			}
 		});
+	}
+
+
+	public createTrip(title: string, description: string, start_date: Date, end_date: Date, trip_type: string, image: string, city: City): Promise<any> {
+		return this.restService.login(title, description, start_date, end_date, trip_type, image, city).then((data) => {
+			return Promise.resolve(data);
+		}).catch((error) => {
+			return Promise.reject('error');
+		})
 	}
 
 
