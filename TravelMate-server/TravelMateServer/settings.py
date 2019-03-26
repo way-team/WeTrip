@@ -48,7 +48,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-BASEURL = 'https://travel-mate.herokuapp.com'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
