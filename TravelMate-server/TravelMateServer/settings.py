@@ -26,6 +26,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'TravelMateServer.API',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -135,18 +149,3 @@ CORS_ORIGIN_ALLOW_ALL = True
 import django_heroku
 django_heroku.settings(locals())
 
-
-# Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'TravelMateServer.API',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'corsheaders',
-]
