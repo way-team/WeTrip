@@ -1,6 +1,5 @@
-
 export class UserProfile {
-  user: User;
+  username: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -28,9 +27,7 @@ export class Trip {
   status: Boolean;
   country: String;
   city: String;
-
 }
-
 
 export class User {
   id: Number;
@@ -43,4 +40,3 @@ export class test {
   previous: string;
   results: User[];
 }
-
