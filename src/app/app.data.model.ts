@@ -17,6 +17,20 @@ export class User {
   isSuperUser: boolean;
   description: string;
 }
+
+export class Trip {
+  title: String;
+  description: String;
+  startDate: Date;
+  endDate: Date;
+  type: String;
+  image: String;
+  status: Boolean;
+  country: String;
+  city: String;
+
+}
+
 export class test {
   count: string;
   next: string;
