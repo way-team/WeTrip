@@ -87,4 +87,8 @@ export class AppComponent {
     this.cookieService.delete('token');
     this.navCtrl.navigateRoot('/');
   }
+
+  goTo(destination: string) {
+    this.navCtrl.navigateForward('user-profile');
+  }
 }
