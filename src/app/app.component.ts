@@ -7,6 +7,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Pages } from './interfaces/pages';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
+import { DataManagement } from './services/dataManagement';
+import { Events } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +17,7 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class AppComponent {
   public appPages: Array<Pages>;
+  public userLogged;
 
   constructor(
     private platform: Platform,
@@ -22,8 +25,24 @@ export class AppComponent {
     private statusBar: StatusBar,
     public navCtrl: NavController,
     private _translate: TranslateService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    public dm: DataManagement,
+    public events: Events
   ) {
+    events.subscribe('user:logged', user => {
+      this.userLogged = user;
+    });
+    if (!this.cookieService.check('token')) {
+      this.userLogged = null;
+    } else {
+      const token = this.cookieService.get('token');
+      this.dm.getUserLogged(token).then(res => {
+        this.userLogged = res;
+      });
+    }
+    /*this.userLogged = this.cookieService.check('token')
+      ? this.dm.getUserLogged(this.cookieService.get('token'))
+      : null;*/
     this.appPages = [
       {
         title: 'Discover',
@@ -92,5 +111,9 @@ export class AppComponent {
   logout() {
     this.cookieService.delete('token');
     this.navCtrl.navigateRoot('/');
+  }
+
+  goTo(destination: string) {
+    this.navCtrl.navigateForward('user-profile');
   }
 }

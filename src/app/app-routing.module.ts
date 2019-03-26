@@ -13,6 +13,8 @@ const routes: Routes = [
   { path: 'chat/:id', loadChildren: './pages/chat/chat.module#ChatPageModule' },
   { path: 'premium', loadChildren: './pages/premium/premium.module#PremiumPageModule' },
   { path: 'trips', loadChildren: './pages/trips/trips.module#TripsPageModule' },
+  { path: 'user-profile', loadChildren: './pages/user-profile/user-profile.module#UserProfilePageModule' }
+
 ];
 
 @NgModule({
