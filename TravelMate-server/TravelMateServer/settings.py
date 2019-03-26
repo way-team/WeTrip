@@ -48,6 +48,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+BASEURL = 'https://travel-mate.herokuapp.com'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -82,7 +84,7 @@ WSGI_APPLICATION = 'TravelMateServer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-BASEURL = 'https://travel-mate.herokuapp.com:8000'
+
 
 DATABASES = {
     'default': {
