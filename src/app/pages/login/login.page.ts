@@ -105,7 +105,8 @@ export class LoginPage implements OnInit {
       .then(data => {
         this.showLoading();
         setTimeout(() => {
-          this.cookieService.set('token', data.token, this.getTimeToExpire());
+          // this.cookieService.set('token', data.token, this.getTimeToExpire());
+          this.cookieService.set('token', data.token);
           this.dm.getUserLogged(data.token).then(user => {
             this.events.publish('user:logged', user);
             this.navCtrl.navigateRoot('/discover');
