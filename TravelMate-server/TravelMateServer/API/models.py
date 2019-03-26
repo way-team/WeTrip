@@ -144,7 +144,6 @@ class Trip(models.Model):
         return self.title
 
 class Country(models.Model):
-    trip = models.ForeignKey("Trip", on_delete=models.CASCADE)
 
     name = models.CharField(max_length=50)
     
@@ -155,6 +154,7 @@ class Country(models.Model):
 class City(models.Model):
     country = models.ForeignKey("Country", on_delete=models.CASCADE)
 
+    trips = models.ManyToManyField(Trip, blank=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):
