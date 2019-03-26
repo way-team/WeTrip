@@ -28,6 +28,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+import django_heroku
+django_heroku.settings(locals())
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -145,6 +148,3 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-import django_heroku
-django_heroku.settings(locals())
