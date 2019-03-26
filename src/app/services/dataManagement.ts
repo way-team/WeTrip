@@ -4,20 +4,20 @@ import { RestWS } from "./restService";
 
 @Injectable()
 export class DataManagement {
-  constructor(private restService: RestWS) {}
+	constructor(private restService: RestWS) { }
 
-  
 
-  public login(credentials): Promise<any> {
-    return this.restService
-      .login(credentials)
-      .then(data => {
-        return Promise.resolve(data);
-      })
-      .catch(error => {
-        return Promise.reject('error');
-      });
-  }
+
+	public login(credentials): Promise<any> {
+		return this.restService
+			.login(credentials)
+			.then(data => {
+				return Promise.resolve(data);
+			})
+			.catch(error => {
+				return Promise.reject('error');
+			});
+	}
 
 	public hasConnection(): boolean {
 		return true;
@@ -64,5 +64,20 @@ export class DataManagement {
 			}
 		});
 	}
+
+	public listYourTrips(): Promise<any> {
+		return new Promise((resolve, reject) => {
+			if (this.hasConnection()) {
+				return this.restService.listYourTrips().then((data: any) => {
+					resolve(data);
+				}).catch((error) => {
+					reject('error');
+				})
+			} else {
+				reject('error');
+			}
+		});
+	}
+
 
 }
