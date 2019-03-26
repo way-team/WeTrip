@@ -9,9 +9,10 @@ const routes: Routes = [
   { path: 'settings', loadChildren: './pages/settings/settings.module#SettingsPageModule' },
   { path: 'edit-profile/:id', loadChildren: './pages/edit-profile/edit-profile.module#EditProfilePageModule' },
   { path: 'discover', loadChildren: './pages/discover/discover.module#DiscoverPageModule' },
-  { path: 'trip-detail', loadChildren: './pages/trip-detail/trip-detail.module#TripdetailPageModule' },
+  { path: 'trip-detail/:id', loadChildren: './pages/trip-detail/trip-detail.module#TripdetailPageModule' },
   { path: 'chat/:id', loadChildren: './pages/chat/chat.module#ChatPageModule' },
   { path: 'premium', loadChildren: './pages/premium/premium.module#PremiumPageModule' },
+  { path: 'trips', loadChildren: './pages/trips/trips.module#TripsPageModule' },
 ];
 
 @NgModule({

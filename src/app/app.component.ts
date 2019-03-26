@@ -32,6 +32,12 @@ export class AppComponent {
         icon: 'compass'
       },
       {
+        title: 'Trips',
+        url: '/trips',
+        direct: 'root',
+        icon: 'airplane'
+      },
+      {
         title: 'Contacts',
         url: '/contacts',
         direct: 'forward',
