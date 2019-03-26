@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'discover', loadChildren: './pages/discover/discover.module#DiscoverPageModule' },
   { path: 'trip-detail', loadChildren: './pages/trip-detail/trip-detail.module#TripdetailPageModule' },
   { path: 'chat/:id', loadChildren: './pages/chat/chat.module#ChatPageModule' },
-  { path: 'premium', loadChildren: './pages/premium/premium.module#PremiumPageModule' },  { path: 'create-trip', loadChildren: './pages/create-trip/create-trip.module#CreateTripPageModule' },
+  { path: 'premium', loadChildren: './pages/premium/premium.module#PremiumPageModule' },
+  { path: 'user-profile', loadChildren: './pages/user-profile/user-profile.module#UserProfilePageModule' }
 
 ];
 

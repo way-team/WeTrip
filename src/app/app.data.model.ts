@@ -1,6 +1,5 @@
-
 export class UserProfile {
-  user: User;
+  username: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -35,7 +34,6 @@ export class City {
   name: String;
 }
 
-
 export class User {
   id: Number;
   username: string;
@@ -47,4 +45,3 @@ export class test {
   previous: string;
   results: User[];
 }
-
