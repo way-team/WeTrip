@@ -27,12 +27,12 @@ class UserProfile(models.Model):
     #   IsPremium
     #   IsSuperUser
     languages = models.ManyToManyField("Language")
-    email = models.EmailField(unique=True, null=False, default='')
+    email = models.EmailField(null=False, default='')
     first_name = models.CharField(max_length=30, blank=False, default='')
     last_name = models.CharField(max_length=60, blank=False, default='')
     description = models.CharField(max_length=200, blank=True)
     birthdate = models.DateField(default="1999-12-01")
-    city = models.CharField(max_length=80, blank=True)
+    city = models.CharField(max_length=80, null=True)
     nationality = models.CharField(max_length=40, blank=False, default='')
     photo = models.CharField(max_length=150, blank=True)
     discoverPhoto = models.CharField(max_length=150, blank=True)
@@ -133,7 +133,7 @@ class Trip(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=150)
-    description = models.CharField(max_length=250, blank=True)
+    description = models.CharField(max_length=250, null=True)
     startDate = models.DateField(default="1999-12-01")
     endDate = models.DateField(default="1999-12-01")
     tripType = models.CharField(max_length=7, choices=TRIPTYPE_CHOICES, default='Public')
