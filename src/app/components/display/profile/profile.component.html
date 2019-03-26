@@ -11,7 +11,7 @@
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
       <img src="assets/img/avatar1.jpeg">
-      <h1 class="fw500">Elena Ramos</h1>
+      <h1 class="fw500"> {{userLogged.first_name}} </h1>
       <h2 color="light" margin-bottom>"I love traveling around the wordl"</h2>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
@@ -27,28 +27,20 @@
 
           <ion-list margin-bottom>
 
-
-            <ion-item>
-              <ion-label color="dark" >Full Name:</ion-label>
-             Elena Ramos
-
+            <ion-item> <ion-label color="dark" >Full Name:</ion-label> 
+              {{ userLogged.first_name }}  {{ userLogged.last_name }} 
             </ion-item>
     
-            <ion-item>
-              <ion-label color="dark" >Email:</ion-label>
-             elena@gmail.com
+            <ion-item> <ion-label color="dark" >Email:</ion-label>
+              {{ userLogged.email }}
             </ion-item>
-
     
-            <ion-item>
-              <ion-label color="dark">City</ion-label>
+            <ion-item> <ion-label color="dark">City</ion-label>
               Sevilla
 
             </ion-item>
     
-            <ion-item>
-              <ion-label color="dark">State</ion-label>
-
+            <ion-item> <ion-label color="dark">State</ion-label>
               Spain
             </ion-item>
           </ion-list>
