@@ -9,12 +9,12 @@ import { DataManagement } from 'src/app/services/dataManagement';
 })
 export class CreateTripPage implements OnInit {
 
-  title: String;
-  description: String;
+  title: string;
+  description: string;
   start_date: Date;
   end_date: Date;
-  trip_type: String;
-  image: String;
+  trip_type: string;
+  image: string;
   city: City;
   error: string;
 
