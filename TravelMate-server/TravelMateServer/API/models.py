@@ -121,7 +121,7 @@ class Global(models.Model):
     
 class Advertisement(models.Model):
     url = models.URLField()
-    advertisements = models.ForeignKey("Global", on_delete=models.CASCADE, related_name='advertisements')
+    globals = models.ForeignKey("Global", on_delete=models.CASCADE, related_name='globals')
     
     def __str__(self):
         return self.url
