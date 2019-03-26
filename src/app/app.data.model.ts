@@ -1,25 +1,32 @@
 
-export class User {
-  username: string;
+export class UserProfile {
+  user: User;
   email: string;
-  password: string;
-  name: string;
-  lastName: string;
-  birthdate: Date;
-  gender: string;
-  nationality: string;
-  city: string;
-  photo: string;
-  status: boolean;
-  mediumRate: number;
-  numRate: number;
-  isPremium: boolean;
-  isSuperUser: boolean;
+  first_name: string;
+  last_name: string;
   description: string;
+  birthdate: string;
+  city: string;
+  nationality: string;
+  photo: string;
+  discoverPhoto: string;
+  averageRate: Number;
+  numRate: Number;
+  isPremium: boolean;
+  status: boolean;
+  gender: string;
+  language: string;
 }
+
+export class User {
+  id: Number;
+  username: string;
+}
+
 export class test {
   count: string;
   next: string;
   previous: string;
   results: User[];
 }
+
