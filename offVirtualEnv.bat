@@ -1,0 +1,1 @@
+TravelMate-server/virtualenv/Scripts/deactivate

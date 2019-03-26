@@ -80,5 +80,13 @@ En el fichero src/app/services/restService.ts hay dos líneas de código:
             
 Simplemente hay que comentar la 1ª línea si trabajas localhost o la 2ª en caso contrario como José daniel.
 
+## Develop TravelMate
+### Front-end
+   In the root of the project, you should:
+1. Install [node](https://nodejs.org/es/)
+2. Next, run ```npm install```
+3. And so, ```npm install -g ionic cordova```
+4. At last, ```ionic serve```
 
-
+### To build the app
+1. Install [Android Studio](https://developer.android.com/studio)

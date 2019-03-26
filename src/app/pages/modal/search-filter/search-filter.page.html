@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+        <ion-button color="primary" (click)="closeModal()">
+            <ion-icon name="close" color="light"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+    <ion-title>
+    	Search Filter
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item margin-bottom>
+    <ion-label color="primary" stacked>
+    	<ion-text color="dark" class="fw500">Area</ion-text>
+    </ion-label>
+    <ion-input type="number" placeholder="Put your preference area"></ion-input>
+  </ion-item>
+
+
+	<ion-item>
+	  <ion-label class="fw500" color="dark">Organize by</ion-label>
+	  <ion-select [(ngModel)]="organizeby">
+	    <ion-select-option>Authenticated user</ion-select-option>
+	    <ion-select-option>Anyone</ion-select-option>
+
+	  </ion-select>
+	</ion-item>
+
+	<ion-item>
+	  <ion-label class="fw500" color="dark">Type</ion-label>
+	  <ion-select [(ngModel)]="dishtype" multiple="true">
+	    <ion-select-option>Adventure</ion-select-option>
+	    <ion-select-option>Other</ion-select-option>
+
+	  </ion-select>
+	</ion-item>
+
+	<ion-item>
+	  <ion-label class="fw500" color="dark">Nationalities</ion-label>
+	  <ion-select [(ngModel)]="dishnationality" multiple="true">
+	    <ion-select-option>Spanish</ion-select-option>
+	    <ion-select-option>Italian</ion-select-option>
+	    <ion-select-option>Chinese</ion-select-option>
+		<ion-select-option>British</ion-select-option>
+	    <ion-select-option>Anyone</ion-select-option>
+
+	  </ion-select>
+	</ion-item>
+
+
+
+	<ion-button expand="full" color="primary" (click)="closeModal()">Filter Results</ion-button>
+</ion-content>
