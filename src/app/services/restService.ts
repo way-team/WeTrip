@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './../../config/configService';
 import { AbstractWS } from './abstractService';
 import { Injectable } from '@angular/core';
-import { User, Trip, UserProfile } from '../app.data.model';
+import { User, Trip, UserProfile, City } from '../app.data.model';
 
 @Injectable()
 export class RestWS extends AbstractWS {
-  path: string = '';
+    path: string = '';
 
     constructor(private config: ConfigService, http: HttpClient) {
         super(http);
@@ -34,47 +34,127 @@ export class RestWS extends AbstractWS {
             text: 'texto'
         };
 
-    return this.makeGetRequest(this.path + 'users/', requestParams)
-      .then((res: any) => {
-        return Promise.resolve(res);
-      })
-      .catch(error => {
-        return Promise.reject(error);
-      });
-  }
+        return this.makeGetRequest(this.path + 'users/', requestParams)
+            .then((res: any) => {
+                return Promise.resolve(res);
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    }
+    public getUserLogged(token) {
+        const fd = new FormData();
+        fd.append('token', token);
+        return this.makePostRequest(this.path + 'getUserByToken/', fd)
+            .then(res => {
+                return Promise.resolve(res);
+            })
+            .catch(err => {
+                console.log('Error: ' + err);
+                return Promise.reject(err);
+            });
+    }
 
     public listFriends(): Promise<any> {
         return null;
     }
 
+
+
     public listMeetYou(): Promise<any> {
-        return null;
+        let meetYou: UserProfile[] = [];
+        let user: User = {
+            id: null,
+            username: null
+        };
+        let user1: UserProfile = {
+            user: user,
+            email: null,
+            first_name: "User1",
+            last_name: null,
+            description: "nature is waiting for me!",
+            birthdate: null,
+            city: null,
+            nationality: null,
+            photo: "../../../assets/img/avatar5.jpeg",
+            discoverPhoto: null,
+            averageRate: null,
+            numRate: null,
+            isPremium: null,
+            status: null,
+            gender: null,
+            language: null
+        };
+        let user2: UserProfile = {
+            user: user,
+            email: null,
+            first_name: "User1",
+            last_name: null,
+            description: "nature is waiting for me!",
+            birthdate: null,
+            city: null,
+            nationality: null,
+            photo: "../../../assets/img/avatar5.jpeg",
+            discoverPhoto: null,
+            averageRate: null,
+            numRate: null,
+            isPremium: null,
+            status: null,
+            gender: null,
+            language: null
+        };
+        let user3: UserProfile = {
+            user: user,
+            email: null,
+            first_name: "User1",
+            last_name: null,
+            description: "nature is waiting for me!",
+            birthdate: null,
+            city: null,
+            nationality: null,
+            photo: "../../../assets/img/avatar5.jpeg",
+            discoverPhoto: null,
+            averageRate: null,
+            numRate: null,
+            isPremium: null,
+            status: null,
+            gender: null,
+            language: null
+        };
+        meetYou.push(user1, user2, user3);
+        // return this.makeGetRequest(this.path + "users/", null).then((friends: any) => {
+        //     return Promise.resolve(friends);
+        // }).catch((error) => {
+        //     return Promise.reject(error);
+        // });
+        return Promise.resolve(meetYou);
+
     }
 
     public listYourTrips(): Promise<any> {
         let trips: Trip[] = [];
         let trip1: Trip = {
+            id: null,
+            user_id: null,
             title: "Trip to Canada",
             description: "Only adults",
             startDate: null,
             endDate: null,
-            type: null,
+            tripType: null,
             image: "../../../assets/img/trip_1.jpeg",
             status: null,
-            country: "Canada",
-            city: "Montreal"
         }
 
         let trip2: Trip = {
-            title: "Trip to NY",
-            description: "To families",
+            id: null,
+            user_id: null,
+            title: "Trip to Canada",
+            description: "Only adults",
             startDate: null,
             endDate: null,
-            type: null,
-            image: "../../../assets/img/trip_2.jpeg",
+            tripType: null,
+            image: "../../../assets/img/trip_1.jpeg",
             status: null,
-            country: "USA",
-            city: "New York"
         }
         trips.push(trip1, trip2);
         // return this.makeGetRequest(this.path + "trips/", null).then((trips: any) => {
@@ -85,4 +165,26 @@ export class RestWS extends AbstractWS {
         return Promise.resolve(trips);
 
     }
+
+
+    public createTrip(title: string, description: string, start_date: Date, end_date: Date, trip_type: string, image: string, city: City): Promise<any> {
+        let fd = new FormData();
+        fd.append('title', title);
+        fd.append('description', description);
+        fd.append('start_date', String(start_date));
+        fd.append('end_date', String(end_date));
+        fd.append('trip_type', trip_type);
+        fd.append('image', image);
+        fd.append('city', String(city.id));
+
+        return this.makePostRequest(this.path + 'createTrip', fd).then((res) => {
+            console.log("Se ha creado exitosamente");
+            return Promise.resolve(res);
+        }).catch((error) => {
+            console.log("Error: " + error);
+            return Promise.reject(error);
+        })
+    }
+
+
 }
