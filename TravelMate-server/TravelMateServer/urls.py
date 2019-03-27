@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import include, path
+from django.conf.urls import url
 from rest_framework import routers
 from TravelMateServer.API import views
 from django.contrib import admin
@@ -27,4 +28,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', obtain_auth_token),
     path('getUserByToken/', views.GetUserView.as_view()),
+    url('^users/(?P<username>.+)/$', views.UserList.as_view()),
 ]
