@@ -14,7 +14,7 @@ import { ImagePage } from './../modal/image/image.page';
 // Call notifications test by Popover and Custom Component.
 import { NotificationsComponent } from './../../components/notifications/notifications.component';
 import { TranslateService } from '@ngx-translate/core';
-import { User } from '../../app.data.model';
+import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 
 @Component({
@@ -26,7 +26,7 @@ export class DiscoverPage {
   searchKey = '';
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
-  discover: User[] = [];
+  discover: UserProfile[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -42,9 +42,7 @@ export class DiscoverPage {
 
   }
 
-  viewDetail(id) {
-    this.navCtrl.navigateForward('/edit-profile/1');
-  }
+
   contact(id) {
     this.navCtrl.navigateForward('/');
   }

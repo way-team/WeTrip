@@ -36,25 +36,23 @@
       </ion-button>
     </ion-item>
   </ion-card>
-  <div class="listDiscover" *ngFor="let user of discover">
+  <div class="listDiscover" *ngFor="let userProfile of discover">
 
-    <img src="{{user.photo}}" class="user-avatar" (click)="viewDetail(2)">
-    <ion-button expand="full" color="dark"  (click)="viewDetail(2)" no-margin>
-    {{user.first_name}}
+    <img src="{{userProfile.photo}}" class="user-avatar" [routerLink]="'/edit-profile/' + userProfile.user.id" routerDirection="forward">
+    {{userProfile.user.id}}
+    <ion-button expand="full" color="dark"  [routerLink]="'/edit-profile/' + userProfile.user.id" routerDirection="forward" no-margin>
+    {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>
-     <ion-button expand="full" color="medium" (click)="sendData(2)" no-margin>
+     <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin>
        contact
      </ion-button>
 
-     <ion-button expand="full" color="medium" (click)="reject(2)" no-margin>
+     <ion-button expand="full" color="medium" (click)="reject('${userProfile.user.id}')" no-margin>
        reject
      </ion-button>
     <br>
   </div>
-     <img src="assets/img/user2.jpg" class="user-avatar" (click)="viewDetail(2)">
-    <ion-button expand="full" color="dark" (click)="viewDetail(2)" no-margin>
-      Javier García
-    </ion-button>
+
 
 
 

@@ -62,7 +62,7 @@ export class RestWS extends AbstractWS {
     public listDiscover(): Promise<any> {
         let discover: UserProfile[] = [];
         let user: User = {
-            id: null,
+            id: 5,
             username: null
         };
         let user1: UserProfile = {
