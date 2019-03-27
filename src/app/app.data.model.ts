@@ -32,6 +32,7 @@ export class Trip {
 export class City {
   id: Number;
   name: String;
+  country_id: Number;
 }
 
 export class User {

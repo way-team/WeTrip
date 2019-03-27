@@ -3,12 +3,13 @@ import { ConfigService } from './../../config/configService';
 import { AbstractWS } from './abstractService';
 import { Injectable } from '@angular/core';
 import { User, Trip, UserProfile, City } from '../app.data.model';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class RestWS extends AbstractWS {
     path: string = '';
 
-    constructor(private config: ConfigService, http: HttpClient) {
+    constructor(private config: ConfigService, http: HttpClient, private cookieService: CookieService) {
         super(http);
         // this.path = this.config.config().restUrlPrefix;
         this.path = this.config.config().restUrlPrefixLocalhost;
@@ -237,15 +238,35 @@ export class RestWS extends AbstractWS {
 
     public createTrip(title: string, description: string, start_date: Date, end_date: Date, trip_type: string, image: string, city: City): Promise<any> {
         let fd = new FormData();
-        fd.append('title', title);
-        fd.append('description', description);
-        fd.append('start_date', String(start_date));
-        fd.append('end_date', String(end_date));
-        fd.append('trip_type', trip_type);
-        fd.append('image', image);
-        fd.append('city', String(city.id));
+        let user: User;
+        let token: string;
+        token = this.cookieService.get('token');
+        return this.getUserLogged(token).then((res) => {
+            fd.append('title', title);
+            fd.append('description', description);
+            fd.append('start_date', String(start_date));
+            fd.append('end_date', String(end_date));
+            fd.append('trip_type', trip_type);
+            fd.append('image', image);
+            fd.append('city', String(city.id));
+            user = res;
+            fd.append('user_id', String(user.id));
 
-        return this.makePostRequest(this.path + 'createTrip', fd).then((res) => {
+            return this.makePostRequest(this.path + 'createTrip', fd).then((res2) => {
+                console.log("Se ha creado exitosamente");
+                return Promise.resolve(res2);
+            }).catch((error) => {
+                console.log("Error: " + error);
+                return Promise.reject(error);
+            })
+        }).catch((error) => {
+            console.log("Error: " + error);
+            return Promise.reject(error);
+        })
+    }
+
+    public listCities(): Promise<any> {
+        return this.makeGetRequest(this.path + 'list-cities', null).then((res) => {
             console.log("Se ha creado exitosamente");
             return Promise.resolve(res);
         }).catch((error) => {
@@ -253,6 +274,5 @@ export class RestWS extends AbstractWS {
             return Promise.reject(error);
         })
     }
-
-
 }
+
