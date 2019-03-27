@@ -1,4 +1,4 @@
 % Prepare to release
-release: sh -c 'python manage.py makemigrations && python manage.py migrate && python manage.py runserver'
+release: sh -c 'python manage.py makemigrations && python manage.py migrate'
 % Launch!
-web: sh -c 'cd TravelMateServer && gunicorn API.wsgi --log-file -'
+web: sh -c 'gunicorn TravelMateServer.wsgi --log-file -'
