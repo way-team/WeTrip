@@ -6,23 +6,27 @@
     <ion-title color="primary">Trips</ion-title>
   </ion-toolbar>
 
-
+    <ion-button expand="full"  (click)="create(1)" no-margin>
+       <ion-text align="left">
+    Create new trip
+           </ion-text>
+    </ion-button>
 </ion-header>
-
 
 
 <ion-content>
 
 
   <ion-item>
-      <ion-thumbnail slot="start" >
+      <ion-thumbnail class="ion-avatar" slot="start" >
           <img src="assets/img/trip_2.jpg" class="user-avatar" (click)="viewDetail(2)">
       </ion-thumbnail>
-      
-          <ion-text color="dark">
+
+          <ion-text color="dark" (click)="viewDetail(2)">
               <h1><strong>¡A Brasil!</strong></h1>
-            Estoy preparando una ruta en autocaravana durante el mes de agosto.
+           <h5>Estoy preparando una ruta en autocaravana durante el mes de agosto.</h5>
           </ion-text>
+
   </ion-item>
 
   <ion-item>
@@ -32,7 +36,7 @@
 
           <ion-text color="dark">
               <h1><strong>República Dominicana</strong></h1>
-              Mi compañero se ha roto una pierna. Tenemos todo pagado y reservado, suuuuperbarato!!!!.
+             <h5> Mi compañero se ha roto una pierna. Tenemos todo pagado y reservado, suuuuperbarato!!.</h5>
           </ion-text>
   </ion-item>
 
