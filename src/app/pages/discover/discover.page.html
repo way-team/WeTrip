@@ -19,6 +19,7 @@
 
 <ion-content>
   <ion-card no-margin class="no-radius">
+
     <ion-item lines="none" color="medium">
       <ion-label>
         <h2 no-margin class="fw500 no-margin">
@@ -35,21 +36,21 @@
       </ion-button>
     </ion-item>
   </ion-card>
+  <div class="listDiscover" *ngFor="let user of discover">
 
-
-    <img src="assets/img/user1.jpg" class="user-avatar" (click)="viewDetail(1)">
-    <ion-button expand="full" color="dark"  (click)="viewDetail(1)" no-margin>
-    Elena Ramos
+    <img src="{{user.photo}}" class="user-avatar" (click)="viewDetail(2)">
+    <ion-button expand="full" color="dark"  (click)="viewDetail(2)" no-margin>
+    {{user.first_name}}
     </ion-button>
-     <ion-button expand="full" color="medium" (click)="sendData()" no-margin>
+     <ion-button expand="full" color="medium" (click)="sendData(2)" no-margin>
        contact
      </ion-button>
 
-     <ion-button expand="full" color="medium" (click)="reject()" no-margin>
+     <ion-button expand="full" color="medium" (click)="reject(2)" no-margin>
        reject
      </ion-button>
     <br>
-
+  </div>
      <img src="assets/img/user2.jpg" class="user-avatar" (click)="viewDetail(2)">
     <ion-button expand="full" color="dark" (click)="viewDetail(2)" no-margin>
       Javier García

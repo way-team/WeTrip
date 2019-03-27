@@ -59,7 +59,75 @@ export class RestWS extends AbstractWS {
         return null;
     }
 
+    public listDiscover(): Promise<any> {
+        let discover: UserProfile[] = [];
+        let user: User = {
+            id: null,
+            username: null
+        };
+        let user1: UserProfile = {
+            user: user,
+            email: null,
+            first_name: "User1",
+            last_name: null,
+            description: "nature is waiting for me!",
+            birthdate: null,
+            city: null,
+            nationality: null,
+            photo: "../../../assets/img/avatar5.jpeg",
+            discoverPhoto: null,
+            averageRate: null,
+            numRate: null,
+            isPremium: null,
+            status: null,
+            gender: null,
+            language: null
+        };
+        let user2: UserProfile = {
+            user: user,
+            email: null,
+            first_name: "User1",
+            last_name: null,
+            description: "nature is waiting for me!",
+            birthdate: null,
+            city: null,
+            nationality: null,
+            photo: "../../../assets/img/avatar5.jpeg",
+            discoverPhoto: null,
+            averageRate: null,
+            numRate: null,
+            isPremium: null,
+            status: null,
+            gender: null,
+            language: null
+        };
+        let user3: UserProfile = {
+            user: user,
+            email: null,
+            first_name: "User1",
+            last_name: null,
+            description: "nature is waiting for me!",
+            birthdate: null,
+            city: null,
+            nationality: null,
+            photo: "../../../assets/img/avatar5.jpeg",
+            discoverPhoto: null,
+            averageRate: null,
+            numRate: null,
+            isPremium: null,
+            status: null,
+            gender: null,
+            language: null
+        };
+        discover.push(user1, user2, user3);
+        // return this.makeGetRequest(this.path + "users/", null).then((discover: any) => {
+        //     return Promise.resolve(discover);
+        // }).catch((error) => {
+        //     return Promise.reject(error);
+        // });
+        return Promise.resolve(discover);
 
+    }
 
     public listMeetYou(): Promise<any> {
         let meetYou: UserProfile[] = [];

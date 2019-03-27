@@ -98,6 +98,25 @@ export class DataManagement {
 		});
 	}
 
+
+    public listDiscover(): Promise<any> {
+		return new Promise((resolve, reject) => {
+			if (this.hasConnection()) {
+				return this.restService
+					.listDiscover()
+					.then((data: any) => {
+						resolve(data);
+					})
+					.catch(error => {
+						reject('error');
+					});
+			} else {
+				reject('error');
+			}
+		});
+	}
+
+
 	public createTrip(title: string, description: string, start_date: Date, end_date: Date, trip_type: string, image: string, city: City): Promise<any> {
 		return this.restService.createTrip(title, description, start_date, end_date, trip_type, image, city).then((data) => {
 			return Promise.resolve(data);
