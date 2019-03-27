@@ -31,4 +31,6 @@ urlpatterns = [
     path('list-cities/', views.ListCities.as_view()),
     path('createTrip/', views.CreateTrip.as_view()),
     url('^users/(?P<username>.+)/$', views.UserList.as_view()),
+    path('getFriends/', views.GetFriendsView.as_view()),
+    path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
 ]

@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -124,7 +125,7 @@ class Rate(models.Model):
     value = models.IntegerField()
 
     def __str__(self):
-        return self.status
+        return self.value
 
 
 class Global(models.Model):
