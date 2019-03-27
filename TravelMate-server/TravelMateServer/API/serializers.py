@@ -1,4 +1,4 @@
-from .models import UserProfile, Language, Trip, Application
+from .models import UserProfile, Language, Trip, Application, City, Country
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -10,6 +10,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'password']
 
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = [
+            'name'
+        ]
 
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
@@ -25,6 +32,14 @@ class TripSerializer(serializers.ModelSerializer):
         user_queryset = obj.user.user.username
         return user_queryset
 
+class CitySerializer(serializers.ModelSerializer):
+    country = CountrySerializer()
+    trips = TripSerializer(many=True)
+    class Meta:
+        model = City
+        fields = [
+            'country', 'trips', 'name'
+        ]
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
