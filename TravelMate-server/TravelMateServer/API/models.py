@@ -124,7 +124,7 @@ class Rate(models.Model):
     value = models.IntegerField()
 
     def __str__(self):
-        return self.status
+        return self.value
 
 
 class Global(models.Model):
