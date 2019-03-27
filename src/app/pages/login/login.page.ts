@@ -49,6 +49,7 @@ export class LoginPage implements OnInit {
   }
 
   async forgotPass() {
+    return null;
     const alert = await this.alertCtrl.create({
       header: 'Forgot Password?',
       message: 'Enter you email address to send a reset link password.',
@@ -96,6 +97,7 @@ export class LoginPage implements OnInit {
 
   // // //
   goToRegister() {
+    return null;
     this.navCtrl.navigateRoot('/register');
   }
 
