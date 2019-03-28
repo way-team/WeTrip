@@ -47,10 +47,22 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
+
   public getUserLogged(token) {
     const fd = new FormData();
     fd.append('token', token);
     return this.makePostRequest(this.path + 'getUserByToken/', fd)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+        return Promise.reject(err);
+      });
+  }
+
+  public getUserBy(username, token) {
+    return this.makeGetRequest(this.path + 'users/' + username + '/', null, token)
       .then(res => {
         return Promise.resolve(res);
       })
