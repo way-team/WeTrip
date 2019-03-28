@@ -41,7 +41,7 @@
     <img src="assets/img/discover/{{userProfile.discoverPhoto}}.jpg" class="user-avatar" [routerLink]="'/edit-profile/' + userProfile.user.id"
       routerDirection="forward">
 
-    <ion-button expand="full" color="dark" [routerLink]="'/edit-profile/' + userProfile.user.id"
+    <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username"
       routerDirection="forward" no-margin>
       {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>

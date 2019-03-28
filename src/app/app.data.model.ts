@@ -17,7 +17,9 @@ export class UserProfile {
   language: string;
   interests: string[];
   created_trips: Trip[];
-  joined_trips: Trip[];
+  past_joined_trips: Trip[];
+  future_joined_trips: Trip[];
+  active_joined_trips: Trip[];
 }
 
 export class Trip {
