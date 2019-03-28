@@ -83,13 +83,6 @@
           </ion-radio-group>
           <ion-item>
             <ion-label position="floating">
-              <ion-icon name="image" item-start></ion-icon>
-              Image
-            </ion-label>
-            <ion-input [(ngModel)]="image" type="url" [ngModelOptions]="{standalone: true}"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">
               <ion-icon name="map" item-start></ion-icon>
               City
             </ion-label>
@@ -110,8 +103,14 @@
       <br>
     </ion-card-content>
   </ion-card>
-  <ion-button [disabled]="!onCreateForm.valid" icon-left size="medium" expand="full" shape="round" color="dark"
-    (click)="createTrip()" tappable>
+  <br>
+  <ion-checkbox [(ngModel)]="privacyPolicites" checked="false"></ion-checkbox>
+  <ion-label>
+    I have read and agree to the
+    <ion-text color="dark" (click)="goToPrivacyPolicies()">privacy policies</ion-text>
+  </ion-label>
+  <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites" icon-left size="medium" expand="full" shape="round"
+    color="dark" (click)="createTrip()" tappable>
     <ion-icon name="save"></ion-icon>
     Save
   </ion-button>

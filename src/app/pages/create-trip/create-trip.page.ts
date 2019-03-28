@@ -16,10 +16,10 @@ export class CreateTripPage implements OnInit {
   start_date: String;
   end_date: String;
   trip_type: string = 'PUBLIC';
-  image;
   city: Number;
   error: string;
   cities: City[];
+  privacyPolicites: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -47,11 +47,9 @@ export class CreateTripPage implements OnInit {
         this.start_date.split('T')[0],
         this.end_date.split('T')[0],
         this.trip_type,
-        this.image === undefined ? '' : this.image,
         this.city
       )
       .then(data => {
-        //this.navCtrl.navigateRoot('/discover');
         this.navCtrl.navigateForward('/trips');
       })
       .catch(error => {
@@ -81,5 +79,8 @@ export class CreateTripPage implements OnInit {
       .catch(error => {
         console.log(error);
       });
+  }
+  goToPrivacyPolicies() {
+    this.navCtrl.navigateForward('/gdpr');
   }
 }
