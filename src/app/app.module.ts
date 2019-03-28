@@ -25,6 +25,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CookieService } from 'ngx-cookie-service';
 import { ProfileComponent } from './components/display/profile/profile.component';
 import { CookieLawModule } from 'angular2-cookie-law';
+import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
@@ -55,6 +56,7 @@ import { CookieLawModule } from 'angular2-cookie-law';
     ConfigService,
     CookieService,
     ProfileComponent,
+    AuthGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

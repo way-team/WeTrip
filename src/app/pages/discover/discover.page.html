@@ -1,16 +1,16 @@
 <ion-header>
   <ion-toolbar color="primary">
-          <ion-buttons slot="start">
+    <ion-buttons slot="start">
       <ion-menu-button color="secondary"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-        <ion-text color="light">Discover
-        </ion-text>
+      <ion-text color="light">Discover
+      </ion-text>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button size="small" shape="round" color="medium" (click)="notifications()">
         <ion-icon name="notifications"></ion-icon>
-        <ion-badge color="dark" slot="end">1</ion-badge>
+        <ion-badge color="dark" slot="end"></ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -27,7 +27,7 @@
         </h2>
 
         <p class="text-11x no-margin">
-          <ion-text  color="primary">{{yourLocation}}</ion-text>
+          <ion-text color="primary">{{yourLocation}}</ion-text>
         </p>
       </ion-label>
       <ion-button shape="round" fill="outline" size="small" color="primary" (click)="alertLocation()">
@@ -38,25 +38,26 @@
   </ion-card>
   <div class="listDiscover" *ngFor="let userProfile of discover">
 
-    <img src="{{userProfile.photo}}" class="user-avatar" [routerLink]="'/edit-profile/' + userProfile.user.id" routerDirection="forward">
+    <img src="{{userProfile.photo}}" class="user-avatar" [routerLink]="'/edit-profile/' + userProfile.user.id"
+      routerDirection="forward">
 
-    <ion-button expand="full" color="dark"  [routerLink]="'/edit-profile/' + userProfile.user.id" routerDirection="forward" no-margin>
-    {{userProfile.first_name}} {{userProfile.last_name}}
+    <ion-button expand="full" color="dark" [routerLink]="'/edit-profile/' + userProfile.user.id"
+      routerDirection="forward" no-margin>
+      {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>
-     <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin>
-       contact
-     </ion-button>
+    <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin>
+      contact
+    </ion-button>
 
-     <ion-button expand="full" color="medium" (click)="reject('${userProfile.user.id}')" no-margin>
-       reject
-     </ion-button>
+    <ion-button expand="full" color="medium" (click)="reject('${userProfile.user.id}')" no-margin>
+      reject
+    </ion-button>
     <br>
   </div>
 
 
 
 
-  
+
 
 </ion-content>
-  

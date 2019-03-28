@@ -3,10 +3,13 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from .models import UserProfile, City, Invitation
+from rest_framework import generics, filters
+from .models import UserProfile, Trip, Invitation, City
 from django.contrib.auth.models import User
-from rest_framework import authentication, generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from datetime import datetime
+from django.db.models import Q
 
 
 def get_user_by_token(request):
@@ -17,18 +20,16 @@ def get_user_by_token(request):
 
     return user_profile
 
-
 class GetUserView(APIView):
     def post(self, request):
-        user_profile = get_user_by_token(request)
+        userProfile = get_user_by_token(request)
 
-        return Response(UserProfileSerializer(user_profile, many=False).data)
-
+        return Response(UserProfileSerializer(userProfile, many=False).data)
 
 class UserList(APIView):
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (authentication.TokenAuthentication,
-                              authentication.SessionAuthentication)
+    authentication_classes = (TokenAuthentication,
+                              SessionAuthentication)
 
     def get(self, request, *args, **kwargs):
         """
@@ -37,56 +38,6 @@ class UserList(APIView):
         username = kwargs.get('username')
         userProfile = User.objects.get(username=username).userprofile
         return Response(UserProfileSerializer(userProfile, many=False).data)
-
-
-class ListCities(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (authentication.TokenAuthentication,
-                              authentication.SessionAuthentication)
-
-    def get(self, request):
-
-        cities = City.objects.all()
-        return Response(CitySerializer(cities, many=True).data)
-
-
-class CreateTrip(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (authentication.TokenAuthentication,
-                              authentication.SessionAuthentication)
-
-    def post(self, request):
-
-        #GET TRIP DATA
-        #Comment the following line and remove the comment from one after that to test with Postman
-        username = request.user.username
-        #username= request.data.get('username','')
-        user = User.objects.get(username=username).userprofile
-        title = request.data.get('title', '')
-        description = request.data.get('description', '')
-        startDate = request.data.get('start_date', '')
-        endDate = request.data.get('end_date', '')
-        tripType = request.data.get('trip_type', '')
-        image = request.data.get('image', '')
-        #GET CITY DATA
-        cityId = request.data.get('city')
-        #CREATE AND SAVE TRIP
-        trip = Trip(
-            user=user,
-            title=title,
-            description=description,
-            startDate=startDate,
-            endDate=endDate,
-            tripType=tripType,
-            image=image)
-        trip.save()
-
-        #GET CITY AND ADD TRIP
-        city = City.objects.get(pk=cityId)
-        city.trips.add(trip)
-
-        return Response(TripSerializer(trip, many=False).data)
-
 
 def get_friends_or_pending(user):
     """
@@ -112,7 +63,6 @@ def get_friends_or_pending(user):
 
     return (friends, pending)
 
-
 class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
@@ -126,7 +76,6 @@ class GetFriendsView(APIView):
         friends, pending = get_friends_or_pending(user)
 
         return Response(UserProfileSerializer(friends, many=True).data)
-
 
 class GetPendingView(APIView):
     """
@@ -142,10 +91,9 @@ class GetPendingView(APIView):
 
         return Response(UserProfileSerializer(pending, many=True).data)
 
-
 class DiscoverPeopleView(APIView):
     """
-     Method to get the people who have the same interests as you in order to discover people
+    Method to get the people who have the same interests as you in order to discover people
     """
     def post(self, request):
         """
@@ -181,3 +129,98 @@ class DiscoverPeopleView(APIView):
             discover_people.remove(person)
 
         return Response(UserProfileSerializer(discover_people, many=True).data)
+
+class MyTripsList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    serializer_class = TripSerializer
+
+
+    def get_queryset(self):
+        return Trip.objects.filter(user__user=self.request.user).order_by('-startDate')
+
+    
+class AvailableTripsList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    serializer_class = TripSerializer
+
+    
+    def get_queryset(self):
+        today = datetime.today()
+        return Trip.objects.filter(
+            Q(status = True) &
+            Q(startDate__gte=today) &
+            Q(tripType='PUBLIC')).exclude(user__user=self.request.user).order_by('-startDate')
+
+
+
+class AvailableTripsSearch(generics.ListAPIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    serializer_class = TripSerializer
+
+
+    def get_queryset(self):
+        today = datetime.today()
+        return Trip.objects.filter(
+            Q(status = True) &
+            Q(startDate__gte=today) &
+            Q(tripType='PUBLIC')).exclude(user__user=self.request.user).order_by('-startDate')
+
+
+    queryset = get_queryset
+    serializer_class = TripSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('title', 'description')
+
+
+
+class ListCities(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication,
+                              SessionAuthentication)
+
+    def get(self, request):
+
+
+        cities = City.objects.all()
+        return Response(CitySerializer(cities, many=True).data)
+
+class CreateTrip(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication,
+                              SessionAuthentication)
+
+    def post(self, request):
+
+        #GET TRIP DATA
+        #Comment the following line and remove the comment from one after that to test with Postman
+        username = request.user.username
+        #username= request.data.get('username','')
+        user = User.objects.get(username=username).userprofile
+        title = request.data.get('title', '')
+        description = request.data.get('description', '')
+        startDate = request.data.get('start_date', '')
+        endDate = request.data.get('end_date', '')
+        tripType = request.data.get('trip_type', '')
+        image = request.data.get('image', '')
+        #GET CITY DATA
+        cityId = request.data.get('city')
+        #CREATE AND SAVE TRIP
+        trip = Trip(user=user, title=title, description=description, startDate=startDate, endDate=endDate,
+        tripType=tripType, image=image)
+        trip.save()
+
+
+
+        #GET CITY AND ADD TRIP
+        city = City.objects.get(pk=cityId)
+        city.trips.add(trip)
+
+
+        return Response(TripSerializer(trip, many=False).data) 
+
