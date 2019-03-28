@@ -2,8 +2,8 @@
     ion-content {
         --background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light))
     }
-    
- 
+
+
 }
 
 ion-thumbnail {
@@ -11,6 +11,15 @@ ion-thumbnail {
     height: 100px;
 }
 
+ion-card {
+    margin-top: 8%;
+}
+
+.createButton {
+    background-color: white;
+}
+
 .textTrips {
     text-align: center;
+    color: orange;
 }
