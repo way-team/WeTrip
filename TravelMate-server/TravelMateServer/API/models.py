@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -124,7 +125,7 @@ class Rate(models.Model):
     value = models.IntegerField()
 
     def __str__(self):
-        return self.status
+        return self.value
 
 
 class Global(models.Model):
@@ -188,7 +189,7 @@ class Application(models.Model):
     applicant = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, related_name='applicant')
     trip = models.ForeignKey(
-        Trip, on_delete=models.CASCADE, related_name='trip')
+        Trip, on_delete=models.CASCADE, related_name='applications')
 
     STATUS_OPTIONS = (
         ('P', 'Pending'),
