@@ -39,7 +39,7 @@
   <div class="listDiscover" *ngFor="let userProfile of discover">
 
     <img src="{{userProfile.photo}}" class="user-avatar" [routerLink]="'/edit-profile/' + userProfile.user.id" routerDirection="forward">
-    {{userProfile.user.id}}
+
     <ion-button expand="full" color="dark"  [routerLink]="'/edit-profile/' + userProfile.user.id" routerDirection="forward" no-margin>
     {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>
