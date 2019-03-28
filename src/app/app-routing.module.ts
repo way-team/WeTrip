@@ -55,7 +55,7 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
-    path: 'user-profile',
+    path: 'user-profile/:username',
     loadChildren:
       './pages/user-profile/user-profile.module#UserProfilePageModule',
     canLoad: [AuthGuard]

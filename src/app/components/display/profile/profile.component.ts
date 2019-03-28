@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UserProfile } from 'src/app/app.data.model';
+import { NavController, IonDatetime } from '@ionic/angular';
 
 @Component({
   selector: 'app-profile',
@@ -9,10 +10,21 @@ import { UserProfile } from 'src/app/app.data.model';
 export class ProfileComponent implements OnInit {
 
   @Input()
-  public userLogged: UserProfile;
+  public user: UserProfile;
 
-  constructor() { }
+  public myProfile: Boolean = true;
+  public interests: string[];
+  public today: Date;
+
+  constructor(
+    private navCtrl: NavController,
+  ) { }
 
   ngOnInit() {}
+
+  goTo(destination: string, username: string) {
+    const dest: string = destination + username;
+    this.navCtrl.navigateForward(dest);
+  }
 
 }
