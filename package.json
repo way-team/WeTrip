@@ -30,6 +30,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "core-js": "^2.5.4",
     "http": "0.0.0",
+    "moment": "^2.24.0",
     "ngx-cookie-service": "^2.1.0",
     "zone.js": "~0.8.29"
   },

@@ -16,6 +16,7 @@ def getUserByToken(request):
 
     return user
 
+
 class GetUserView(APIView):
     def post(self, request):
         user = getUserByToken(request)
@@ -37,16 +38,17 @@ class UserList(APIView):
         userProfile = User.objects.get(username=username).userprofile
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
+
 class ListCities(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (authentication.TokenAuthentication,
                               authentication.SessionAuthentication)
 
     def get(self, request):
-        
-        
+
         cities = City.objects.all()
         return Response(CitySerializer(cities, many=True).data)
+
 
 class CreateTrip(APIView):
     permission_classes = (IsAuthenticated, )
@@ -69,16 +71,19 @@ class CreateTrip(APIView):
         #GET CITY DATA
         cityId = request.data.get('city')
         #CREATE AND SAVE TRIP
-        trip = Trip(user=user, title=title, description=description, startDate=startDate, endDate=endDate,
-        tripType=tripType, image=image)
+        trip = Trip(
+            user=user,
+            title=title,
+            description=description,
+            startDate=startDate,
+            endDate=endDate,
+            tripType=tripType,
+            image=image)
         trip.save()
-
-        
 
         #GET CITY AND ADD TRIP
         city = City.objects.get(pk=cityId)
         city.trips.add(trip)
-
 
         return Response(TripSerializer(trip, many=False).data)
 

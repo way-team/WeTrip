@@ -14,9 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = [
-            'name'
-        ]
+        fields = ['name']
+
 
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
@@ -32,14 +31,15 @@ class TripSerializer(serializers.ModelSerializer):
         user_queryset = obj.user.user.username
         return user_queryset
 
+
 class CitySerializer(serializers.ModelSerializer):
     country = CountrySerializer()
     trips = TripSerializer(many=True)
+
     class Meta:
         model = City
-        fields = [
-            'country', 'trips', 'name'
-        ]
+        fields = ['country', 'trips', 'name', 'id']
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
