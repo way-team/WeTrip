@@ -135,6 +135,7 @@ class DiscoverPeopleView(APIView):
             discover_people.remove(person)
         for person in pending:
             discover_people.remove(person)
+        discover_people.remove(user)
 
         return Response(UserProfileSerializer(discover_people, many=True).data)
 
