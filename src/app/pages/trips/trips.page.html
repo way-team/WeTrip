@@ -15,19 +15,25 @@
 
 
 <ion-content>
+    <ng-container *ngIf="listTrips">
+        <div class="listTrips" *ngFor="let trip of listTrips">
+            <ion-item>
+                <ion-thumbnail class="ion-avatar" slot="start">
+                    <img src="assets/img/trip/{{trip.image}}" class="user-avatar" (click)="viewDetail(2)">
+                </ion-thumbnail>
 
-    <div class="listTrips" *ngFor="let trip of listTrips">
-        <ion-item>
-            <ion-thumbnail class="ion-avatar" slot="start">
-                <img src="assets/img/trip/{{trip.image}}" class="user-avatar" (click)="viewDetail(2)">
-            </ion-thumbnail>
+                <ion-text color="dark" (click)="viewDetail(2)">
+                    <h1><strong>{{trip.title}}</strong></h1>
+                    <h5>{{trip.description}}</h5>
+                </ion-text>
 
-            <ion-text color="dark" (click)="viewDetail(2)">
-                <h1><strong>{{trip.title}}</strong></h1>
-                <h5>{{trip.description}}</h5>
-            </ion-text>
+            </ion-item>
 
-        </ion-item>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="listTrips.length === 0">
 
-    </div>
+        <h1 class="textTrips">You don't have trips</h1>
+
+    </ng-container>
 </ion-content>
