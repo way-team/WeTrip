@@ -1,59 +1,118 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">Create trip</ion-title>
+    <ion-title color="primary">Create new trip</ion-title>
   </ion-toolbar>
 </ion-header>
 
+<ion-content padding>
+  <ion-card class="form-card">
+    <ion-card-header class="bg-dark">
+      <ion-card-subtitle>Introduce details</ion-card-subtitle>
+      <ion-card-title>Trip</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="onCreateForm">
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">
+              <ion-icon name="create" item-start></ion-icon>
+              Title
+            </ion-label>
+            <ion-input [(ngModel)]="title" type="text" formControlName="title"></ion-input>
+          </ion-item>
+          <p ion-text class="text08"
+            *ngIf="onCreateForm.get('title').touched && onCreateForm.get('title').hasError('required')">
+            <ion-text color="warning">
+              Required Field
+            </ion-text>
+          </p>
+          <ion-item>
+            <ion-label position="floating">
+              <ion-icon name="create" item-start></ion-icon>
+              Description
+            </ion-label>
+            <ion-textarea [(ngModel)]="description" [ngModelOptions]="{standalone: true}"></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">
+              <ion-icon name="calendar" item-start></ion-icon>
+              Start date
+            </ion-label>
+            <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start_date" formControlName="start_date">
+            </ion-datetime>
+          </ion-item>
+          <p ion-text class="text08"
+            *ngIf="onCreateForm.get('start_date').touched && onCreateForm.get('start_date').hasError('required')">
+            <ion-text color="warning">
+              Required Field
+            </ion-text>
+          </p>
+          <ion-item>
+            <ion-label position="floating">
+              <ion-icon name="calendar" item-start></ion-icon>
+              End date
+            </ion-label>
+            <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end_date" formControlName="end_date"></ion-datetime>
+          </ion-item>
+          <p ion-text class="text08"
+            *ngIf="onCreateForm.get('end_date').touched && onCreateForm.get('end_date').hasError('required')">
+            <ion-text color="warning">
+              Required Field
+            </ion-text>
+          </p>
 
-<div class="container">
-  <ion-title>Create trip</ion-title>
-  <div class="trip-form">
-    <ion-list>
-      <ion-item>
-        <ion-label floating>Title</ion-label>
-        <ion-input [(ngModel)]="title" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>Description</ion-label>
-        <ion-input [(ngModel)]="description" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>Start Date</ion-label>
-        <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="start_date"></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>End date</ion-label>
-        <ion-datetime displayFormat="DD/MM/YYYY" [(ngModel)]="end_date"></ion-datetime>
-      </ion-item>
-      <ion-list radio-group [(ngModel)]="trip_type">
-        <ion-label>Trip Type</ion-label>
-        <ion-item>
-          <ion-label>PUBLIC</ion-label>
-          <ion-radio value="PUBLIC" checked></ion-radio>
-        </ion-item>
-        <ion-item>
-          <ion-label>PRIVATE</ion-label>
-          <ion-radio value="PRIVATE"></ion-radio>
-        </ion-item>
-      </ion-list>
-      <ion-item>
-        <ion-label floating>Image</ion-label>
-        <ion-input [(ngModel)]="image" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>City</ion-label>
-        <ion-select>
-          <ion-select-option *ngFor="let city of cities">{{city.name}}</ion-select-option>
-        </ion-select>
-      </ion-item>
+          <ion-radio-group [(ngModel)]="trip_type" [ngModelOptions]="{standalone: true}">
+            <ion-item>
+              <ion-label position="floating">
+                <ion-icon name="pricetag" item-start></ion-icon>
+                Type
+              </ion-label>
+            </ion-item>
 
-    </ion-list>
-    <button class="botton" ion-button block (click)="createTrip()"> Send </button>
-  </div>
-  <div *ngIf="error !=null" class="error">
-    error
-  </div>
-</div>
+            <ion-item lines="none">
+              <ion-label>PUBLIC</ion-label>
+              <ion-radio value="PUBLIC" checked></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>PRIVATE</ion-label>
+              <ion-radio value="PRIVATE"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+          <ion-item>
+            <ion-label position="floating">
+              <ion-icon name="map" item-start></ion-icon>
+              City
+            </ion-label>
+            <ion-select [(ngModel)]="city" formControlName="city">
+              <ion-select-option value="city.id" *ngFor="let city of cities" value="{{city.id}}">{{ city.name }}
+                ({{ city.country.name }})
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <p ion-text class="text08"
+            *ngIf="onCreateForm.get('city').touched && onCreateForm.get('city').hasError('required')">
+            <ion-text color="warning">
+              Required Field
+            </ion-text>
+          </p>
+        </ion-list>
+      </form>
+      <br>
+    </ion-card-content>
+  </ion-card>
+  <br>
+  <ion-checkbox [(ngModel)]="privacyPolicites" checked="false"></ion-checkbox>
+  <ion-label>
+    I have read and agree to the
+    <ion-text color="dark" (click)="goToPrivacyPolicies()">privacy policies</ion-text>
+  </ion-label>
+  <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites" icon-left size="medium" expand="full" shape="round"
+    color="dark" (click)="createTrip()" tappable>
+    <ion-icon name="save"></ion-icon>
+    Save
+  </ion-button>
+
+</ion-content>

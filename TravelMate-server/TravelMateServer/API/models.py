@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator 
@@ -90,7 +91,7 @@ class Message(models.Model):
 
 class Interest(models.Model):
     name = models.CharField(max_length=50)
-    users = models.ManyToManyField(UserProfile, blank=True)
+    users = models.ManyToManyField(UserProfile, related_name="interests", blank=True)
 
     def __str__(self):
         return self.name
@@ -125,7 +126,7 @@ class Rate(models.Model):
     value = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
-        return self.status
+        return self.value
 
 
 class Global(models.Model):

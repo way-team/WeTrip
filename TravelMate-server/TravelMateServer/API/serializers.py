@@ -1,4 +1,4 @@
-from .models import UserProfile, Language, Trip, Application
+from .models import UserProfile, Language, Trip, Application, City, Country, Interest
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -9,6 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'password']
+
+
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ['name']
 
 
 class TripSerializer(serializers.ModelSerializer):
@@ -26,12 +32,21 @@ class TripSerializer(serializers.ModelSerializer):
         return user_queryset
 
 
+class CitySerializer(serializers.ModelSerializer):
+    country = CountrySerializer()
+    trips = TripSerializer(many=True)
+
+    class Meta:
+        model = City
+        fields = ['country', 'trips', 'name', 'id']
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     languages = serializers.SlugRelatedField(
         many=True, queryset=Language.objects.all(), slug_field='name')
-    interest_set = serializers.SlugRelatedField(
-        many=True, queryset=Language.objects.all(), slug_field='name')
+    interests = serializers.SlugRelatedField(
+        many=True, queryset=Interest.objects.all(), slug_field='name')
 
     created_trips = serializers.SerializerMethodField()
 
@@ -43,7 +58,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'user', 'email', 'first_name', 'last_name', 'description',
             'birthdate', 'city', 'nationality', 'photo', 'discoverPhoto',
             'avarageRate', 'numRate', 'isPremium', 'status', 'gender',
-            'languages', 'interest_set', 'created_trips', 'joined_trips'
+            'languages', 'interests', 'created_trips', 'joined_trips'
         ]
 
     def get_created_trips(self, obj):

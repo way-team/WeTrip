@@ -30,8 +30,22 @@ export class Trip {
 }
 
 export class City {
-  id: Number;
+  country: {
+    name: String;
+  };
+  trips: [
+    {
+      creator: String;
+      title: String;
+      description: String;
+      startDate: String;
+      endDate: String;
+      image: String;
+      status: boolean;
+    }
+  ];
   name: String;
+  id: Number;
 }
 
 export class User {

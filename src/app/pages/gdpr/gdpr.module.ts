@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CreateTripPage } from './create-trip.page';
+import { GdprPage } from './gdpr.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: CreateTripPage
+    component: GdprPage
   }
 ];
 
@@ -18,10 +18,9 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CreateTripPage]
+  declarations: [GdprPage]
 })
-export class CreateTripPageModule {}
+export class GdprPageModule {}
