@@ -9,16 +9,37 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import { AlertController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanLoad {
-  constructor(private cookieService: CookieService) {}
+  constructor(
+    private cookieService: CookieService,
+    public alertCtrl: AlertController
+  ) {}
   canLoad(
     route: Route,
     segments: UrlSegment[]
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.cookieService.check('token');
+    const check = this.cookieService.check('token');
+    if (!check) {
+      this.alertCtrl
+        .create({
+          header: 'Unathenticated!',
+          message: 'You are not allowed to access to this resource',
+          buttons: [
+            {
+              text: 'Ok',
+              role: 'ok'
+            }
+          ]
+        })
+        .then(alertEl => {
+          alertEl.present();
+        });
+    }
+    return check;
   }
 }
