@@ -29,4 +29,5 @@ urlpatterns = [
     path('login/', obtain_auth_token),
     path('getUserByToken/', views.GetUserView.as_view()),
     url('^users/(?P<username>.+)/$', views.UserList.as_view()),
+    path('rate/', views.RateUser.as_view()),
 ]

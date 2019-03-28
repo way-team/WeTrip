@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator 
 
 
 class Language(models.Model):
@@ -121,7 +122,7 @@ class Rate(models.Model):
     voted = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, related_name='voted')
 
-    value = models.IntegerField()
+    value = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
         return self.status
