@@ -9,20 +9,20 @@ from rest_framework import authentication, generics
 from rest_framework.permissions import IsAuthenticated
 
 
-def getUserByToken(request):
+def get_user_by_token(request):
     key = request.data.get('token', '')
     tk = get_object_or_404(Token, key=key)
     user = tk.user
+    user_profile = UserProfile.objects.get(user=user)
 
-    return user
+    return user_profile
 
 
 class GetUserView(APIView):
     def post(self, request):
-        user = getUserByToken(request)
-        userProfile = UserProfile.objects.get(user=user)
+        user_profile = get_user_by_token(request)
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        return Response(UserProfileSerializer(user_profile, many=False).data)
 
 
 class UserList(APIView):
@@ -121,7 +121,7 @@ class GetFriendsView(APIView):
         """
         POST method
         """
-        user = getUserByToken(request)
+        user = get_user_by_token(request)
 
         friends, pending = get_friends_or_pending(user)
 
@@ -136,7 +136,7 @@ class GetPendingView(APIView):
         """
         POST method
         """
-        user = getUserByToken(request)
+        user = get_user_by_token(request)
 
         friends, pending = get_friends_or_pending(user)
 
@@ -151,7 +151,7 @@ class DiscoverPeopleView(APIView):
         """
         POST method
         """
-        user = getUserByToken(request)
+        user = get_user_by_token(request)
 
         friends, pending = get_friends_or_pending(user)
 
