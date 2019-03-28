@@ -61,7 +61,17 @@ export class RestWS extends AbstractWS {
   }
 
   public listFriends(): Promise<any> {
-    return null;
+    let token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('token', token);
+    return this.makePostRequest(this.path + 'getFriends/', fd)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
   }
 
   public listDiscover(): Promise<any> {
@@ -134,72 +144,17 @@ export class RestWS extends AbstractWS {
   }
 
   public listMeetYou(): Promise<any> {
-    const meetYou: UserProfile[] = [];
-    const user: User = {
-      id: null,
-      username: null
-    };
-    const user1: UserProfile = {
-      user: user,
-      email: null,
-      first_name: 'User1',
-      last_name: null,
-      description: 'nature is waiting for me!',
-      birthdate: null,
-      city: null,
-      nationality: null,
-      photo: '../../../assets/img/avatar5.jpeg',
-      discoverPhoto: null,
-      averageRate: null,
-      numRate: null,
-      isPremium: null,
-      status: null,
-      gender: null,
-      language: null
-    };
-    const user2: UserProfile = {
-      user: user,
-      email: null,
-      first_name: 'User1',
-      last_name: null,
-      description: 'nature is waiting for me!',
-      birthdate: null,
-      city: null,
-      nationality: null,
-      photo: '../../../assets/img/avatar5.jpeg',
-      discoverPhoto: null,
-      averageRate: null,
-      numRate: null,
-      isPremium: null,
-      status: null,
-      gender: null,
-      language: null
-    };
-    const user3: UserProfile = {
-      user: user,
-      email: null,
-      first_name: 'User1',
-      last_name: null,
-      description: 'nature is waiting for me!',
-      birthdate: null,
-      city: null,
-      nationality: null,
-      photo: '../../../assets/img/avatar5.jpeg',
-      discoverPhoto: null,
-      averageRate: null,
-      numRate: null,
-      isPremium: null,
-      status: null,
-      gender: null,
-      language: null
-    };
-    meetYou.push(user1, user2, user3);
-    // return this.makeGetRequest(this.path + "users/", null).then((friends: any) => {
-    //     return Promise.resolve(friends);
-    // }).catch((error) => {
-    //     return Promise.reject(error);
-    // });
-    return Promise.resolve(meetYou);
+    let token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('token', token);
+    return this.makePostRequest(this.path + 'getPending/', fd)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
   }
 
   public listYourTrips(): Promise<any> {
