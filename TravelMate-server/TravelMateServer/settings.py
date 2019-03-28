@@ -142,12 +142,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
-<<<<<<< HEAD
 CORS_ORIGIN_ALLOW_ALL = True
 
 import django_heroku
 django_heroku.settings(locals())
-
-=======
-CORS_ORIGIN_ALLOW_ALL = True
->>>>>>> dev
