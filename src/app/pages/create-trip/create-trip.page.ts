@@ -19,6 +19,7 @@ export class CreateTripPage implements OnInit {
   city: Number;
   error: string;
   cities: City[];
+  privacyPolicites: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -78,5 +79,8 @@ export class CreateTripPage implements OnInit {
       .catch(error => {
         console.log(error);
       });
+  }
+  goToPrivacyPolicies() {
+    this.navCtrl.navigateForward('/gdpr');
   }
 }
