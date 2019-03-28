@@ -1,4 +1,4 @@
 % Prepare to release
-release: sh -c 'python manage.py makemigrations && python manage.py migrate && PGPASSWORD=0c7e5604e339a6b4eb5e9c0f0c17c3be6319b7a95d2a60e9f4ae449ec92689c5 pg_restore --verbose --clean --no-acl --no-owner -n public -h ec2-23-21-136-232.compute-1.amazonaws.com -U pkmkyotxtoqkaw -d dodimhrr4eshu -p 5432 Populate_travelmate'
+release: sh -c 'python manage.py makemigrations && python manage.py migrate && PGPASSWORD=d0c9d044b8650dd405be189d0e460f222e832eb3ace16dea54b501e3f7da81cd pg_restore --verbose --clean --no-acl --no-owner -n public -h ec2-23-23-241-119.compute-1.amazonaws.com -U fghowlktldknhe -d ddlon6elkas1r8 -p 5432 Populate_travelmate'
 % Launch!
 web: sh -c 'gunicorn TravelMateServer.wsgi --log-file -'
