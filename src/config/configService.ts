@@ -12,7 +12,7 @@ export class ConfigService {
     if (environment.production) {
       urlPrefix = 'https://travel-mate-server.herokuapp.com';
       urlPrefixLocalhost = 'https://travel-mate-server.herokuapp.com';
-      urlAPI = 'api/v1/';
+      urlAPI = '';
     }
     // pathFiles for Storage provider
     let pathFiles = '/assets/storageFiles';
