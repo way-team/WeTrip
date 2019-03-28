@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, ToastController } from '@ionic/angular';
-
+import { ActivatedRoute  } from '@angular/router';
 
 @Component({
   selector: 'app-edit-profile',
@@ -8,14 +8,16 @@ import { NavController, LoadingController, ToastController } from '@ionic/angula
   styleUrls: ['./edit-profile.page.scss'],
 })
 export class EditProfilePage implements OnInit {
-
+    myId=null;
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
-    public toastCtrl: ToastController
+    public toastCtrl: ToastController,
+    private activatedRoute: ActivatedRoute
     ) { }
 
   ngOnInit() {
+  this.myId = this.activatedRoute.snapshot.paramMap.get('id');
   }
 
   async sendData() {

@@ -36,4 +36,5 @@ urlpatterns = [
     path('createTrip/', views.CreateTrip.as_view()),
     path('getFriends/', views.GetFriendsView.as_view()),
     path('getDiscoverPeople/', views.DiscoverPeopleView.as_view())
+
 ]

@@ -1,22 +1,58 @@
+export class UserProfile {
+  user: User;
+  email: string;
+  first_name: string;
+  last_name: string;
+  description: string;
+  birthdate: string;
+  city: string;
+  nationality: string;
+  photo: string;
+  discoverPhoto: string;
+  averageRate: Number;
+  numRate: Number;
+  isPremium: boolean;
+  status: boolean;
+  gender: string;
+  language: string;
+}
+
+export class Trip {
+  id: Number;
+  title: String;
+  description: String;
+  startDate: Date;
+  endDate: Date;
+  tripType: String;
+  image: String;
+  status: Boolean;
+  user_id: Number;
+}
+
+export class City {
+  country: {
+    name: String;
+  };
+  trips: [
+    {
+      creator: String;
+      title: String;
+      description: String;
+      startDate: String;
+      endDate: String;
+      image: String;
+      status: boolean;
+    }
+  ];
+  name: String;
+  id: Number;
+}
 
 export class User {
+  id: Number;
   username: string;
-  email: string;
-  password: string;
-  name: string;
-  lastName: string;
-  birthdate: Date;
-  gender: string;
-  nationality: string;
-  city: string;
-  photo: string;
-  status: boolean;
-  mediumRate: number;
-  numRate: number;
-  isPremium: boolean;
-  isSuperUser: boolean;
-  description: string;
 }
+
 export class test {
   count: string;
   next: string;

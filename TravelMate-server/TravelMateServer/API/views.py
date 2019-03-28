@@ -21,6 +21,7 @@ def getUserByToken(request):
 
 class GetUserView(APIView):
     def post(self, request):
+<<<<<<< HEAD
         user = getUserByToken(request)
         userProfile = UserProfile.objects.get(user=user)
 
@@ -197,3 +198,4 @@ class CreateTrip(APIView):
 
 
         return Response(TripSerializer(trip, many=False).data) 
+

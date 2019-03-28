@@ -23,6 +23,7 @@ import { NotificationsComponent } from './components/notifications/notifications
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CookieService } from 'ngx-cookie-service';
+import { ProfileComponent } from './components/display/profile/profile.component';
 
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
@@ -51,6 +52,7 @@ import { CookieService } from 'ngx-cookie-service';
     RestWS,
     ConfigService,
     CookieService,
+    ProfileComponent,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
