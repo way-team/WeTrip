@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import {EditProfilePage} from "../../pages/edit-profile/edit-profile.page";
+import { EditProfilePage } from '../../pages/edit-profile/edit-profile.page';
 import {
   NavController,
   AlertController,
   MenuController,
   ToastController,
   PopoverController,
-  ModalController } from '@ionic/angular';
+  ModalController
+} from '@ionic/angular';
 
 // Modals
 import { SearchFilterPage } from '../../pages/modal/search-filter/search-filter.page';
@@ -39,25 +40,25 @@ export class DiscoverPage {
     public dM: DataManagement
   ) {
     this.listDiscover();
-
   }
-
 
   contact(id) {
     this.navCtrl.navigateForward('/');
   }
 
-   cambiaIdioma(idioma: string) {
-   console.log(`Traduzco a: ${idioma}`);
-   this._translate.use(idioma);
- }
+  cambiaIdioma(idioma: string) {
+    console.log(`Traduzco a: ${idioma}`);
+    this._translate.use(idioma);
+  }
 
- private listDiscover(): void{
-    this.dM.listDiscover().then((data: any) =>{
+  private listDiscover(): void {
+    this.dM
+      .listDiscover()
+      .then((data: any) => {
         this.discover = data;
-        }).catch((error) => {
-        });
- }
+      })
+      .catch(error => {});
+  }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
   }
@@ -75,7 +76,7 @@ export class DiscoverPage {
           name: 'location',
           placeholder: 'Enter your new Location',
           type: 'text'
-        },
+        }
       ],
       buttons: [
         {
@@ -86,7 +87,7 @@ export class DiscoverPage {
         },
         {
           text: 'Change',
-          handler: async (data) => {
+          handler: async data => {
             console.log('Change clicked', data);
             this.yourLocation = data.location;
             const toast = await this.toastCtrl.create({
@@ -105,7 +106,7 @@ export class DiscoverPage {
     changeLocation.present();
   }
 
-  async searchFilter () {
+  async searchFilter() {
     const modal = await this.modalCtrl.create({
       component: SearchFilterPage
     });
@@ -129,5 +130,4 @@ export class DiscoverPage {
     });
     return await popover.present();
   }
-
 }

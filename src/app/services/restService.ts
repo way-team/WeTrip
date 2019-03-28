@@ -160,7 +160,11 @@ export class RestWS extends AbstractWS {
   public listYourTrips(): Promise<any> {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(this.path + 'trips/myTrips/', null, Authorization)
+    return this.makeGetRequest(
+      this.path + 'trips/myTrips/',
+      null,
+      Authorization
+    )
       .then(res => {
         return Promise.resolve(res.results);
       })
@@ -173,10 +177,9 @@ export class RestWS extends AbstractWS {
   public createTrip(
     title: string,
     description: string,
-    start_date: Date,
-    end_date: Date,
+    start_date: String,
+    end_date: String,
     trip_type: string,
-    image: string,
     city: Number
   ): Promise<any> {
     const fd = new FormData();
@@ -190,7 +193,6 @@ export class RestWS extends AbstractWS {
         fd.append('start_date', String(start_date));
         fd.append('end_date', String(end_date));
         fd.append('trip_type', trip_type);
-        fd.append('image', image);
         fd.append('city', String(city));
         user = res;
         fd.append('user_id', String(user.id));

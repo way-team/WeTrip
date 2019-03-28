@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
     <ion-title color="light">App Settings</ion-title>
   </ion-toolbar>
@@ -10,17 +10,18 @@
 <ion-content>
   <ion-item class="bg-profile">
     <ion-avatar slot="start">
-      <img src="assets/img/avatar.jpeg" class="user-avatar">
+      <img src="assets/img/profile/{{userLogged.photo}}.jpg" class="user-avatar" alt="profile"
+        (click)="goTo('user-profile')">
     </ion-avatar>
     <ion-label>
       <ion-text color="light">
         <h2>
-          <strong>Rubén Toro</strong>
+          <strong>{{ userLogged.first_name}} {{ userLogged.last_name}}</strong>
         </h2>
       </ion-text>
       <ion-text color="warning">
         <h3>
-          ruben@gmail.com
+          {{ userLogged.email }}
         </h3>
       </ion-text>
 

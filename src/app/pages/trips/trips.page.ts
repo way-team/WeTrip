@@ -8,28 +8,32 @@ import { Trip } from '../../app.data.model';
   styleUrls: ['./trips.page.scss']
 })
 export class TripsPage implements OnInit {
-  constructor(public navCtrl: NavController, private dm: DataManagement) { }
   listTrips: Trip[] = [];
+  constructor(public navCtrl: NavController, private dm: DataManagement) {
+    this.listYourTrips();
+  }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    console.log('hola');
     this.listYourTrips();
   }
   // view trip detail
   viewDetail(id) {
     this.navCtrl.navigateForward('/trip-detail/2');
-
   }
 
   goToCreate() {
     this.navCtrl.navigateForward('/create-trip');
   }
 
-
   public listYourTrips(): void {
-    this.dm.listYourTrips().then((data: any) => {
-      this.listTrips = data;
-    }).catch(error => {
-
-    });
+    this.dm
+      .listYourTrips()
+      .then((data: any) => {
+        this.listTrips = data;
+      })
+      .catch(error => {});
   }
 }

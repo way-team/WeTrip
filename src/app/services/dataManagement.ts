@@ -4,7 +4,7 @@ import { RestWS } from './restService';
 
 @Injectable()
 export class DataManagement {
-  constructor(private restService: RestWS) { }
+  constructor(private restService: RestWS) {}
 
   public login(credentials): Promise<any> {
     return this.restService
@@ -69,9 +69,11 @@ export class DataManagement {
   public listYourTrips(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.hasConnection()) {
-        return this.restService.listYourTrips().then((data: any) => {
-          resolve(data);
-        })
+        return this.restService
+          .listYourTrips()
+          .then((data: any) => {
+            resolve(data);
+          })
           .catch(error => {
             reject('error');
           });
@@ -118,22 +120,13 @@ export class DataManagement {
   public createTrip(
     title: string,
     description: string,
-    start_date: Date,
-    end_date: Date,
+    start_date: String,
+    end_date: String,
     trip_type: string,
-    image: string,
     city: Number
   ): Promise<any> {
     return this.restService
-      .createTrip(
-        title,
-        description,
-        start_date,
-        end_date,
-        trip_type,
-        image,
-        city
-      )
+      .createTrip(title, description, start_date, end_date, trip_type, city)
       .then(data => {
         return Promise.resolve(data);
       })
