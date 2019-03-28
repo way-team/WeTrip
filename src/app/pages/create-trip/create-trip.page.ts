@@ -13,13 +13,14 @@ export class CreateTripPage implements OnInit {
   public onCreateForm: FormGroup;
   title: string;
   description: string;
-  start_date: String;
-  end_date: String;
+  start_date: string;
+  end_date: string;
   trip_type: string = 'PUBLIC';
   city: Number;
   error: string;
   cities: City[];
   privacyPolicites: boolean;
+  validateDatesAttr: boolean = true;
 
   constructor(
     public navCtrl: NavController,
@@ -82,5 +83,16 @@ export class CreateTripPage implements OnInit {
   }
   goToPrivacyPolicies() {
     this.navCtrl.navigateForward('/gdpr');
+  }
+
+  validateDates() {
+    const start = new Date(this.start_date);
+    const end = new Date(this.end_date);
+
+    if (start > end) {
+      this.validateDatesAttr = false;
+    } else {
+      this.validateDatesAttr = true;
+    }
   }
 }

@@ -16,7 +16,6 @@ export class TripsPage implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
-    console.log('hola');
     this.listYourTrips();
   }
   // view trip detail
