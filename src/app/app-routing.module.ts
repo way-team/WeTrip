@@ -43,7 +43,12 @@ const routes: Routes = [
   {
     path: 'create-trip',
     loadChildren: './pages/create-trip/create-trip.module#CreateTripPageModule'
+  },
+  {
+    path: 'gdpr',
+    loadChildren: './pages/gdpr/gdpr.module#GdprPageModule'
   }
+
 ];
 
 @NgModule({
