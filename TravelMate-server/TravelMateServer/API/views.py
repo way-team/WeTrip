@@ -156,24 +156,28 @@ class DiscoverPeopleView(APIView):
         friends, pending = get_friends_or_pending(user)
 
         discover_people = []
-        interests = user.interest_set.all()
+        interests = user.interests.all()
 
         # First, we obtain the people with the same interests
-        for interest in interests:
-            aux = UserProfile.objects.filter(interest_set__icontains=interest)
-            for person in aux:
-                if not person in discover_people:
-                    discover_people.append(person)
+        #for interest in interests:
+        aux = UserProfile.objects.filter(interests__in=interests)
+        for person in aux:
+            if not person in discover_people:
+                discover_people.append(person)
 
         # After, we obtain the people without the same interests
         # and append them at the end of the discover list
-        all_users = UserProfile.objects.all()
-        all_users.remove(discover_people)
-        discover_people.append(all_users)
+        all_users = list(UserProfile.objects.all())
+        for person in discover_people:
+            all_users.remove(person)
+        for person in all_users:
+            discover_people.append(person)
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
-        discover_people.remove(friends)
-        discover_people.remove(pending)
+        for person in friends:
+            discover_people.remove(person)
+        for person in pending:
+            discover_people.remove(person)
 
         return Response(UserProfileSerializer(discover_people, many=True).data)

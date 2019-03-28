@@ -90,7 +90,7 @@ class Message(models.Model):
 
 class Interest(models.Model):
     name = models.CharField(max_length=50)
-    users = models.ManyToManyField(UserProfile, blank=True)
+    users = models.ManyToManyField(UserProfile, related_name="interests", blank=True)
 
     def __str__(self):
         return self.name
