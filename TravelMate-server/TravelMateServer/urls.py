@@ -29,9 +29,7 @@ urlpatterns = [
     path('login/', obtain_auth_token),
     path('getUserByToken/', views.GetUserView.as_view()),
     url('^users/(?P<username>.+)/$', views.UserList.as_view()),
-<<<<<<< HEAD
     path('rate/', views.RateUser.as_view()),
-=======
     path('trips/', views.AvailableTripsList.as_view()),
     path('trips/myTrips/', views.MyTripsList.as_view()),
     path('trips/search/', views.AvailableTripsSearch.as_view()),
@@ -41,5 +39,4 @@ urlpatterns = [
     path('getPending/', views.GetPendingView.as_view()),
     path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
 
->>>>>>> 3026d23fa893de5a4af1c45402f378f2f8a3ab22
 ]
