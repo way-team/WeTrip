@@ -1,21 +1,38 @@
 <ion-header>
   <ion-toolbar color="primary">
-       <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+    <ion-buttons slot="start">
+      <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
     <ion-title color="primary">Premium</ion-title>
   </ion-toolbar>
 
 </ion-header>
-
-
-
-
-  <ion-card class="bg-white" no-margin>
+<ion-content>
+  <ion-card class="bg-light" no-margin>
 
     <ion-card-content>
-       <ion-card class="bg-primary" no-margin>
-       </ion-card>
-     </ion-card-content>
+      <h1 margin-bottom>
+        <ion-text color="dark"><strong>Join to our Premium club</strong></ion-text>
+      </h1>
+
+      <p margin-bottom>
+        With the premium version, you will enjoy our app without ads and your trips will have preferential location.
+      </p>
+      <P>
+        Also, you guarantee your identity and your possible companions will feel at ease.</P>
+
+
+    </ion-card-content>
+
+
+
+
+
   </ion-card>
 
+
+
+</ion-content>
+<ion-button (click)="payment()" no-margin>
+  <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/buy-logo-large.png" alt="Buy now with PayPal" />
+</ion-button>

@@ -14,6 +14,8 @@ import { ImagePage } from './../modal/image/image.page';
 // Call notifications test by Popover and Custom Component.
 import { NotificationsComponent } from './../../components/notifications/notifications.component';
 import { TranslateService } from '@ngx-translate/core';
+import { User, UserProfile } from '../../app.data.model';
+import { DataManagement } from '../../services/dataManagement';
 
 @Component({
   selector: 'app-discover',
@@ -24,6 +26,7 @@ export class DiscoverPage {
   searchKey = '';
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
+  discover: UserProfile[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -32,14 +35,14 @@ export class DiscoverPage {
     public alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public toastCtrl: ToastController,
-    private _translate: TranslateService
+    private _translate: TranslateService,
+    public dM: DataManagement
   ) {
+    this.listDiscover();
 
   }
 
-  viewDetail(id) {
-    this.navCtrl.navigateForward('/edit-profile/1');
-  }
+
   contact(id) {
     this.navCtrl.navigateForward('/');
   }
@@ -47,6 +50,13 @@ export class DiscoverPage {
    cambiaIdioma(idioma: string) {
    console.log(`Traduzco a: ${idioma}`);
    this._translate.use(idioma);
+ }
+
+ private listDiscover(): void{
+    this.dM.listDiscover().then((data: any) =>{
+        this.discover = data;
+        }).catch((error) => {
+        });
  }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);

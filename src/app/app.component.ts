@@ -51,6 +51,12 @@ export class AppComponent {
         icon: 'compass'
       },
       {
+        title: 'Trips',
+        url: '/trips',
+        direct: 'root',
+        icon: 'airplane'
+      },
+      {
         title: 'Contacts',
         url: '/contacts',
         direct: 'forward',
@@ -98,16 +104,12 @@ export class AppComponent {
       .catch(() => {});
   }
 
-  goToEditProgile() {
-    this.navCtrl.navigateForward('edit-profile');
-  }
-
   logout() {
     this.cookieService.delete('token');
     this.navCtrl.navigateRoot('/');
   }
 
   goTo(destination: string) {
-    this.navCtrl.navigateForward('user-profile');
+    this.navCtrl.navigateForward(destination);
   }
 }

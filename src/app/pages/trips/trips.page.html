@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button color="primary"></ion-back-button>
+        </ion-buttons>
+        <ion-title color="primary">Trips</ion-title>
+    </ion-toolbar>
+
+    <ion-button expand="full" (click)="goToCreate()" no-margin>
+        <ion-text aling="left">
+            Create new trip
+        </ion-text>
+    </ion-button>
+</ion-header>
+
+
+<ion-content>
+
+    <div class="listTrips" *ngFor="let trip of listTrips">
+        <ion-item>
+            <ion-thumbnail class="ion-avatar" slot="start">
+                <img src="{{trip.image}}" class="user-avatar" (click)="viewDetail(2)">
+            </ion-thumbnail>
+
+            <ion-text color="dark" (click)="viewDetail(2)">
+                <h1><strong>{{trip.title}}</strong></h1>
+                <h5>{{trip.description}}</h5>
+            </ion-text>
+
+        </ion-item>
+
+    </div>
+</ion-content>

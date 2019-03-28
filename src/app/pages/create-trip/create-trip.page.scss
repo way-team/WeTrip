@@ -1,0 +1,26 @@
+:host {
+    ion-content {
+        --background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light))
+    }
+
+    ion-card {
+        --background: white;
+    }
+
+    ion-button {
+        margin-top: 7%;
+    }
+
+    ion-card-subtitle {
+        color: white;
+    }
+
+    ion-card-title {
+        color: var(--ion-color-medium)
+    }
+
+    ion-list {
+        width: -webkit-fill-available;
+    }
+
+}

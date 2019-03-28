@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
-       <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+    <ion-buttons slot="start">
+      <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
     <ion-title color="primary">Trip detail</ion-title>
   </ion-toolbar>
@@ -9,15 +9,47 @@
 
 <ion-content>
 
-  <div class="bg-light" text-center padding>
-    <img src="assets/img/trip_2.jpg">
+  <div class="bg-light" text-center>
+    <img src="assets/img/trip_2.jpg" width="100%">
   </div>
 
   <ion-card class="bg-light" no-margin>
     <ion-card-content>
       <h1 margin-bottom>
-        <ion-text color="dark"><strong>detail</strong></ion-text>
+        <ion-text color="dark"><strong>Brasil</strong></ion-text>
       </h1>
+      <h5>bla bla bla</h5>
     </ion-card-content>
   </ion-card>
+
+
+  <ion-item class="bg-profile">
+
+    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
+    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
+    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
+    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
+    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
+    <ion-avatar slot="start">
+      <img src="assets/img/avatar.jpeg" class="user-avatar">
+    </ion-avatar>
+    <ion-label>
+      <ion-text color="light">
+        <h2>
+          <strong>Created by</strong>
+        </h2>
+      </ion-text>
+      <ion-text color="warning">
+        <h3>
+          Rubén
+        </h3>
+      </ion-text>
+
+
+      <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
+
+        join
+      </ion-button>
+    </ion-label>
+  </ion-item>
 </ion-content>

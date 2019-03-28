@@ -1,4 +1,3 @@
-
 export class UserProfile {
   user: User;
   email: string;
@@ -19,18 +18,35 @@ export class UserProfile {
 }
 
 export class Trip {
+  id: Number;
   title: String;
   description: String;
   startDate: Date;
   endDate: Date;
-  type: String;
+  tripType: String;
   image: String;
   status: Boolean;
-  country: String;
-  city: String;
-
+  user_id: Number;
 }
 
+export class City {
+  country: {
+    name: String;
+  };
+  trips: [
+    {
+      creator: String;
+      title: String;
+      description: String;
+      startDate: String;
+      endDate: String;
+      image: String;
+      status: boolean;
+    }
+  ];
+  name: String;
+  id: Number;
+}
 
 export class User {
   id: Number;
@@ -43,4 +59,3 @@ export class test {
   previous: string;
   results: User[];
 }
-
