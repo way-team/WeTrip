@@ -13,8 +13,8 @@ export class CreateTripPage implements OnInit {
   public onCreateForm: FormGroup;
   title: string;
   description: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: String;
+  end_date: String;
   trip_type: string = 'PUBLIC';
   image;
   city: Number;
@@ -43,15 +43,16 @@ export class CreateTripPage implements OnInit {
     this.dm
       .createTrip(
         this.title,
-        this.description,
-        this.start_date,
-        this.end_date,
+        this.description === undefined ? '' : this.description,
+        this.start_date.split('T')[0],
+        this.end_date.split('T')[0],
         this.trip_type,
-        this.image,
+        this.image === undefined ? '' : this.image,
         this.city
       )
       .then(data => {
-        this.navCtrl.navigateRoot('/trips');
+        //this.navCtrl.navigateRoot('/discover');
+        this.navCtrl.navigateForward('/trips');
       })
       .catch(error => {
         this.alertCtrl
