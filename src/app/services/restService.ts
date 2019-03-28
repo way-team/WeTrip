@@ -203,37 +203,19 @@ export class RestWS extends AbstractWS {
   }
 
   public listYourTrips(): Promise<any> {
-    const trips: Trip[] = [];
-    const trip1: Trip = {
-      id: null,
-      user_id: null,
-      title: 'Trip to Canada',
-      description: 'Only adults',
-      startDate: null,
-      endDate: null,
-      tripType: null,
-      image: '../../../assets/img/trip_1.jpeg',
-      status: null
-    };
-
-    const trip2: Trip = {
-      id: null,
-      user_id: null,
-      title: 'Trip to Canada',
-      description: 'Only adults',
-      startDate: null,
-      endDate: null,
-      tripType: null,
-      image: '../../../assets/img/trip_1.jpeg',
-      status: null
-    };
-    trips.push(trip1, trip2);
-    // return this.makeGetRequest(this.path + "trips/", null).then((trips: any) => {
-    //     return Promise.resolve(trips);
-    // }).catch((error) => {
-    //     return Promise.reject(error);
-    // });
-    return Promise.resolve(trips);
+    const fd = new FormData();
+    let token: string;
+    token = this.cookieService.get('token');
+    fd.append('token', token);
+    return this.getUserLogged(token).then(res => {
+      return this.makeGetRequest(this.path + "trips/mytrips", fd).then((trips: any) => {
+        return Promise.resolve(trips);
+      }).catch((error) => {
+        return Promise.reject(error);
+      });
+    }).catch((error) => {
+      return Promise.reject(error);
+    });
   }
 
   public createTrip(
