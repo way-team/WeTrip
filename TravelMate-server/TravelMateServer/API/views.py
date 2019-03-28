@@ -12,17 +12,17 @@ from datetime import datetime
 from django.db.models import Q
 
 
-def getUserByToken(request):
+def get_user_by_token(request):
     key = request.data.get('token', '')
     tk = get_object_or_404(Token, key=key)
     user = tk.user
+    user_profile = UserProfile.objects.get(user=user)
 
-    return user
+    return user_profile
 
 class GetUserView(APIView):
     def post(self, request):
-        user = getUserByToken(request)
-        userProfile = UserProfile.objects.get(user=user)
+        userProfile = get_user_by_token(request)
 
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
@@ -39,70 +39,96 @@ class UserList(APIView):
         userProfile = User.objects.get(username=username).userprofile
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
-def getFriendsOrPending(user):
+def get_friends_or_pending(user):
+    """
+    Method to get the list of an user's friends or pending friends
+    """
     friends = []
     pending = []
 
-    sInvitations = Invitation.objects.filter(sender=user, status="A")
-    if sInvitations:
-        for i in sInvitations:
+    sended_invitations = Invitation.objects.filter(sender=user, status="A")
+    if sended_invitations:
+        for i in sended_invitations:
             friends.append(i.receiver)
 
-    rInvitations = Invitation.objects.filter(receiver=user, status="A")
-    if rInvitations:
-        for j in rInvitations:
+    received_invitations = Invitation.objects.filter(receiver=user, status="A")
+    if received_invitations:
+        for j in received_invitations:
             friends.append(j.sender)
 
-    pInvitations = Invitation.objects.filter(receiver=user, status="P")
-    if pInvitations:
-        for k in pInvitations:
+    pending_invitations = Invitation.objects.filter(receiver=user, status="P")
+    if pending_invitations:
+        for k in pending_invitations:
             pending.append(k.sender)
 
     return (friends, pending)
 
-
-
 class GetFriendsView(APIView):
+    """
+    Method to get the friends of the logged user
+    """
     def post(self, request):
         """
-        Method to get the friends of the logged user and his pending friends
+        POST method
         """
-        user = getUserByToken(request)
+        user = get_user_by_token(request)
 
-        friends, pending = getFriendsOrPending(user)
+        friends, pending = get_friends_or_pending(user)
 
-        return Response({"friends": friends, "pending": pending})
+        return Response(UserProfileSerializer(friends, many=True).data)
 
+class GetPendingView(APIView):
+    """
+    Method to get the pending friends of the logged user
+    """
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        friends, pending = get_friends_or_pending(user)
+
+        return Response(UserProfileSerializer(pending, many=True).data)
 
 class DiscoverPeopleView(APIView):
+    """
+    Method to get the people who have the same interests as you in order to discover people
+    """
     def post(self, request):
         """
-        Method to get the people who have the same interests as you in order to discover people
+        POST method
         """
-        user = getUserByToken(request)
+        user = get_user_by_token(request)
 
-        friends, pending = getFriendsOrPending(user)
+        friends, pending = get_friends_or_pending(user)
 
-        discoverPeople = []
-        interests = user.interest_set.all()
+        discover_people = []
+        interests = user.interests.all()
 
         # First, we obtain the people with the same interests
-        for interest in interests:
-            aux = UserProfile.objects.filter(interest_set__icontains=interest)
-            for person in aux:
-                if not person in discoverPeople:
-                    discoverPeople.append(person)
+        #for interest in interests:
+        aux = UserProfile.objects.filter(interests__in=interests)
+        for person in aux:
+            if not person in discover_people:
+                discover_people.append(person)
 
-        # After, we obtain the people without the same interests and append them at the end of the discover list
-        allUsers = UserProfile.objects.all()
-        allUsers.remove(discoverPeople)
-        discoverPeople.append(allUsers)
+        # After, we obtain the people without the same interests
+        # and append them at the end of the discover list
+        all_users = list(UserProfile.objects.all())
+        for person in discover_people:
+            all_users.remove(person)
+        for person in all_users:
+            discover_people.append(person)
 
-        # Finally, we remove from the discover list the people who are our friends or pending friends
-        discoverPeople.remove(friends)
-        discoverPeople.remove(pending)
+        # Finally, we remove from the discover list the people
+        # who are our friends or pending friends
+        for person in friends:
+            discover_people.remove(person)
+        for person in pending:
+            discover_people.remove(person)
 
-        return Response({"discoverPeople": discoverPeople})
+        return Response(UserProfileSerializer(discover_people, many=True).data)
 
 class MyTripsList(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )

@@ -29,12 +29,13 @@ urlpatterns = [
     path('login/', obtain_auth_token),
     path('getUserByToken/', views.GetUserView.as_view()),
     url('^users/(?P<username>.+)/$', views.UserList.as_view()),
-    path('trips/',views.AvailableTripsList.as_view()),
-    path('trips/myTrips/',views.MyTripsList.as_view()),
-    path('trips/search/',views.AvailableTripsSearch.as_view()),
+    path('trips/', views.AvailableTripsList.as_view()),
+    path('trips/myTrips/', views.MyTripsList.as_view()),
+    path('trips/search/', views.AvailableTripsSearch.as_view()),
     path('list-cities/', views.ListCities.as_view()),
     path('createTrip/', views.CreateTrip.as_view()),
     path('getFriends/', views.GetFriendsView.as_view()),
-    path('getDiscoverPeople/', views.DiscoverPeopleView.as_view())
+    path('getPending/', views.GetPendingView.as_view()),
+    path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
 
 ]
