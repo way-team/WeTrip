@@ -203,19 +203,16 @@ export class RestWS extends AbstractWS {
   }
 
   public listYourTrips(): Promise<any> {
-    const fd = new FormData();
-    let token: string;
-    token = this.cookieService.get('token');
-    fd.append('token', token);
-    return this.getUserLogged(token).then(res => {
-      return this.makeGetRequest(this.path + "trips/mytrips", fd).then((trips: any) => {
-        return Promise.resolve(trips);
-      }).catch((error) => {
+    const Authorization = this.cookieService.get('token');
+
+    return this.makeGetRequest(this.path + 'trips/myTrips/', null, Authorization)
+      .then(res => {
+        return Promise.resolve(res.results);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
         return Promise.reject(error);
       });
-    }).catch((error) => {
-      return Promise.reject(error);
-    });
   }
 
   public createTrip(

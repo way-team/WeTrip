@@ -11,10 +11,13 @@ export class TripsPage implements OnInit {
   constructor(public navCtrl: NavController, private dm: DataManagement) { }
   listTrips: Trip[] = [];
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.listYourTrips();
+  }
   // view trip detail
   viewDetail(id) {
     this.navCtrl.navigateForward('/trip-detail/2');
+
   }
 
   goToCreate() {
