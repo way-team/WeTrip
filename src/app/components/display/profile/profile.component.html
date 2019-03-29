@@ -10,9 +10,9 @@
 <div class="profile" *ngIf="user">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
-      <img src="assets/img/avatar1.jpeg" />
+      <img src="/assets/img/profile/{{user.photo}}.jpg" />
       <h1 class="fw500">{{ user.first_name }}</h1>
-      <h2 color="light" margin-bottom>"I love traveling around the wordl"</h2>
+      <h2 color="light" margin-bottom>{{user.description}}</h2>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
@@ -96,14 +96,7 @@
     </ion-grid>
 
     <div *ngIf="!myProfile">
-      <ion-button
-        size="large"
-        expand="full"
-        color="dark"
-        (click)="sendData()"
-        no-margin
-        >Contact</ion-button
-      >
+      <ion-button size="large" expand="full" color="dark" (click)="sendData()" no-margin>Contact</ion-button>
     </div>
   </ion-card>
 </div>
