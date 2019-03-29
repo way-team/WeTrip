@@ -151,3 +151,6 @@ from os.path import abspath, dirname
 
 MEDIA_ROOT = os.path.join(
     dirname(dirname(dirname(abspath(__file__)))), 'src/assets/img')
+
+import django_heroku
+django_heroku.settings(locals())
