@@ -22,39 +22,44 @@
         <ion-card-content>
             <ion-card class="bg-primary" no-margin>
                 <ion-card-content>
+                    <ng-container *ngIf="listFriends">
+                        <div class="listFriends" *ngFor="let user of friends">
+                            <ion-item class="bg-primary" no-margin>
+                                <ion-buttons slot="end">
+                                    <ion-button size="small" shape="round" color="dark" slot="end"
+                                        (click)="chat(user.id)">
+                                        <ion-icon name="send" item-right></ion-icon>
 
-                    <div class="listFriends" *ngFor="let user of friends">
-                        <ion-item class="bg-primary" no-margin>
-                            <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat(user.id)">
-                                    <ion-icon name="send" item-right></ion-icon>
+                                    </ion-button>
+                                    <br>
 
-                                </ion-button>
-                                <br>
+                                </ion-buttons>
 
-                            </ion-buttons>
+                                <ion-avatar slot="start">
+                                    <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
 
-                            <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                </ion-avatar>
 
-                            </ion-avatar>
+                                <ion-label>
 
-                            <ion-label>
-
-                                <ion-text color="dark">
-                                    <h2>
-                                        <strong>{{user.first_name}} {{user.last_name}}</strong>
-                                    </h2>
-                                </ion-text>
-                                <ion-text color="tertiary">
-                                    <h3>
-                                        {{user.description}}
-                                    </h3>
-                                </ion-text>
-                            </ion-label>
-                        </ion-item>
-                    </div>
-
+                                    <ion-text color="dark">
+                                        <h2>
+                                            <strong>{{user.first_name}} {{user.last_name}}</strong>
+                                        </h2>
+                                    </ion-text>
+                                    <ion-text color="tertiary">
+                                        <h3>
+                                            {{user.description}}
+                                        </h3>
+                                    </ion-text>
+                                </ion-label>
+                            </ion-item>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="listFriends.length === 0">
+                        <br>
+                        <h1 class="textTrips">You don't have any friends yet</h1>
+                    </ng-container>
 
                 </ion-card-content>
             </ion-card>
@@ -77,40 +82,44 @@
         <ion-card-content>
             <ion-card class="bg-primary" no-margin>
                 <ion-card-content>
+                    <ng-container *ngIf="meetYou">
+                        <div class="listMeetYou" *ngFor="let user of meetYou">
+                            <ion-item class="bg-primary" no-margin>
+                                <ion-avatar slot="start">
+                                    <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                </ion-avatar>
+                                <ion-label>
+                                    <ion-text color="dark">
+                                        <h2>
+                                            <strong>{{user.first_name}} {{user.last_name}}</strong>
+                                        </h2>
+                                    </ion-text>
+                                    <ion-text color="tertiary">
+                                        <h3>
+                                            {{user.description}}
+                                        </h3>
+                                    </ion-text>
+                                </ion-label>
+                                <ion-buttons slot="end">
+                                    <ion-button size="small" shape="round" color="dark" slot="end" (click)="add()">
+                                        <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
 
-                    <div class="listMeetYou" *ngFor="let user of meetYou">
-                        <ion-item class="bg-primary" no-margin>
-                            <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
-                            </ion-avatar>
-                            <ion-label>
-                                <ion-text color="dark">
-                                    <h2>
-                                        <strong>{{user.first_name}} {{user.last_name}}</strong>
-                                    </h2>
-                                </ion-text>
-                                <ion-text color="tertiary">
-                                    <h3>
-                                        {{user.description}}
-                                    </h3>
-                                </ion-text>
-                            </ion-label>
-                            <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="add()">
-                                    <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
+                                    </ion-button>
+                                    <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject()">
+                                        <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
 
-                                </ion-button>
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject()">
-                                    <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
-
-                                </ion-button>
+                                    </ion-button>
 
 
-                            </ion-buttons>
+                                </ion-buttons>
 
-                        </ion-item>
-                    </div>
-
+                            </ion-item>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="meetYou.length === 0">
+                        <br>
+                        <h1 class="textTrips">You don't have any pending friendship invitation yet</h1>
+                    </ng-container>
                 </ion-card-content>
             </ion-card>
 
