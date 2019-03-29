@@ -47,7 +47,7 @@ REST_FRAMEWORK = {
     ('rest_framework.permissions.IsAuthenticated'),
 }
 
-BASE_URL="https://travel-mate-server.herokuapp.com"
+BASE_URL = "https://travel-mate-server.herokuapp.com"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -135,6 +135,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'staticfiles'
 
+#To serve images
 MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
