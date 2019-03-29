@@ -38,14 +38,14 @@
   </ion-card>
   <div class="listDiscover" *ngFor="let userProfile of discover">
 
-    <img src="assets/img/discover/{{userProfile.discoverPhoto}}.jpg" class="user-avatar" [routerLink]="'/edit-profile/' + userProfile.user.id"
-      routerDirection="forward">
+    <img src="assets/img/discover/{{userProfile.discoverPhoto}}.jpg" class="user-avatar"
+      [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward">
 
     <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username"
       routerDirection="forward" no-margin>
       {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>
-    <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin  disabled>
+    <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin disabled>
       contact
     </ion-button>
 
