@@ -62,7 +62,11 @@ export class RestWS extends AbstractWS {
   }
 
   public getUserBy(username, token) {
-    return this.makeGetRequest(this.path + 'users/' + username + '/', null, token)
+    return this.makeGetRequest(
+      this.path + 'users/' + username + '/',
+      null,
+      token
+    )
       .then(res => {
         return Promise.resolve(res);
       })
@@ -155,7 +159,8 @@ export class RestWS extends AbstractWS {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number
+    city: Number,
+    userImage
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -169,6 +174,10 @@ export class RestWS extends AbstractWS {
         fd.append('end_date', String(end_date));
         fd.append('trip_type', trip_type);
         fd.append('city', String(city));
+        if (userImage !== null) {
+          fd.append('file', userImage, userImage.name);
+        }
+
         user = res;
         fd.append('user_id', String(user.id));
 

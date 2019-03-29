@@ -27,8 +27,8 @@ class GetUserView(APIView):
 
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
-class RateUser(APIView):
 
+class RateUser(APIView):
     def post(self, request):
 
         # key = request.data.get('token', '')
@@ -36,7 +36,7 @@ class RateUser(APIView):
         # user = tk.user
 
         #username = request.user.username
-        username= request.data.get('username','')
+        username = request.data.get('username', '')
         voter = User.objects.get(username="fran").userprofile
 
         votedUsername = request.data.get('voted', '')
@@ -45,7 +45,7 @@ class RateUser(APIView):
         value = request.data.get('value', '')
 
         rate = Rate.objects.filter(voted=voted, voter=voter).first()
-        if(rate==None):
+        if (rate == None):
             rate = Rate(voted=voted, voter=voter, value=value)
             rate.save()
         else:
@@ -57,7 +57,7 @@ class RateUser(APIView):
             sumRatings = 0
             for r in userRatings:
                 sumRatings += r.value
-            avgUserRating = sumRatings/userRatings.count()
+            avgUserRating = sumRatings / userRatings.count()
             user.avarageRate = avgUserRating
             user.save()
 
@@ -249,26 +249,42 @@ class CreateTrip(APIView):
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
+
         #GET CITY DATA
         cityId = request.data.get('city')
 
         #GET CITY
         city = City.objects.get(pk=cityId)
-
         image_name = city.country.name + '.jpg'
-        #CREATE AND SAVE TRIP
-        trip = Trip(
-            user=user,
-            title=title,
-            description=description,
-            startDate=startDate,
-            endDate=endDate,
-            tripType=tripType,
-            image=image_name)
-        trip.save()
 
-        #GET CITY AND ADD TRIP
-        city = City.objects.get(pk=cityId)
-        city.trips.add(trip)
+        try:
+            userImage = request.data['file']
+            trip = Trip(
+                user=user,
+                title=title,
+                description=description,
+                startDate=startDate,
+                endDate=endDate,
+                tripType=tripType,
+                image=image_name,
+                userImage=userImage)
 
-        return Response(TripSerializer(trip, many=False).data)
+            trip.save()
+
+        except:
+            trip = Trip(
+                user=user,
+                title=title,
+                description=description,
+                startDate=startDate,
+                endDate=endDate,
+                tripType=tripType,
+                image=image_name)
+
+            trip.save()
+        finally:
+            #GET CITY AND ADD TRIP
+            city = City.objects.get(pk=cityId)
+            city.trips.add(trip)
+
+            return Response(TripSerializer(trip, many=False).data)

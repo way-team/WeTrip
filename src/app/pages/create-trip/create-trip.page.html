@@ -89,6 +89,7 @@
               <ion-radio value="PRIVATE"></ion-radio>
             </ion-item>
           </ion-radio-group>
+
           <ion-item>
             <ion-label position="floating">
               <ion-icon name="map" item-start></ion-icon>
@@ -106,6 +107,23 @@
               Required Field
             </ion-text>
           </p>
+          <ion-item lines="none"></ion-item>
+          <ion-item>
+            <ion-card class="imageCard">
+              <ion-card-header>
+                <ion-title>
+                  <ion-icon name="image" item-start></ion-icon>
+                  Upload an image
+                </ion-title>
+              </ion-card-header>
+              <ion-card-content>
+                <br>
+                <div><input type='file' (change)="onFileInputChange($event.target.files)" /></div>
+              </ion-card-content>
+            </ion-card>
+
+          </ion-item>
+          <ion-item lines="none"></ion-item>
         </ion-list>
       </form>
       <br>

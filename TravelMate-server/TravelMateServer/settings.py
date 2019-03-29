@@ -43,9 +43,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated'
-   ),
+    'DEFAULT_PERMISSION_CLASSES':
+    ('rest_framework.permissions.IsAuthenticated'),
 }
 
 MIDDLEWARE = [
@@ -141,3 +140,9 @@ REST_FRAMEWORK = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+import os.path
+from os.path import abspath, dirname
+
+MEDIA_ROOT = os.path.join(
+    os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img')

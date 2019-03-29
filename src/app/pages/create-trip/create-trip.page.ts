@@ -19,6 +19,7 @@ export class CreateTripPage implements OnInit {
   city: Number;
   error: string;
   cities: City[];
+  userImage: File = null;
   privacyPolicites: boolean;
   validateDatesAttr: boolean = true;
 
@@ -36,11 +37,13 @@ export class CreateTripPage implements OnInit {
       title: [null, Validators.compose([Validators.required])],
       start_date: [null, Validators.compose([Validators.required])],
       end_date: [null, Validators.compose([Validators.required])],
-      city: [null, Validators.compose([Validators.required])]
+      city: [null, Validators.compose([Validators.required])],
+      userImage: [null, null]
     });
   }
 
   public createTrip() {
+    console.log(typeof this.userImage);
     this.dm
       .createTrip(
         this.title,
@@ -48,7 +51,8 @@ export class CreateTripPage implements OnInit {
         this.start_date.split('T')[0],
         this.end_date.split('T')[0],
         this.trip_type,
-        this.city
+        this.city,
+        this.userImage
       )
       .then(data => {
         this.navCtrl.navigateForward('/trips');
@@ -94,5 +98,8 @@ export class CreateTripPage implements OnInit {
     } else {
       this.validateDatesAttr = true;
     }
+  }
+  onFileInputChange(file: File) {
+    this.userImage = file[0];
   }
 }

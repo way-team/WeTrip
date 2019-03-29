@@ -134,10 +134,19 @@ export class DataManagement {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number
+    city: Number,
+    userImage
   ): Promise<any> {
     return this.restService
-      .createTrip(title, description, start_date, end_date, trip_type, city)
+      .createTrip(
+        title,
+        description,
+        start_date,
+        end_date,
+        trip_type,
+        city,
+        userImage
+      )
       .then(data => {
         return Promise.resolve(data);
       })
