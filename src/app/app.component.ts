@@ -52,7 +52,7 @@ export class AppComponent {
       },
       {
         title: 'Trips',
-        url: '/trips',
+        url: '/search',
         direct: 'root',
         icon: 'airplane'
       },
@@ -101,7 +101,7 @@ export class AppComponent {
           this.navCtrl.navigateForward('discover');
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }
 
   logout() {

@@ -98,7 +98,7 @@ export class RestWS extends AbstractWS {
         console.log('Error: ' + error);
         return Promise.reject(error);
       });
-}
+  }
 
   public listMeetYou(): Promise<any> {
     let token = this.cookieService.get('token');
@@ -130,6 +130,24 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
+
+  public listSearchTrips(): Promise<any> {
+    const Authorization = this.cookieService.get('token');
+
+    return this.makeGetRequest(
+      this.path + 'trips/',
+      null,
+      Authorization
+    )
+      .then(res => {
+        return Promise.resolve(res.results);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
 
   public createTrip(
     title: string,

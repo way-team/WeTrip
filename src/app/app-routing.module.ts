@@ -55,6 +55,11 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'search',
+    loadChildren: './pages/search/search.module#SearchPageModule',
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'user-profile/:username',
     loadChildren:
       './pages/user-profile/user-profile.module#UserProfilePageModule',
@@ -67,7 +72,9 @@ const routes: Routes = [
   {
     path: 'gdpr',
     loadChildren: './pages/gdpr/gdpr.module#GdprPageModule'
-  }
+  },
+  { path: 'search', loadChildren: './pages/search/search.module#SearchPageModule' }
+
 
 ];
 
@@ -75,4 +82,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
