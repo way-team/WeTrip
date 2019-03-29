@@ -133,6 +133,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
+MEDIA_URL = '/media/'
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.PageNumberPagination',
@@ -145,4 +147,4 @@ import os.path
 from os.path import abspath, dirname
 
 MEDIA_ROOT = os.path.join(
-    os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img')
+    os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img/')
