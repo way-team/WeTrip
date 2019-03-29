@@ -30,6 +30,7 @@ export class Trip {
   endDate: Date;
   tripType: String;
   image: String;
+  userImage: String;
   status: Boolean;
   user_id: Number;
   creator: string;
