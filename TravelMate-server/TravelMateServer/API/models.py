@@ -1,6 +1,7 @@
 from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Language(models.Model):
@@ -90,7 +91,8 @@ class Message(models.Model):
 
 class Interest(models.Model):
     name = models.CharField(max_length=50)
-    users = models.ManyToManyField(UserProfile, related_name="interests", blank=True)
+    users = models.ManyToManyField(
+        UserProfile, related_name="interests", blank=True)
 
     def __str__(self):
         return self.name
@@ -122,7 +124,9 @@ class Rate(models.Model):
     voted = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, related_name='voted')
 
-    value = models.IntegerField()
+    value = models.IntegerField(
+        validators=[MinValueValidator(1),
+                    MaxValueValidator(5)])
 
     def __str__(self):
         return self.value
@@ -162,6 +166,8 @@ class Trip(models.Model):
         max_length=7, choices=TRIPTYPE_CHOICES, default='Public')
     image = models.URLField(blank=True)
     status = models.BooleanField(default=True)
+    userImage = models.ImageField(
+        null=True, default='trip/default_trip.jpg', upload_to='trip')
 
     def __str__(self):
         return self.title

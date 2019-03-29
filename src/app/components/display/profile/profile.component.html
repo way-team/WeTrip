@@ -1,46 +1,46 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button color="primary" defaultHref=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Profile</ion-title>
+    <ion-title color="primary"></ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="profile">
+<div class="profile" *ngIf="user">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
-      <img src="assets/img/avatar1.jpeg">
-      <h1 class="fw500"> {{userLogged.first_name}} </h1>
-      <h2 color="light" margin-bottom>"I love traveling around the wordl"</h2>
+      <img src="/assets/img/profile/{{user.photo}}.jpg" />
+      <h1 class="fw500">{{ user.first_name }}</h1>
+      <h2 color="light" margin-bottom>{{user.description}}</h2>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
       <ion-icon name="star"></ion-icon>
-
     </ion-card-content>
-  
+
     <ion-grid fixed no-padding>
       <ion-row>
         <ion-col size="12" padding>
-
           <ion-list margin-bottom>
+            <ion-item>
+              <ion-label color="dark">Full Name:</ion-label>
+              {{ user.first_name }} {{ user.last_name }}
+            </ion-item>
 
-            <ion-item> <ion-label color="dark" >Full Name:</ion-label> 
-              {{ userLogged.first_name }}  {{ userLogged.last_name }} 
+            <ion-item>
+              <ion-label color="dark">Email:</ion-label>
+              {{ user.email }}
             </ion-item>
-    
-            <ion-item> <ion-label color="dark" >Email:</ion-label>
-              {{ userLogged.email }}
-            </ion-item>
-    
-            <ion-item> <ion-label color="dark">City</ion-label>
-              Sevilla
 
+            <ion-item>
+              <ion-label color="dark">City</ion-label>
+              {{ user.city }}
             </ion-item>
-    
-            <ion-item> <ion-label color="dark">State</ion-label>
+
+            <ion-item>
+              <ion-label color="dark">State</ion-label>
               Spain
             </ion-item>
           </ion-list>
@@ -50,69 +50,53 @@
               <ion-list-header color="light">
                 <ion-label class="fw700">Travel Type</ion-label>
               </ion-list-header>
-              <ion-item>
-                <ion-label color="primary">Cultural</ion-label>
 
-              </ion-item>
-          
-              <ion-item>
-                <ion-label color="primary">Backpacker</ion-label>
-
-              </ion-item>
-          
-              <ion-item>
-                <ion-label color="primary">Volunteer</ion-label>
-
+              <ion-item *ngFor="let i of user.interests">
+                <ion-label color="primary"> {{ i }} </ion-label>
               </ion-item>
             </ion-radio-group>
-
-
           </ion-list>
 
-           <ion-list>
+          <ion-list>
             <ion-radio-group>
               <ion-list-header color="light">
                 <ion-label class="fw700">Wants to go to:</ion-label>
               </ion-list-header>
-              <ion-item>
-                <ion-label color="primary">France</ion-label>
 
+              <ion-item *ngFor="let i of user.created_trips">
+                <ion-label color="primary">
+                  {{ i.title }}
+                </ion-label>
               </ion-item>
-
-              <ion-item>
-                <ion-label color="primary">Mexico</ion-label>
-
-              </ion-item>
-
-
             </ion-radio-group>
-
-
           </ion-list>
-                     <ion-list>
+
+          <ion-list>
             <ion-radio-group>
               <ion-list-header color="light">
                 <ion-label class="fw700">Has visited:</ion-label>
               </ion-list-header>
-              <ion-item>
-                <ion-label color="primary">UK</ion-label>
 
+              <ion-item *ngFor="let i of user.past_joined_trips">
+                <div *ngIf=""></div>
+                <ion-label color="primary">
+                  {{ i.title }}
+                </ion-label>
+                <ion-label>
+                  Creator:
+                  <a class="creator" (click)="goTo('user-profile/', i.creator)">
+                    <ion-text color="tertiary"> {{ i.creator }} </ion-text>
+                  </a>
+                </ion-label>
               </ion-item>
-
-
-
-
             </ion-radio-group>
-
-
           </ion-list>
-  
         </ion-col>
       </ion-row>
     </ion-grid>
-  
-    <ion-button size="large" expand="full" color="dark" (click)="sendData()" no-margin>Contact</ion-button>
-  </ion-card>
-  
 
-</ion-content>
+    <div *ngIf="!myProfile">
+      <ion-button size="large" expand="full" color="dark" (click)="sendData()" no-margin>Contact</ion-button>
+    </div>
+  </ion-card>
+</div>

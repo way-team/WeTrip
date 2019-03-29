@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import generics, filters
-from .models import UserProfile, Trip, Invitation, City
+from .models import UserProfile, Trip, Invitation, City, Rate
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
@@ -20,16 +20,56 @@ def get_user_by_token(request):
 
     return user_profile
 
+
 class GetUserView(APIView):
     def post(self, request):
         userProfile = get_user_by_token(request)
 
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
+
+class RateUser(APIView):
+    def post(self, request):
+
+        # key = request.data.get('token', '')
+        # tk = get_object_or_404(Token, key=key)
+        # user = tk.user
+
+        #username = request.user.username
+        username = request.data.get('username', '')
+        voter = User.objects.get(username="fran").userprofile
+
+        votedUsername = request.data.get('voted', '')
+        voted = User.objects.get(username=votedUsername).userprofile
+
+        value = request.data.get('value', '')
+
+        rate = Rate.objects.filter(voted=voted, voter=voter).first()
+        if (rate == None):
+            rate = Rate(voted=voted, voter=voter, value=value)
+            rate.save()
+        else:
+            rate.value = value
+            rate.save()
+
+        def refreshUserAverageRating(user):
+            userRatings = Rate.objects.filter(voted=user)
+            sumRatings = 0
+            for r in userRatings:
+                sumRatings += r.value
+            avgUserRating = sumRatings / userRatings.count()
+            user.avarageRate = avgUserRating
+            user.save()
+
+        refreshUserAverageRating(voted)
+        userProfile = UserProfile.objects.get(user=voted)
+
+        return Response(UserProfileSerializer(voted, many=False).data)
+
+
 class UserList(APIView):
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication,
-                              SessionAuthentication)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def get(self, request, *args, **kwargs):
         """
@@ -38,6 +78,7 @@ class UserList(APIView):
         username = kwargs.get('username')
         userProfile = User.objects.get(username=username).userprofile
         return Response(UserProfileSerializer(userProfile, many=False).data)
+
 
 def get_friends_or_pending(user):
     """
@@ -63,10 +104,12 @@ def get_friends_or_pending(user):
 
     return (friends, pending)
 
+
 class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
     """
+
     def post(self, request):
         """
         POST method
@@ -77,10 +120,12 @@ class GetFriendsView(APIView):
 
         return Response(UserProfileSerializer(friends, many=True).data)
 
+
 class GetPendingView(APIView):
     """
     Method to get the pending friends of the logged user
     """
+
     def post(self, request):
         """
         POST method
@@ -91,10 +136,12 @@ class GetPendingView(APIView):
 
         return Response(UserProfileSerializer(pending, many=True).data)
 
+
 class DiscoverPeopleView(APIView):
     """
     Method to get the people who have the same interests as you in order to discover people
     """
+
     def post(self, request):
         """
         POST method
@@ -127,8 +174,10 @@ class DiscoverPeopleView(APIView):
             discover_people.remove(person)
         for person in pending:
             discover_people.remove(person)
+        discover_people.remove(user)
 
         return Response(UserProfileSerializer(discover_people, many=True).data)
+
 
 class MyTripsList(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
@@ -136,25 +185,23 @@ class MyTripsList(generics.ListAPIView):
 
     serializer_class = TripSerializer
 
-
     def get_queryset(self):
-        return Trip.objects.filter(user__user=self.request.user).order_by('-startDate')
+        return Trip.objects.filter(
+            user__user=self.request.user).order_by('-startDate')
 
-    
+
 class AvailableTripsList(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     serializer_class = TripSerializer
 
-    
     def get_queryset(self):
         today = datetime.today()
         return Trip.objects.filter(
-            Q(status = True) &
-            Q(startDate__gte=today) &
-            Q(tripType='PUBLIC')).exclude(user__user=self.request.user).order_by('-startDate')
-
+            Q(status=True) & Q(startDate__gte=today) & Q(
+                tripType='PUBLIC')).exclude(
+                    user__user=self.request.user).order_by('-startDate')
 
 
 class AvailableTripsSearch(generics.ListAPIView):
@@ -163,37 +210,32 @@ class AvailableTripsSearch(generics.ListAPIView):
 
     serializer_class = TripSerializer
 
-
     def get_queryset(self):
         today = datetime.today()
         return Trip.objects.filter(
-            Q(status = True) &
-            Q(startDate__gte=today) &
-            Q(tripType='PUBLIC')).exclude(user__user=self.request.user).order_by('-startDate')
-
+            Q(status=True) & Q(startDate__gte=today) & Q(
+                tripType='PUBLIC')).exclude(
+                    user__user=self.request.user).order_by('-startDate')
 
     queryset = get_queryset
     serializer_class = TripSerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, )
     search_fields = ('title', 'description')
-
 
 
 class ListCities(APIView):
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication,
-                              SessionAuthentication)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def get(self, request):
-
 
         cities = City.objects.all()
         return Response(CitySerializer(cities, many=True).data)
 
+
 class CreateTrip(APIView):
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication,
-                              SessionAuthentication)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
 
@@ -207,20 +249,42 @@ class CreateTrip(APIView):
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
-        image = request.data.get('image', '')
+
         #GET CITY DATA
         cityId = request.data.get('city')
-        #CREATE AND SAVE TRIP
-        trip = Trip(user=user, title=title, description=description, startDate=startDate, endDate=endDate,
-        tripType=tripType, image=image)
-        trip.save()
 
-
-
-        #GET CITY AND ADD TRIP
+        #GET CITY
         city = City.objects.get(pk=cityId)
-        city.trips.add(trip)
+        image_name = city.country.name + '.jpg'
 
+        try:
+            userImage = request.data['file']
+            trip = Trip(
+                user=user,
+                title=title,
+                description=description,
+                startDate=startDate,
+                endDate=endDate,
+                tripType=tripType,
+                image=image_name,
+                userImage=userImage)
 
-        return Response(TripSerializer(trip, many=False).data) 
+            trip.save()
 
+        except:
+            trip = Trip(
+                user=user,
+                title=title,
+                description=description,
+                startDate=startDate,
+                endDate=endDate,
+                tripType=tripType,
+                image=image_name)
+
+            trip.save()
+        finally:
+            #GET CITY AND ADD TRIP
+            city = City.objects.get(pk=cityId)
+            city.trips.add(trip)
+
+            return Response(TripSerializer(trip, many=False).data)

@@ -6,7 +6,7 @@
         <ion-title color="primary">Trips</ion-title>
     </ion-toolbar>
 
-    <ion-button expand="full" (click)="goToCreate()" no-margin>
+    <ion-button color="lightcyan" expand="full" (click)="goToCreate()" no-margin>
         <ion-text aling="left">
             Create new trip
         </ion-text>
@@ -15,19 +15,39 @@
 
 
 <ion-content>
+    <ng-container *ngIf="listTrips">
+        <ion-card>
+            <ion-card-header class="bg-dark">
 
-    <div class="listTrips" *ngFor="let trip of listTrips">
-        <ion-item>
-            <ion-thumbnail class="ion-avatar" slot="start">
-                <img src="{{trip.image}}" class="user-avatar" (click)="viewDetail(2)">
-            </ion-thumbnail>
+            </ion-card-header>
+            <ion-card-content class="bg-white">
 
-            <ion-text color="dark" (click)="viewDetail(2)">
-                <h1><strong>{{trip.title}}</strong></h1>
-                <h5>{{trip.description}}</h5>
-            </ion-text>
+                <div class="listTrips" *ngFor="let trip of listTrips">
+                    <ion-card>
+                        <ion-card-content class="bg-light">
 
-        </ion-item>
+                            <ion-item>
+                                <ion-thumbnail class="ion-avatar" slot="start">
+                                    <img src="assets/img/{{trip.userImage}}" class="user-avatar">
+                                </ion-thumbnail>
 
-    </div>
+                                <ion-text color="dark" (click)="viewDetail(2)">
+                                    <h1><strong>{{trip.title}}</strong></h1>
+                                    <h5>{{trip.description}}</h5>
+                                    <h5>{{trip.startDate}} - {{trip.endDate}}</h5>
+                                </ion-text>
+
+                            </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                </div>
+                <ng-container *ngIf="listTrips.length === 0">
+                    <br>
+                    <h1 class="textTrips">You don't have any trip yet</h1>
+
+                </ng-container>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
+
 </ion-content>

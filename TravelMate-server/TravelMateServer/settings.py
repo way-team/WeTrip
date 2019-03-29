@@ -43,9 +43,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated'
-   ),
+    'DEFAULT_PERMISSION_CLASSES':
+    ('rest_framework.permissions.IsAuthenticated'),
 }
 
 BASE_URL="https://travel-mate-server.herokuapp.com"
@@ -144,5 +143,8 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-import django_heroku
-django_heroku.settings(locals())
+import os.path
+from os.path import abspath, dirname
+
+MEDIA_ROOT = os.path.join(
+    dirname(dirname(dirname(abspath(__file__)))), 'src/assets/img')

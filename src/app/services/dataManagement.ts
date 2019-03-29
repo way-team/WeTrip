@@ -4,7 +4,7 @@ import { RestWS } from './restService';
 
 @Injectable()
 export class DataManagement {
-  constructor(private restService: RestWS) {}
+  constructor(private restService: RestWS) { }
 
   public login(credentials): Promise<any> {
     return this.restService
@@ -28,25 +28,19 @@ export class DataManagement {
       });
   }
 
-  public hasConnection(): boolean {
-    return true;
+  public getUserBy(username, token): Promise<any> {
+    return this.restService
+      .getUserBy(username, token)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
   }
 
-  public test(): Promise<test> {
-    return new Promise((resolve, reject) => {
-      if (this.hasConnection()) {
-        return this.restService
-          .test()
-          .then((data: test) => {
-            resolve(data);
-          })
-          .catch(error => {
-            reject('error');
-          });
-      } else {
-        reject('error');
-      }
-    });
+  public hasConnection(): boolean {
+    return true;
   }
 
   public listFriends(): Promise<any> {
@@ -71,6 +65,23 @@ export class DataManagement {
       if (this.hasConnection()) {
         return this.restService
           .listYourTrips()
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
+
+  public listSearchTrips(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .listSearchTrips()
           .then((data: any) => {
             resolve(data);
           })
@@ -120,11 +131,11 @@ export class DataManagement {
   public createTrip(
     title: string,
     description: string,
-    start_date: Date,
-    end_date: Date,
+    start_date: String,
+    end_date: String,
     trip_type: string,
-    image: string,
-    city: Number
+    city: Number,
+    userImage
   ): Promise<any> {
     return this.restService
       .createTrip(
@@ -133,8 +144,8 @@ export class DataManagement {
         start_date,
         end_date,
         trip_type,
-        image,
-        city
+        city,
+        userImage
       )
       .then(data => {
         return Promise.resolve(data);

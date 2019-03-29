@@ -1,6 +1,7 @@
 from .models import UserProfile, Language, Trip, Application, City, Country, Interest
 from rest_framework import serializers
 from django.contrib.auth.models import User
+import datetime
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,17 +20,22 @@ class CountrySerializer(serializers.ModelSerializer):
 
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
+    userImage = serializers.SerializerMethodField()
 
     class Meta:
         model = Trip
         fields = [
             'creator', 'title', 'description', 'startDate', 'endDate',
-            'tripType', 'image', 'status'
+            'tripType', 'image', 'userImage', 'status'
         ]
 
     def get_creator(self, obj):
         user_queryset = obj.user.user.username
         return user_queryset
+
+    def get_userImage(self, obj):
+        userImage_queryset = obj.userImage.name
+        return userImage_queryset
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -50,7 +56,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     created_trips = serializers.SerializerMethodField()
 
-    joined_trips = serializers.SerializerMethodField()
+    past_joined_trips = serializers.SerializerMethodField()
+
+    future_joined_trips = serializers.SerializerMethodField()
+
+    active_joined_trips = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
@@ -58,15 +68,43 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'user', 'email', 'first_name', 'last_name', 'description',
             'birthdate', 'city', 'nationality', 'photo', 'discoverPhoto',
             'avarageRate', 'numRate', 'isPremium', 'status', 'gender',
-            'languages', 'interests', 'created_trips', 'joined_trips'
+            'languages', 'interests', 'created_trips', 'past_joined_trips',
+            'future_joined_trips', 'active_joined_trips'
         ]
 
     def get_created_trips(self, obj):
         trip_queryset = obj.trip_set.all()
         return TripSerializer(trip_queryset, many=True).data
 
-    def get_joined_trips(self, obj):
+    def get_past_joined_trips(self, obj):
+        now = datetime.datetime.now()
+
         trip_queryset = Trip.objects.filter(
-            applications__applicant=obj, applications__status="A")
+            applications__applicant=obj,
+            applications__status="A",
+            endDate__lte=now,
+            startDate__lte=now)
+
+        return TripSerializer(trip_queryset, many=True).data
+
+    def get_future_joined_trips(self, obj):
+        now = datetime.datetime.now()
+
+        trip_queryset = Trip.objects.filter(
+            applications__applicant=obj,
+            applications__status="A",
+            endDate__gte=now,
+            startDate__gte=now)
+
+        return TripSerializer(trip_queryset, many=True).data
+
+    def get_active_joined_trips(self, obj):
+        now = datetime.datetime.now()
+
+        trip_queryset = Trip.objects.filter(
+            applications__applicant=obj,
+            applications__status="A",
+            endDate__lte=now,
+            startDate__gte=now)
 
         return TripSerializer(trip_queryset, many=True).data

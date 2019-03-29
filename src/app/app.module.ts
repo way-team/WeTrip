@@ -24,6 +24,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CookieService } from 'ngx-cookie-service';
 import { ProfileComponent } from './components/display/profile/profile.component';
+import { CookieLawModule } from 'angular2-cookie-law';
+import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
@@ -36,6 +38,7 @@ import { ProfileComponent } from './components/display/profile/profile.component
     HttpClientModule,
     ImagePageModule,
     SearchFilterPageModule,
+	CookieLawModule, // import Angular's CookieLaw modules
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -53,6 +56,7 @@ import { ProfileComponent } from './components/display/profile/profile.component
     ConfigService,
     CookieService,
     ProfileComponent,
+    AuthGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

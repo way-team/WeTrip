@@ -15,6 +15,11 @@ export class UserProfile {
   status: boolean;
   gender: string;
   language: string;
+  interests: string[];
+  created_trips: Trip[];
+  past_joined_trips: Trip[];
+  future_joined_trips: Trip[];
+  active_joined_trips: Trip[];
 }
 
 export class Trip {
@@ -25,8 +30,10 @@ export class Trip {
   endDate: Date;
   tripType: String;
   image: String;
+  userImage: String;
   status: Boolean;
   user_id: Number;
+  creator: string;
 }
 
 export class City {

@@ -13,13 +13,15 @@ export class CreateTripPage implements OnInit {
   public onCreateForm: FormGroup;
   title: string;
   description: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: string;
+  end_date: string;
   trip_type: string = 'PUBLIC';
-  image;
   city: Number;
   error: string;
   cities: City[];
+  userImage: File = null;
+  privacyPolicites: boolean;
+  validateDatesAttr: boolean = true;
 
   constructor(
     public navCtrl: NavController,
@@ -35,23 +37,25 @@ export class CreateTripPage implements OnInit {
       title: [null, Validators.compose([Validators.required])],
       start_date: [null, Validators.compose([Validators.required])],
       end_date: [null, Validators.compose([Validators.required])],
-      city: [null, Validators.compose([Validators.required])]
+      city: [null, Validators.compose([Validators.required])],
+      userImage: [null, null]
     });
   }
 
   public createTrip() {
+    console.log(typeof this.userImage);
     this.dm
       .createTrip(
         this.title,
-        this.description,
-        this.start_date,
-        this.end_date,
+        this.description === undefined ? '' : this.description,
+        this.start_date.split('T')[0],
+        this.end_date.split('T')[0],
         this.trip_type,
-        this.image,
-        this.city
+        this.city,
+        this.userImage
       )
       .then(data => {
-        this.navCtrl.navigateRoot('/trips');
+        this.navCtrl.navigateForward('/trips');
       })
       .catch(error => {
         this.alertCtrl
@@ -80,5 +84,22 @@ export class CreateTripPage implements OnInit {
       .catch(error => {
         console.log(error);
       });
+  }
+  goToPrivacyPolicies() {
+    this.navCtrl.navigateForward('/gdpr');
+  }
+
+  validateDates() {
+    const start = new Date(this.start_date);
+    const end = new Date(this.end_date);
+
+    if (start > end) {
+      this.validateDatesAttr = false;
+    } else {
+      this.validateDatesAttr = true;
+    }
+  }
+  onFileInputChange(file: File) {
+    this.userImage = file[0];
   }
 }
