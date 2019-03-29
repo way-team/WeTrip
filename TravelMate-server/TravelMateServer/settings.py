@@ -147,4 +147,4 @@ import os.path
 from os.path import abspath, dirname
 
 MEDIA_ROOT = os.path.join(
-    os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img/')
+    os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img')
