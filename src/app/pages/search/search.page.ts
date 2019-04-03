@@ -6,7 +6,7 @@ import { DataManagement } from '../../services/dataManagement';
 @Component({
   selector: 'app-search',
   templateUrl: './search.page.html',
-  styleUrls: ['./search.page.scss'],
+  styleUrls: ['./search.page.scss']
 })
 export class SearchPage implements OnInit {
   listSearch: Trip[] = [];
@@ -14,10 +14,9 @@ export class SearchPage implements OnInit {
     this.listSearchTrips();
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   ionViewWillEnter() {
-    console.log('hola');
     this.listSearchTrips();
   }
 
@@ -31,9 +30,6 @@ export class SearchPage implements OnInit {
       .then((data: any) => {
         this.listSearch = data;
       })
-      .catch(error => { });
+      .catch(error => {});
   }
 }
-
-
-
