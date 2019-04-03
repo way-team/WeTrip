@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  NavController,
-} from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { User } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.page.html',
-  styleUrls: ['./contacts.page.scss'],
+  styleUrls: ['./contacts.page.scss']
 })
 export class ContactsPage implements OnInit {
   friends: User[] = [];
@@ -15,11 +13,10 @@ export class ContactsPage implements OnInit {
   constructor(public navCtrl: NavController, public dM: DataManagement) {
     this.listFriends();
     this.listMeetYou();
-
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
+
   chat(id) {
     this.navCtrl.navigateForward('/chat/1');
   }
@@ -28,20 +25,20 @@ export class ContactsPage implements OnInit {
   }
 
   private listFriends(): void {
-    this.dM.listFriends().then((data: any) => {
-      this.friends = data;
-    }).catch((error) => {
-    });
-
+    this.dM
+      .listFriends()
+      .then((data: any) => {
+        this.friends = data;
+      })
+      .catch(error => {});
   }
 
   private listMeetYou(): void {
-    this.dM.listMeetYou().then((data: any) => {
-      this.meetYou = data;
-    }).catch((error) => {
-    });
-
+    this.dM
+      .listMeetYou()
+      .then((data: any) => {
+        this.meetYou = data;
+      })
+      .catch(error => {});
   }
-
-
 }

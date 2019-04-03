@@ -8,3 +8,4 @@ pytz==2018.9
 #Heroku requirements
 django-heroku
 gunicorn
+Pillow

@@ -47,6 +47,8 @@ REST_FRAMEWORK = {
     ('rest_framework.permissions.IsAuthenticated'),
 }
 
+BASE_URL = "https://travel-mate-server.herokuapp.com"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -131,8 +133,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/static/'
+STATIC_ROOT = 'staticfiles'
 
+#To serve images
 MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
@@ -148,3 +151,6 @@ from os.path import abspath, dirname
 
 MEDIA_ROOT = os.path.join(
     os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img')
+
+import django_heroku
+django_heroku.settings(locals())

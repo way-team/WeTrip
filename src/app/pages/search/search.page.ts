@@ -2,22 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { Trip } from '../../app.data.model';
 import { NavController } from '@ionic/angular';
 import { DataManagement } from '../../services/dataManagement';
+import { ConfigService } from 'src/config/configService';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.page.html',
-  styleUrls: ['./search.page.scss'],
+  styleUrls: ['./search.page.scss']
 })
 export class SearchPage implements OnInit {
+  path = '';
   listSearch: Trip[] = [];
-  constructor(public navCtrl: NavController, private dm: DataManagement) {
+  constructor(
+    public navCtrl: NavController,
+    private dm: DataManagement,
+    private config: ConfigService
+  ) {
+    this.path = this.config.config().restUrlPrefixLocalhost;
     this.listSearchTrips();
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   ionViewWillEnter() {
-    console.log('hola');
     this.listSearchTrips();
   }
 
@@ -31,9 +37,6 @@ export class SearchPage implements OnInit {
       .then((data: any) => {
         this.listSearch = data;
       })
-      .catch(error => { });
+      .catch(error => {});
   }
 }
-
-
-

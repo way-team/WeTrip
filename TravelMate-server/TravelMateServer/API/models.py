@@ -159,7 +159,7 @@ class Trip(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=150)
-    description = models.CharField(max_length=250, null=True)
+    description = models.CharField(max_length=250, null=True, blank=True)
     startDate = models.DateField(default="1999-12-01")
     endDate = models.DateField(default="1999-12-01")
     tripType = models.CharField(

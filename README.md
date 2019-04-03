@@ -90,3 +90,13 @@ Simplemente hay que comentar la 1ª línea si trabajas localhost o la 2ª en cas
 
 ### To build the app
 1. Install [Android Studio](https://developer.android.com/studio)
+
+
+## Deploy TravelMate
+### Back-end
+    Make sure you are on branch "master". Commit your changes and push them to the repository.
+    Then, in the root of the project, type this command in the shell:
+    
+    git subtree push --prefix TravelMate-server heroku master
+
+    This will push only the server folder to Heroku.

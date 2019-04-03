@@ -6,13 +6,13 @@
         <ion-title color="primary">Contacts</ion-title>
     </ion-toolbar>
     <!-- <ion-toolbar color="dark">
-        <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
-        <ion-buttons slot="end">
-            <ion-button size="small" shape="round" color="medium" (click)="searchFilter()">
-                <ion-icon name="options"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar> -->
+            <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
+            <ion-buttons slot="end">
+                <ion-button size="small" shape="round" color="medium" (click)="searchFilter()">
+                    <ion-icon name="options"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+        </ion-toolbar> -->
 </ion-header>
 
 <ion-content>
@@ -22,10 +22,12 @@
         <ion-card-content>
             <ion-card class="bg-primary" no-margin>
                 <ion-card-content>
-
                     <div class="listFriends" *ngFor="let user of friends">
                         <ion-item class="bg-primary" no-margin>
                             <ion-buttons slot="end">
+                                                                 <ion-button size="small" shape="round" color="warning" slot="end" [routerLink]="'/rating/' + user.user.username"  routerDirection="forward">
+                                    <ion-icon name="star" item-right></ion-icon>
+                                                                 </ion-button>
                                 <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat(user.id)">
                                     <ion-icon name="send" item-right></ion-icon>
 
@@ -35,7 +37,7 @@
                             </ion-buttons>
 
                             <ion-avatar slot="start">
-                                <img src="{{user.photo}}" class="user-avatar">
+                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
 
                             </ion-avatar>
 
@@ -54,7 +56,6 @@
                             </ion-label>
                         </ion-item>
                     </div>
-
 
                 </ion-card-content>
             </ion-card>
@@ -77,11 +78,10 @@
         <ion-card-content>
             <ion-card class="bg-primary" no-margin>
                 <ion-card-content>
-
                     <div class="listMeetYou" *ngFor="let user of meetYou">
                         <ion-item class="bg-primary" no-margin>
                             <ion-avatar slot="start">
-                                <img src="{{user.photo}}" class="user-avatar">
+                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
                             </ion-avatar>
                             <ion-label>
                                 <ion-text color="dark">
@@ -110,7 +110,6 @@
 
                         </ion-item>
                     </div>
-
                 </ion-card-content>
             </ion-card>
 
