@@ -74,7 +74,12 @@ const routes: Routes = [
     loadChildren: './pages/gdpr/gdpr.module#GdprPageModule'
   },
   { path: 'search', loadChildren: './pages/search/search.module#SearchPageModule' }
-
+,
+  {
+    path: 'rating/:username',
+    loadChildren: './pages/rating/rating.module#RatingPageModule',
+    canLoad: [AuthGuard]
+  }
 
 ];
 
