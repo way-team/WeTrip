@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import generics, filters
-from .models import UserProfile, Trip, Invitation, City, Rate
+from .models import UserProfile, Trip, Invitation, City, Rate, Application
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
@@ -109,6 +109,8 @@ class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
@@ -125,6 +127,8 @@ class GetPendingView(APIView):
     """
     Method to get the pending friends of the logged user
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
@@ -141,6 +145,8 @@ class DiscoverPeopleView(APIView):
     """
     Method to get the people who have the same interests as you in order to discover people
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
@@ -288,3 +294,115 @@ class CreateTrip(APIView):
             city.trips.add(trip)
 
             return Response(TripSerializer(trip, many=False).data)
+
+
+class GetTripView(APIView):
+    """
+    Method to get a trip by its ID
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def get(self, request, *args, **kwargs):
+        """
+        GET method
+        """
+        trip_id = kwargs.get("tripId", "")
+        trip = Trip.objects.get(pk=trip_id)
+
+        return Response(TripSerializer(trip, many=False).data) 
+
+
+class EditTripView(APIView):
+    """
+    Method to edit a trip by its ID
+    """
+    #permission_classes = (IsAuthenticated, )
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        #user = get_user_by_token(request)
+        user = User.objects.get(username="idelozar").userprofile
+
+        #trip_id = request.data.get("id", "")
+        trip_id = "1109"
+        title = request.data.get("title", "")
+        description = request.data.get("description", "")
+        start_date = request.data.get("start_date", "")
+        end_date = request.data.get("end_date", "")
+        trip_type = request.data.get("trip_type", "")
+
+        #city_id = request.data.get('city')
+        city_id = "884"
+
+        city = City.objects.get(pk=city_id)
+        image_name = city.country.name + '.jpg'
+
+        stored_trip = Trip.objects.get(pk=trip_id)
+        stored_creator = stored_trip.user
+        if stored_creator != user:
+            raise ValueError("You are not the creator of that trip")
+
+        stored_city = stored_trip.city
+
+        try:
+            user_image = request.data['file']
+            trip = Trip(
+                id=trip_id,
+                user=user,
+                title=title,
+                description=description,
+                startDate=start_date,
+                endDate=end_date,
+                tripType=trip_type,
+                image=image_name,
+                userImage=user_image)
+            trip.save()
+
+        except:
+            trip = Trip(
+                id=trip_id,
+                user=user,
+                title=title,
+                description=description,
+                startDate=start_date,
+                endDate=end_date,
+                tripType=trip_type,
+                image=image_name)
+            trip.save()
+
+        finally:
+            if city != stored_city:
+                stored_city.trips.remove(stored_trip)
+                city.trips.add(stored_trip)
+
+        return Response(TripSerializer(stored_trip, many=False).data)
+
+
+class ApplyTripView(APIView):
+    """
+    Method to apply to a trip specified by its ID
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        trip_id = request.data.get("trip_id", "")
+        trip = Trip.objects.get(pk=trip_id)
+
+        if not Application.objects.filter(trip=trip).get(applicant=user):
+            application = Application(
+                applicant=user,
+                trip=trip,
+                status="P")
+            application.save()
+
+        return Response(TripSerializer(trip, many=False).data)
