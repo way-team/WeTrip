@@ -14,6 +14,7 @@ export class RatingPage implements OnInit {
 
   public user: UserProfile;
   private username: string;
+  public ratingActual: integer;
 
 
   constructor(
@@ -23,6 +24,7 @@ export class RatingPage implements OnInit {
   ) {
     this.username = this.activatedRoute.snapshot.paramMap.get('username');
    this.getUser(this.username);
+   this.ratingActual=3;
   }
 
   ngOnInit() {
