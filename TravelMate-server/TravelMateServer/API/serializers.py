@@ -119,3 +119,10 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['sender', 'receiver', 'message', 'timestamp']
+
+class InterestSerializer(serializers.ModelSerializer):
+    users = UserProfileSerializer(many=True)
+
+    class Meta:
+        model = Interest
+        fields = ['name', 'users']

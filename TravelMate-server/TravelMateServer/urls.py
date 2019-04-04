@@ -43,6 +43,7 @@ urlpatterns = [
     url('^getTrip/(?P<trip_id>.+)/$', views.GetTripView.as_view()),
     path('editTrip/', views.EditTripView.as_view()),
     path('applyTrip/', views.ApplyTripView.as_view()),
+    path('dashboard/', views.DashboardData.as_view(), name='dashboard'),
     path(
         'messages/<int:sender>/<int:receiver>/',
         views.message_list,
