@@ -25,7 +25,7 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = [
-            'creator', 'title', 'description', 'startDate', 'endDate',
+            'id', 'creator', 'title', 'description', 'startDate', 'endDate',
             'tripType', 'image', 'userImage', 'status'
         ]
 

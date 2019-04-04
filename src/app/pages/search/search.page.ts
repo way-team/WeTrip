@@ -39,4 +39,10 @@ export class SearchPage implements OnInit {
       })
       .catch(error => {});
   }
+  
+  public goTo(destination: string, id) {
+    const path = destination + id;
+    console.log(path);
+    this.navCtrl.navigateForward(path);
+  }
 }

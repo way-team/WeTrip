@@ -12,6 +12,7 @@ from datetime import datetime
 from django.db.models import Q, Count, StdDev, Avg, Sum
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def get_user_by_token(request):
@@ -496,10 +497,14 @@ class ApplyTripView(APIView):
         return Response(TripSerializer(trip, many=False).data)
 
 
+@csrf_exempt
 def message_list(request, sender=None, receiver=None):
     """
     List all required messages, or create a new message.
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
     if request.method == 'GET':
         messagesSend = Message.objects.filter(
             sender_id=sender, receiver_id=receiver)
@@ -513,7 +518,7 @@ def message_list(request, sender=None, receiver=None):
             messages, many=True, context={'request': request})
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
+        data = request.POST
         serializer = MessageSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
