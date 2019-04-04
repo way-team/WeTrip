@@ -154,6 +154,22 @@ export class DataManagement {
         return Promise.reject('error');
       });
   }
+  public rate(
+    voted: string,
+    rating: Number
+  ): Promise<any> {
+    return this.restService
+      .rate(
+        voted,
+        rating
+      )
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
 
   public listCities(): Promise<any> {
     return this.restService

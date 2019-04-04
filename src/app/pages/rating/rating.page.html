@@ -11,7 +11,7 @@
 <div class="profile" *ngIf="user">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
-
+{{ratingActual}}
       <h1 class="fw500">{{ user.first_name }}</h1>
       <h2 color="light" margin-bottom>{{user.description}}</h2>
 
@@ -39,13 +39,26 @@
 
 
 <div class="rating">
-    <input type="radio" id="star5" name="rating" value="5" /><label for="star5"></label>
-    <input type="radio" id="star4" name="rating" value="4" /><label for="star4"></label>
-    <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
-    <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
-    <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+
+
+        <input type="radio" id="star5" [(ngModel)]="rating" value="5" /><label for="star5"></label>
+        <input type="radio" id="star4" [(ngModel)]="rating" value="4" /><label for="star4"></label>
+        <input type="radio" id="star3" [(ngModel)]="rating" value="3" /><label for="star3"></label>
+        <input type="radio" id="star2" [(ngModel)]="rating" value="2" /><label for="star2"></label>
+        <input type="radio" id="star1" [(ngModel)]="rating" value="1" /><label for="star1"></label>
+        <br>
+    <br>
+   </div>
+                </ion-item>
+                <div>
+  <ion-button icon-left size="medium"
+    expand="full" shape="round" color="dark" (click)="rate()" tappable>
+    <ion-icon name="rate"></ion-icon>
+    Save
+  </ion-button>
 </div>
-           </ion-item>
+
+
           </ion-list>
         </ion-col>
       </ion-row>
