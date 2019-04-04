@@ -40,7 +40,7 @@ urlpatterns = [
     path('getFriends/', views.GetFriendsView.as_view()),
     path('getPending/', views.GetPendingView.as_view()),
     path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
-    url('^getTrip/(?P<tripId>.+)/$', views.GetTripView.as_view()),
+    url('^getTrip/(?P<trip_id>.+)/$', views.GetTripView.as_view()),
     path('editTrip/', views.EditTripView.as_view()),
     path('applyTrip/', views.ApplyTripView.as_view()),
 ] + static(

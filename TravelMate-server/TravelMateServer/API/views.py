@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from datetime import datetime
 from django.db.models import Q
+from django.utils.datastructures import MultiValueDictKeyError
 
 
 def get_user_by_token(request):
@@ -277,7 +278,7 @@ class CreateTrip(APIView):
 
             trip.save()
 
-        except:
+        except MultiValueDictKeyError:
             trip = Trip(
                 user=user,
                 title=title,
@@ -307,7 +308,7 @@ class GetTripView(APIView):
         """
         GET method
         """
-        trip_id = kwargs.get("tripId", "")
+        trip_id = kwargs.get("trip_id", "")
         trip = Trip.objects.get(pk=trip_id)
 
         return Response(TripSerializer(trip, many=False).data) 
@@ -317,26 +318,23 @@ class EditTripView(APIView):
     """
     Method to edit a trip by its ID
     """
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        #user = get_user_by_token(request)
-        user = User.objects.get(username="idelozar").userprofile
+        user = get_user_by_token(request)
 
-        #trip_id = request.data.get("id", "")
-        trip_id = "1109"
+        trip_id = request.data.get("trip_id", "")
         title = request.data.get("title", "")
         description = request.data.get("description", "")
         start_date = request.data.get("start_date", "")
         end_date = request.data.get("end_date", "")
         trip_type = request.data.get("trip_type", "")
 
-        #city_id = request.data.get('city')
-        city_id = "884"
+        city_id = request.data.get("city", "")
 
         city = City.objects.get(pk=city_id)
         image_name = city.country.name + '.jpg'
@@ -344,9 +342,9 @@ class EditTripView(APIView):
         stored_trip = Trip.objects.get(pk=trip_id)
         stored_creator = stored_trip.user
         if stored_creator != user:
-            raise ValueError("You are not the creator of that trip")
+            raise ValueError("You are not the creator of this trip")
 
-        stored_city = stored_trip.city
+        stored_cities = stored_trip.cities.all()
 
         try:
             user_image = request.data['file']
@@ -362,7 +360,7 @@ class EditTripView(APIView):
                 userImage=user_image)
             trip.save()
 
-        except:
+        except MultiValueDictKeyError:
             trip = Trip(
                 id=trip_id,
                 user=user,
@@ -375,8 +373,7 @@ class EditTripView(APIView):
             trip.save()
 
         finally:
-            if city != stored_city:
-                stored_city.trips.remove(stored_trip)
+            if not city in stored_cities:
                 city.trips.add(stored_trip)
 
         return Response(TripSerializer(stored_trip, many=False).data)
@@ -398,11 +395,18 @@ class ApplyTripView(APIView):
         trip_id = request.data.get("trip_id", "")
         trip = Trip.objects.get(pk=trip_id)
 
-        if not Application.objects.filter(trip=trip).get(applicant=user):
+        try:
+            query = Application.objects.filter(trip=trip).get(applicant=user)
+        except Application.DoesNotExist:
+            query = None
+
+        if query is None:
             application = Application(
                 applicant=user,
                 trip=trip,
                 status="P")
             application.save()
+        else:
+            raise ValueError("You have already applied to this trip")
 
         return Response(TripSerializer(trip, many=False).data)
