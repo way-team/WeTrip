@@ -80,7 +80,7 @@ export class RestWS extends AbstractWS {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getFriends/', fd)
+    return this.makePostRequest(this.path + 'getFriends/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })
@@ -106,7 +106,7 @@ export class RestWS extends AbstractWS {
     const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getPending/', fd)
+    return this.makePostRequest(this.path + 'getPending/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })
