@@ -1,24 +1,43 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { User } from '../../app.data.model';
+import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
+import { CookieService } from 'ngx-cookie-service';
+
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.page.html',
   styleUrls: ['./contacts.page.scss']
 })
 export class ContactsPage implements OnInit {
-  friends: User[] = [];
-  meetYou: User[] = [];
-  constructor(public navCtrl: NavController, public dM: DataManagement) {
+  friends: UserProfile[] = [];
+  meetYou: UserProfile[] = [];
+  logged: UserProfile;
+
+  constructor(
+    public navCtrl: NavController,
+    public dM: DataManagement,
+    private cookieService: CookieService
+  ) {
+    const token = this.cookieService.get('token');
+    this.dM
+      .getUserLogged(token)
+      .then(res => {
+        this.logged = res;
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+      });
     this.listFriends();
     this.listMeetYou();
   }
 
   ngOnInit() {}
 
-  chat(id) {
-    this.navCtrl.navigateForward('/chat/1');
+  chat(otherUsername) {
+    this.navCtrl.navigateForward(
+      '/chat/' + this.logged.user.username + '/' + otherUsername
+    );
   }
   editProfile(id) {
     this.navCtrl.navigateForward('/edit-profile/2');

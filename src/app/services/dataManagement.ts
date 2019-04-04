@@ -4,7 +4,7 @@ import { RestWS } from './restService';
 
 @Injectable()
 export class DataManagement {
-  constructor(private restService: RestWS) { }
+  constructor(private restService: RestWS) {}
 
   public login(credentials): Promise<any> {
     return this.restService
@@ -171,6 +171,28 @@ export class DataManagement {
       return Promise.resolve(response);
     }).catch(error => {
       return Promise.reject(error);
-    })
+    });
+  }
+
+  public sendMessage(sender: string,receiver: string,message: string): Promise<any> {
+    return this.restService
+      .sendMessage(sender, receiver, message)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
+  public getMessages(senderId: Number, receiverId: Number): Promise<any> {
+    return this.restService
+      .getMessages(senderId, receiverId)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
   }
 }
