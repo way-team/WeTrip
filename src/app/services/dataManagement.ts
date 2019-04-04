@@ -1,4 +1,4 @@
-import { test, User, City } from './../app.data.model';
+import { test, User, City, Trip } from './../app.data.model';
 import { Injectable } from '@angular/core';
 import { RestWS } from './restService';
 
@@ -164,5 +164,13 @@ export class DataManagement {
       .catch(error => {
         return Promise.reject('error');
       });
+  }
+
+  public getTripById(id: string): Promise<Trip> {
+    return this.restService.getTripById(id).then(response => {
+      return Promise.resolve(response);
+    }).catch(error => {
+      return Promise.reject(error);
+    })
   }
 }

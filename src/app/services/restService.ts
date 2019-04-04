@@ -202,4 +202,15 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
+
+  public getTripById(id: string) {
+    const Authorization = this.cookieService.get('token');
+    
+    return this.makeGetRequest(this.path + 'getTrip/' + id + '/', null, Authorization).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        console.log(error);
+        return Promise.reject(error);
+      });
+  }
 }
