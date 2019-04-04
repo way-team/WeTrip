@@ -36,7 +36,10 @@
                                     <h5>{{trip.description}}</h5>
                                     <h5>{{trip.startDate}} - {{trip.endDate}}</h5>
                                 </ion-text>
-
+                                <ion-button size="small" shape="round" color="dark"
+                                    [routerLink]="'/create-trip/' + trip.id" slot="end" routerDirection="forward">
+                                    Edit
+                                </ion-button>
                             </ion-item>
                         </ion-card-content>
                     </ion-card>

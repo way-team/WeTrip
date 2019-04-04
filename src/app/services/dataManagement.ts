@@ -155,6 +155,36 @@ export class DataManagement {
       });
   }
 
+  public editTrip(
+    id: String,
+    title: string,
+    description: string,
+    start_date: String,
+    end_date: String,
+    trip_type: string,
+    city: Number,
+    userImage
+  ): Promise<any> {
+    return this.restService
+      .editTrip(
+        id,
+        title,
+        description,
+        start_date,
+        end_date,
+        trip_type,
+        city,
+        userImage
+      )
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
+
   public listCities(): Promise<any> {
     return this.restService
       .listCities()

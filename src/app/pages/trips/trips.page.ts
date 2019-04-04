@@ -20,7 +20,7 @@ export class TripsPage implements OnInit {
     this.listYourTrips();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ionViewWillEnter() {
     this.listYourTrips();
@@ -34,12 +34,14 @@ export class TripsPage implements OnInit {
     this.navCtrl.navigateForward('/create-trip');
   }
 
+
+
   public listYourTrips(): void {
     this.dm
       .listYourTrips()
       .then((data: any) => {
         this.listTrips = data;
       })
-      .catch(error => {});
+      .catch(error => { });
   }
 }

@@ -135,10 +135,18 @@
     I have read and agree to the
     <ion-text color="dark" (click)="goToPrivacyPolicies()">privacy policies</ion-text>
   </ion-label>
-  <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
-    expand="full" shape="round" color="dark" (click)="createTrip()" tappable>
-    <ion-icon name="save"></ion-icon>
-    Save
-  </ion-button>
-
+  <ng-container *ngIf="!id">
+    <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
+      expand="full" shape="round" color="dark" (click)="createTrip()" tappable>
+      <ion-icon name="save"></ion-icon>
+      Save
+    </ion-button>
+  </ng-container>
+  <ng-container *ngIf="id">
+    <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
+      expand="full" shape="round" color="dark" (click)="editTrip()" tappable>
+      <ion-icon name="save"></ion-icon>
+      Save
+    </ion-button>
+  </ng-container>
 </ion-content>

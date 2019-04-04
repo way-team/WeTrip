@@ -197,6 +197,52 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public editTrip(
+    id: String,
+    title: string,
+    description: string,
+    start_date: String,
+    end_date: String,
+    trip_type: string,
+    city: Number,
+    userImage
+  ): Promise<any> {
+    const fd = new FormData();
+    let user: User;
+    let token: string;
+    token = this.cookieService.get('token');
+    return this.getUserLogged(token)
+      .then(res => {
+        fd.append('trip_id', String(id));
+        fd.append('title', title);
+        fd.append('description', description);
+        fd.append('start_date', String(start_date));
+        fd.append('end_date', String(end_date));
+        fd.append('trip_type', trip_type);
+        fd.append('city', String(city));
+        if (userImage !== null) {
+          fd.append('file', userImage, userImage.name);
+        }
+
+        user = res;
+        fd.append('user_id', String(user.id));
+
+        return this.makePostRequest(this.path + 'editTrip/', fd, token)
+          .then(res2 => {
+            console.log('Se ha creado exitosamente');
+            return Promise.resolve(res2);
+          })
+          .catch(error => {
+            console.log('Error: ' + error);
+            return Promise.reject(error);
+          });
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
   public listCities(): Promise<any> {
     const token = this.cookieService.get('token');
     return this.makeGetRequest(this.path + 'list-cities/', false, token)
