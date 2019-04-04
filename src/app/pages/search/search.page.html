@@ -23,7 +23,7 @@
       <ion-card-content class="bg-white">
 
         <div class="listSearch" *ngFor="let trip of listSearch">
-          <ion-card>
+          <ion-card (click)="goTo('trip-detail/', trip.id)">
             <ion-card-content class="bg-light">
 
               <ion-item>
