@@ -94,18 +94,16 @@ export class RestWS extends AbstractWS {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd)
-      .then(res => {
+    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token).then(res => {
         return Promise.resolve(res);
-      })
-      .catch(error => {
+      }).catch(error => {
         console.log('Error: ' + error);
         return Promise.reject(error);
       });
   }
 
   public listMeetYou(): Promise<any> {
-    let token = this.cookieService.get('token');
+    const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
     return this.makePostRequest(this.path + 'getPending/', fd)
@@ -121,11 +119,7 @@ export class RestWS extends AbstractWS {
   public listYourTrips(): Promise<any> {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(
-      this.path + 'trips/myTrips/',
-      null,
-      Authorization
-    )
+    return this.makeGetRequest(this.path + 'trips/myTrips/', null, Authorization)
       .then(res => {
         return Promise.resolve(res.results);
       })
