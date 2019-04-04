@@ -21,7 +21,7 @@
 
       <div class="chat-message" text-right *ngIf="message['sender'] === logged.user.username">
         <div class="right-bubble">
-          <span class="msg-name">Me</span>
+          <span class="msg-name">{{ 'CHAT.ME' | translate}}</span>
           <span class="msg-date">{{message['timestamp'] | date:'short'}}</span>
           <p text-wrap>{{message['message']}}</p>
         </div>
@@ -42,7 +42,7 @@
   <ion-toolbar>
     <div id="footer">
       <div class="elem">
-        <ion-input placeholder="Type a message" type="text" [(ngModel)]="message"></ion-input>
+        <ion-input placeholder="{{ 'CHAT.TYPE_A_MESSAGE' | translate}}" type="text" [(ngModel)]="message"></ion-input>
       </div>
       <div class="elem">
         <ion-button icon-only (click)="sendMessage()">

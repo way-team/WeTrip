@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 // Configuración de traducción
-import { createTranslateLoader } from './../../app.module';
+import { HttpLoaderFactory } from './../../app.module';
 const routes: Routes = [
   {
     path: '',
@@ -26,13 +26,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-      TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    }),
+    TranslateModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DiscoverPage, PopmenuComponent]

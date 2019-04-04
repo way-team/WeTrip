@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "extract-translations": "ngx-translate-extract --input ./src -o ./src/assets/i18n/es.json ./src/assets/i18n/en.json --clean --sort --format namespaced-json --marker _"
   },
   "private": true,
   "dependencies": {
@@ -59,6 +60,7 @@
     "@angular-devkit/core": "~7.2.3",
     "@angular-devkit/schematics": "~7.2.3",
     "@angular/language-service": "~7.2.2",
+    "@biesbjerg/ngx-translate-extract": "^2.3.4",
     "@ionic/angular-toolkit": "~1.4.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",

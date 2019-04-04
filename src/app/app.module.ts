@@ -27,6 +27,10 @@ import { ProfileComponent } from './components/display/profile/profile.component
 import { CookieLawModule } from 'angular2-cookie-law';
 import { AuthGuard } from './guards/auth.guard';
 
+export function HttpLoaderFactory(httpClient: HttpClient) {
+  return new TranslateHttpLoader(httpClient, "../assets/i18n/", ".json");
+}
+
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
   imports: [
@@ -35,17 +39,17 @@ import { AuthGuard } from './guards/auth.guard';
     HttpClientModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    HttpClientModule,
     ImagePageModule,
     SearchFilterPageModule,
-	CookieLawModule, // import Angular's CookieLaw modules
+    CookieLawModule, // import Angular's CookieLaw modules
+    HttpClientModule,
     TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    })
+          loader: {
+              provide: TranslateLoader,
+              useFactory: HttpLoaderFactory,
+              deps: [HttpClient]
+          }
+      })
   ],
   entryComponents: [NotificationsComponent],
   providers: [
@@ -63,6 +67,6 @@ import { AuthGuard } from './guards/auth.guard';
 })
 export class AppModule {}
 
-export function createTranslateLoader(http: HttpClient) {
+/* export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+} */

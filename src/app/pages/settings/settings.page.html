@@ -27,7 +27,7 @@
 
       <ion-button icon-left size="small" shape="round" color="secondary" (click)="logout()">
         <ion-icon name="log-out"></ion-icon>
-        logout
+        {{ 'LOGOUT' | translate}}
       </ion-button>
     </ion-label>
   </ion-item>
@@ -41,8 +41,9 @@
     <ion-item>
       <ion-icon name="settings" slot="start" color="primary"></ion-icon>
       <ion-label color="primary">App Language</ion-label>
-      <ion-select [(ngModel)]="lang">
-        <ion-select-option *ngFor="let language of languages" [value]="language">{{language}}</ion-select-option>
+      <ion-select [(ngModel)]="idioma" (ionChange)="cambioIdioma($event)">
+        <ion-select-option value="es">Español</ion-select-option>
+        <ion-select-option value="en">Inglés</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>

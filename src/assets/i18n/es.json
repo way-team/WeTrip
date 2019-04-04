@@ -1,5 +1,48 @@
 {
-
-  "FORGOT": "¿Has olvidado la clave?",
-  "SIGNIN":"Entrar"
+	"ABOUT": {
+		"ABOUTUS": "",
+		"BACK_DEVELOPER": "",
+		"DESCRIPTION_1": "",
+		"DESCRIPTION_2": "",
+		"FRONT_DEVELOPER": "",
+		"MANAGER_AND_FRONT_DEVELOPER": "",
+		"SPEAKER_AND": "",
+		"TRAVELMATE": ""
+	},
+	"CHAT": {
+		"ME": "",
+		"TYPE_A_MESSAGE": ""
+	},
+	"CONTACTS": {
+		"CONTACTS": "",
+		"THEY_WANT_TO_MEET_YOU": ""
+	},
+	"CREATE_TRIP": {
+		"CITY": "",
+		"CREATE_NEW_TRIP": "",
+		"DESCRIPTION": "",
+		"END_DATE": "",
+		"INTRUDUCE_DETAILS": "",
+		"PRIVACY_POLICIES": "",
+		"PRIVATE": "",
+		"PUBLIC": "",
+		"REQUIRED_FIELD": "",
+		"SAVE": "",
+		"START_DATE": "",
+		"TERMS": "",
+		"TITLE": "",
+		"TRIP": "",
+		"TYPE": "",
+		"UPLOAD_AN_IMAGE": "",
+		"WARNING_DATE": ""
+	},
+	"FORGOT": "",
+	"LOGOUT": "",
+	"SIGNIN": "",
+	"TRIP": {
+		"CREATED_BY": "",
+		"JOIN": "",
+		"START_DATE": "",
+		"TO": ""
+	}
 }
