@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 // Configuración de traducción
-import { createTranslateLoader } from './../../app.module';
+import { HttpLoaderFactory } from './../../app.module';
 const routes: Routes = [
   {
     path: '',
@@ -29,7 +29,7 @@ const routes: Routes = [
       TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
+        useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
     }),

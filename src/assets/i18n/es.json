@@ -1,5 +1,4 @@
 {
-
-  "FORGOT": "¿Has olvidado la clave?",
-  "SIGNIN":"Entrar"
+	"LOGIN.LOGIN": "Iniciar sesión",
+	"LOGOUT": "Cerrar sesión"
 }

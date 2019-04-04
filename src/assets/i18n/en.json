@@ -1,5 +1,4 @@
 {
-
-  "FORGOT": "Forgot Pass?",
-  "SIGNIN":"Signin"
+	"LOGIN.LOGIN": "Log In",
+	"LOGOUT": "Logout"
 }
