@@ -11,6 +11,7 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from datetime import datetime
 from django.db.models import Q
 from django.utils.datastructures import MultiValueDictKeyError
+from django.http.response import JsonResponse
 
 
 def get_user_by_token(request):
@@ -311,7 +312,7 @@ class GetTripView(APIView):
         trip_id = kwargs.get("trip_id", "")
         trip = Trip.objects.get(pk=trip_id)
 
-        return Response(TripSerializer(trip, many=False).data) 
+        return Response(TripSerializer(trip, many=False).data)
 
 
 class EditTripView(APIView):
@@ -401,12 +402,34 @@ class ApplyTripView(APIView):
             query = None
 
         if query is None:
-            application = Application(
-                applicant=user,
-                trip=trip,
-                status="P")
+            application = Application(applicant=user, trip=trip, status="P")
             application.save()
         else:
             raise ValueError("You have already applied to this trip")
 
         return Response(TripSerializer(trip, many=False).data)
+
+
+def message_list(request, sender=None, receiver=None):
+    """
+    List all required messages, or create a new message.
+    """
+    if request.method == 'GET':
+        messagesSend = Message.objects.filter(
+            sender_id=sender, receiver_id=receiver)
+        messagesReceives = Message.objects.filter(
+            sender_id=receiver, receiver_id=sender)
+
+        allmessages = messagesSend | messagesReceives
+        messages = allmessages.order_by('timestamp')
+
+        serializer = MessageSerializer(
+            messages, many=True, context={'request': request})
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = MessageSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
