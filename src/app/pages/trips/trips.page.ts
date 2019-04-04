@@ -44,4 +44,9 @@ export class TripsPage implements OnInit {
       })
       .catch(error => { });
   }
+
+  public goTo(destination: string, trip) {
+    const path = destination + trip.id;
+    this.navCtrl.navigateForward(path);
+  }
 }

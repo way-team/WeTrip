@@ -40,9 +40,19 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
-    path: 'chat/:id',
-    loadChildren: './pages/chat/chat.module#ChatPageModule',
-    canLoad: [AuthGuard]
+    path: 'chat',
+    children: [
+      {
+        path: ':loggedUsername',
+        children: [
+          {
+            path: ':otherUsername',
+            loadChildren: './pages/chat/chat.module#ChatPageModule',
+            canLoad: [AuthGuard]
+          }
+        ]
+      }
+    ]
   },
   {
     path: 'premium',
@@ -80,15 +90,18 @@ const routes: Routes = [
   { path: 'search', loadChildren: './pages/search/search.module#SearchPageModule' }
   ,
   {
+    path: 'search',
+    loadChildren: './pages/search/search.module#SearchPageModule'
+  },
+  {
     path: 'rating/:username',
     loadChildren: './pages/rating/rating.module#RatingPageModule',
     canLoad: [AuthGuard]
   }
-
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
