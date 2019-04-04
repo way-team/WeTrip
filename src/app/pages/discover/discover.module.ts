@@ -26,13 +26,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-      TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
+    TranslateModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DiscoverPage, PopmenuComponent]
