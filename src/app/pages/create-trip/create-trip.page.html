@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">Create new trip</ion-title>
+    <ion-title color="primary">{{ 'CREATE_TRIP.CREATE_NEW_TRIP' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,8 +11,8 @@
 
   <ion-card class="form-card">
     <ion-card-header class="bg-dark">
-      <ion-card-subtitle>Introduce details</ion-card-subtitle>
-      <ion-card-title>Trip</ion-card-title>
+      <ion-card-subtitle>{{ 'CREATE_TRIP.INTRUDUCE_DETAILS' | translate}}</ion-card-subtitle>
+      <ion-card-title>{{ 'CREATE_TRIP.TRIP' | translate}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="onCreateForm">
@@ -20,27 +20,27 @@
           <ion-item>
             <ion-label position="floating">
               <ion-icon name="create" item-start></ion-icon>
-              Title
+              {{ 'CREATE_TRIP.TITLE' | translate}}
             </ion-label>
             <ion-input [(ngModel)]="title" type="text" formControlName="title"></ion-input>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('title').touched && onCreateForm.get('title').hasError('required')">
             <ion-text color="warning">
-              Required Field
+                {{ 'CREATE_TRIP.REQUIRED_FIELD' | translate}}
             </ion-text>
           </p>
           <ion-item>
             <ion-label position="floating">
               <ion-icon name="create" item-start></ion-icon>
-              Description
+              {{ 'CREATE_TRIP.DESCRIPTION' | translate}}
             </ion-label>
             <ion-textarea [(ngModel)]="description" [ngModelOptions]="{standalone: true}"></ion-textarea>
           </ion-item>
           <ion-item>
             <ion-label position="floating">
               <ion-icon name="calendar" item-start></ion-icon>
-              Start date
+              {{ 'CREATE_TRIP.START_DATE' | translate}}
             </ion-label>
             <ion-datetime (ionChange)="validateDates()" displayFormat="DD/MM/YYYY" [(ngModel)]="start_date"
               formControlName="start_date">
@@ -49,13 +49,13 @@
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('start_date').touched && onCreateForm.get('start_date').hasError('required')">
             <ion-text color="warning">
-              Required Field
+                {{ 'CREATE_TRIP.REQUIRED_FIELD' | translate}}
             </ion-text>
           </p>
           <ion-item>
             <ion-label position="floating">
               <ion-icon name="calendar" item-start></ion-icon>
-              End date
+              {{ 'CREATE_TRIP.END_DATE' | translate}}
             </ion-label>
             <ion-datetime (ionChange)="validateDates()" displayFormat="DD/MM/YYYY" [(ngModel)]="end_date"
               formControlName="end_date"></ion-datetime>
@@ -63,12 +63,12 @@
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('end_date').touched && onCreateForm.get('end_date').hasError('required')">
             <ion-text color="warning">
-              Required Field
+                {{ 'CREATE_TRIP.REQUIRED_FIELD' | translate}}
             </ion-text>
           </p>
           <p *ngIf="!validateDatesAttr" class="text08">
             <ion-text color="warning">
-              End date can not been set before the start date
+                {{ 'CREATE_TRIP.WARNING_DATE' | translate}}
             </ion-text>
           </p>
 
@@ -76,16 +76,16 @@
             <ion-item>
               <ion-label position="floating">
                 <ion-icon name="pricetag" item-start></ion-icon>
-                Type
+                {{ 'CREATE_TRIP.TYPE' | translate}}
               </ion-label>
             </ion-item>
 
             <ion-item lines="none">
-              <ion-label>PUBLIC</ion-label>
+              <ion-label>{{ 'CREATE_TRIP.PUBLIC' | translate}}</ion-label>
               <ion-radio value="PUBLIC" checked></ion-radio>
             </ion-item>
             <ion-item>
-              <ion-label>PRIVATE</ion-label>
+              <ion-label>{{ 'CREATE_TRIP.PRIVATE' | translate}}</ion-label>
               <ion-radio value="PRIVATE"></ion-radio>
             </ion-item>
           </ion-radio-group>
@@ -93,7 +93,7 @@
           <ion-item>
             <ion-label position="floating">
               <ion-icon name="map" item-start></ion-icon>
-              City
+              {{ 'CREATE_TRIP.CITY' | translate}}
             </ion-label>
             <ion-select [(ngModel)]="city" formControlName="city">
               <ion-select-option value="city.id" *ngFor="let city of cities" value="{{city.id}}">{{ city.name }}
@@ -104,7 +104,7 @@
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('city').touched && onCreateForm.get('city').hasError('required')">
             <ion-text color="warning">
-              Required Field
+                {{ 'CREATE_TRIP.REQUIRED_FIELD' | translate}}
             </ion-text>
           </p>
           <ion-item lines="none"></ion-item>
@@ -113,7 +113,7 @@
               <ion-card-header>
                 <ion-title>
                   <ion-icon name="image" item-start></ion-icon>
-                  Upload an image
+                  {{ 'CREATE_TRIP.UPLOAD_AN_IMAGE' | translate}}
                 </ion-title>
               </ion-card-header>
               <ion-card-content>
@@ -132,21 +132,13 @@
   <br>
   <ion-checkbox [(ngModel)]="privacyPolicites" checked="false"></ion-checkbox>
   <ion-label>
-    I have read and agree to the
-    <ion-text color="dark" (click)="goToPrivacyPolicies()">privacy policies</ion-text>
+      {{ 'CREATE_TRIP.TERMS' | translate}}
+    <ion-text color="dark" (click)="goToPrivacyPolicies()">{{ 'CREATE_TRIP.PRIVACY_POLICIES' | translate}}</ion-text>
   </ion-label>
-  <ng-container *ngIf="!id">
-    <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
-      expand="full" shape="round" color="dark" (click)="createTrip()" tappable>
-      <ion-icon name="save"></ion-icon>
-      Save
-    </ion-button>
-  </ng-container>
-  <ng-container *ngIf="id">
-    <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
-      expand="full" shape="round" color="dark" (click)="editTrip()" tappable>
-      <ion-icon name="save"></ion-icon>
-      Save
-    </ion-button>
-  </ng-container>
+  <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
+    expand="full" shape="round" color="dark" (click)="createTrip()" tappable>
+    <ion-icon name="save"></ion-icon>
+    {{ 'CREATE_TRIP.SAVE' | translate}}
+  </ion-button>
+
 </ion-content>
