@@ -4,12 +4,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import generics, filters
-from .models import UserProfile, Trip, Invitation, City, Rate
+from .models import UserProfile, Trip, Invitation, City, Rate, Application, Language
 from django.contrib.auth.models import User
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from datetime import datetime
-from django.db.models import Q
+from django.db.models import Q, Count, StdDev, Avg, Sum
+from django.utils.datastructures import MultiValueDictKeyError
+from django.http.response import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def get_user_by_token(request):
@@ -109,6 +112,8 @@ class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
@@ -125,6 +130,8 @@ class GetPendingView(APIView):
     """
     Method to get the pending friends of the logged user
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
@@ -141,6 +148,8 @@ class DiscoverPeopleView(APIView):
     """
     Method to get the people who have the same interests as you in order to discover people
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
@@ -271,7 +280,7 @@ class CreateTrip(APIView):
 
             trip.save()
 
-        except:
+        except MultiValueDictKeyError:
             trip = Trip(
                 user=user,
                 title=title,
@@ -288,3 +297,230 @@ class CreateTrip(APIView):
             city.trips.add(trip)
 
             return Response(TripSerializer(trip, many=False).data)
+
+
+class GetTripView(APIView):
+    """
+    Method to get a trip by its ID
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def get(self, request, *args, **kwargs):
+        """
+        GET method
+        """
+        trip_id = kwargs.get("trip_id", "")
+        trip = Trip.objects.get(pk=trip_id)
+
+        return Response(TripSerializer(trip, many=False).data)
+
+
+class EditTripView(APIView):
+    """
+    Method to edit a trip by its ID
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        trip_id = request.data.get("trip_id", "")
+        title = request.data.get("title", "")
+        description = request.data.get("description", "")
+        start_date = request.data.get("start_date", "")
+        end_date = request.data.get("end_date", "")
+        trip_type = request.data.get("trip_type", "")
+
+        city_id = request.data.get("city", "")
+
+        city = City.objects.get(pk=city_id)
+        image_name = city.country.name + '.jpg'
+
+        stored_trip = Trip.objects.get(pk=trip_id)
+        stored_creator = stored_trip.user
+        if stored_creator != user:
+            raise ValueError("You are not the creator of this trip")
+
+        stored_cities = stored_trip.cities.all()
+
+        try:
+            user_image = request.data['file']
+            trip = Trip(
+                id=trip_id,
+                user=user,
+                title=title,
+                description=description,
+                startDate=start_date,
+                endDate=end_date,
+                tripType=trip_type,
+                image=image_name,
+                userImage=user_image)
+            trip.save()
+
+        except MultiValueDictKeyError:
+            trip = Trip(
+                id=trip_id,
+                user=user,
+                title=title,
+                description=description,
+                startDate=start_date,
+                endDate=end_date,
+                tripType=trip_type,
+                image=image_name)
+            trip.save()
+
+        finally:
+            if not city in stored_cities:
+                city.trips.add(stored_trip)
+
+        return Response(TripSerializer(stored_trip, many=False).data)
+
+class DashboardData(APIView):
+    """
+    Method to apply to a trip specified by its ID
+    """
+    permission_classes = (IsAdminUser, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        stats = {}
+        numberOfTrips = Trip.objects.all().count()
+        stats['numberOfTrips']= numberOfTrips
+        stats['numberOfTripsJanuary']=Trip.objects.filter(Q(startDate__month='01')|Q(endDate__month='01')).count()
+        stats['numberOfTripsFebruary']=Trip.objects.filter(Q(startDate__month='02')|Q(endDate__month='02')).count()
+        stats['numberOfTripsMarch']=Trip.objects.filter(Q(startDate__month='03')|Q(endDate__month='03')).count()
+        stats['numberOfTripsApril']=Trip.objects.filter(Q(startDate__month='04')|Q(endDate__month='04')).count()
+        stats['numberOfTripsMay']=Trip.objects.filter(Q(startDate__month='05')|Q(endDate__month='05')).count()
+        stats['numberOfTripsJune']=Trip.objects.filter(Q(startDate__month='06')|Q(endDate__month='06')).count()
+        stats['numberOfTripsJuly']=Trip.objects.filter(Q(startDate__month='07')|Q(endDate__month='07')).count()
+        stats['numberOfTripsAugust']=Trip.objects.filter(Q(startDate__month='08')|Q(endDate__month='08')).count()
+        stats['numberOfTripsSeptember']=Trip.objects.filter(Q(startDate__month='09')|Q(endDate__month='09')).count()
+        stats['numberOfTripsOctober']=Trip.objects.filter(Q(startDate__month='10')|Q(endDate__month='10')).count()
+        stats['numberOfTripsNovember']=Trip.objects.filter(Q(startDate__month='11')|Q(endDate__month='11')).count()
+        stats['numberOfTripsDecember']=Trip.objects.filter(Q(startDate__month='12')|Q(endDate__month='12')).count()
+        
+        numberOfPublicTrips = Trip.objects.filter(tripType='PUBLIC').count()
+        numberOfPrivateTrips = Trip.objects.filter(tripType='PRIVATE').count()
+        stats['numberOfPublicTrips']=numberOfPublicTrips
+        stats['numberOfPrivateTrips']=numberOfPrivateTrips
+        if(numberOfPublicTrips!=0):
+            stats['ratioOfPrivateTrips'] = numberOfPrivateTrips/numberOfPublicTrips
+        else:
+            stats['ratioOfPrivateTrips'] = 0
+        stats['percentagePrivateTrips'] = numberOfPrivateTrips/numberOfTrips
+        stats['percentagePublicTrips'] = numberOfPublicTrips/numberOfTrips
+
+
+        numberOfUsers = UserProfile.objects.all().count()
+        stats['numberOfUsers']= numberOfUsers
+        
+        stats['percentageMen']=UserProfile.objects.filter(gender='M').count()/numberOfUsers
+        stats['percentageWomen']=UserProfile.objects.filter(gender='F').count()/numberOfUsers
+        stats['percentageNonBinary']=UserProfile.objects.filter(gender='N').count()/numberOfUsers
+
+
+        numberOfPremiumUsers = UserProfile.objects.filter(isPremium=True).count()
+        numberOfNonPremiumUsers = UserProfile.objects.filter(isPremium=False).count()
+        stats['numberOfPremiumUsers']= numberOfPremiumUsers
+        stats['numberOfNonPremiumUsers']= numberOfNonPremiumUsers
+        stats['percentagePremiumUsers']= numberOfPremiumUsers/numberOfUsers
+        
+        activeUsers=UserProfile.objects.filter(status='Active').count()
+        deletedUsers=UserProfile.objects.filter(status='Deleted').count()
+
+        if(deletedUsers!=0):
+            stats['activeUsersRatio']= activeUsers/deletedUsers
+        else:
+            stats['activeUsersRatio']= 0
+
+        if(numberOfNonPremiumUsers!=0):
+            stats['premiumUsersRatio']= numberOfPremiumUsers/numberOfNonPremiumUsers
+        else:
+            stats['premiumUsersRatio']= 0
+
+        stats['avgTripsPerUser']= numberOfTrips/numberOfUsers
+
+        numberOfApps = Application.objects.all().count()
+        stats['avgAppsPerTrip']= numberOfApps/numberOfTrips
+
+        numberOfLanguages = Language.objects.all().count()
+        stats['avgLanguagesPerUser']=numberOfLanguages/numberOfUsers
+        #stats['stDevLanguagesPerUser']=
+
+
+        stats['avgRatingPerUser']=UserProfile.objects.aggregate(Avg('avarageRate'))['avarageRate__avg']
+        #stats['stDevRatingPerUser']=
+        stats['top5AppsTrips']= TripSerializer(Trip.objects.annotate(apps=Count('applications')).order_by('-apps')[:5], many=True).data
+        stats['top5NumberOfCitiesTrips']=TripSerializer(Trip.objects.annotate(cities_count=Count('cities')).order_by('-cities_count')[:5], many=True).data
+        stats['top5NumberOfTripsCities']=CitySerializer(City.objects.annotate(trips_count=Count('trips')).order_by('-trips_count')[:5], many=True).data
+        stats['top5MostCommonInterests']=InterestSerializer(Interest.objects.annotate(users_count=Count('users')).order_by('-users_count')[:5], many=True).data
+
+
+
+        return JsonResponse(stats)
+
+class ApplyTripView(APIView):
+    """
+    Method to apply to a trip specified by its ID
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        trip_id = request.data.get("trip_id", "")
+        trip = Trip.objects.get(pk=trip_id)
+
+        try:
+            query = Application.objects.filter(trip=trip).get(applicant=user)
+        except Application.DoesNotExist:
+            query = None
+
+        if query is None:
+            application = Application(applicant=user, trip=trip, status="P")
+            application.save()
+        else:
+            raise ValueError("You have already applied to this trip")
+
+        return Response(TripSerializer(trip, many=False).data)
+
+
+@csrf_exempt
+def message_list(request, sender=None, receiver=None):
+    """
+    List all required messages, or create a new message.
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    if request.method == 'GET':
+        messagesSend = Message.objects.filter(
+            sender_id=sender, receiver_id=receiver)
+        messagesReceives = Message.objects.filter(
+            sender_id=receiver, receiver_id=sender)
+
+        allmessages = messagesSend | messagesReceives
+        messages = allmessages.order_by('timestamp')
+
+        serializer = MessageSerializer(
+            messages, many=True, context={'request': request})
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = request.POST
+        serializer = MessageSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)

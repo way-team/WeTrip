@@ -1,4 +1,4 @@
-from .models import UserProfile, Language, Trip, Application, City, Country, Interest
+from .models import UserProfile, Language, Trip, Application, City, Country, Interest, Message
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import datetime
@@ -25,7 +25,7 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = [
-            'creator', 'title', 'description', 'startDate', 'endDate',
+            'id', 'creator', 'title', 'description', 'startDate', 'endDate',
             'tripType', 'image', 'userImage', 'status'
         ]
 
@@ -108,3 +108,21 @@ class UserProfileSerializer(serializers.ModelSerializer):
             startDate__gte=now)
 
         return TripSerializer(trip_queryset, many=True).data
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender = serializers.SlugRelatedField(
+        many=False, slug_field='username', queryset=User.objects.all())
+    receiver = serializers.SlugRelatedField(
+        many=False, slug_field='username', queryset=User.objects.all())
+
+    class Meta:
+        model = Message
+        fields = ['sender', 'receiver', 'message', 'timestamp']
+
+class InterestSerializer(serializers.ModelSerializer):
+    users = UserProfileSerializer(many=True)
+
+    class Meta:
+        model = Interest
+        fields = ['name', 'users']

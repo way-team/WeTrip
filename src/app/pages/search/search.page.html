@@ -3,12 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">Search</ion-title>
+    <ion-title color="primary">{{ 'SEARCH.SEARCH' | translate}}</ion-title>
   </ion-toolbar>
 
   <ion-button color="lightcyan" expand="full" (click)="goToMyTrips()" no-margin>
     <ion-text aling="left">
-      My Trips
+        {{ 'SEARCH.MY_TRIPS' | translate}}
     </ion-text>
   </ion-button>
 </ion-header>
@@ -23,12 +23,12 @@
       <ion-card-content class="bg-white">
 
         <div class="listSearch" *ngFor="let trip of listSearch">
-          <ion-card>
+          <ion-card (click)="goTo('trip-detail/', trip.id)">
             <ion-card-content class="bg-light">
 
               <ion-item>
                 <ion-thumbnail class="ion-avatar" slot="start">
-                  <img src="https://travel-mate-server.herokuapp.com/media/{{trip.userImage}}" class="user-avatar">
+                  <img src="{{path}}media/{{trip.userImage}}" class="user-avatar">
                 </ion-thumbnail>
 
                 <ion-text color="dark">
@@ -43,7 +43,7 @@
         </div>
         <ng-container *ngIf="listSearch.length === 0">
           <br>
-          <h1 class="textTrips">You don't have any trip yet</h1>
+          <h1 class="textTrips">{{ 'SEARCH.WITHOUT_TRIPS' | translate}}</h1>
 
         </ng-container>
       </ion-card-content>

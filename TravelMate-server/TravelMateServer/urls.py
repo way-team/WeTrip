@@ -40,5 +40,14 @@ urlpatterns = [
     path('getFriends/', views.GetFriendsView.as_view()),
     path('getPending/', views.GetPendingView.as_view()),
     path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
+    url('^getTrip/(?P<trip_id>.+)/$', views.GetTripView.as_view()),
+    path('editTrip/', views.EditTripView.as_view()),
+    path('applyTrip/', views.ApplyTripView.as_view()),
+    path('dashboard/', views.DashboardData.as_view(), name='dashboard'),
+    path(
+        'messages/<int:sender>/<int:receiver>/',
+        views.message_list,
+        name='message-detail'),
+    path('messages/', views.message_list, name='message-list'),
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

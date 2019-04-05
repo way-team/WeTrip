@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button color="primary"></ion-back-button>
         </ion-buttons>
-        <ion-title color="primary">Contacts</ion-title>
+        <ion-title color="primary">{{ 'CONTACTS.CONTACTS' | translate}}</ion-title>
     </ion-toolbar>
     <!-- <ion-toolbar color="dark">
             <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
@@ -25,7 +25,12 @@
                     <div class="listFriends" *ngFor="let user of friends">
                         <ion-item class="bg-primary" no-margin>
                             <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="chat(user.id)">
+                                <ion-button size="small" shape="round" color="warning" slot="end"
+                                    [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
+                                    <ion-icon name="star" item-right></ion-icon>
+                                </ion-button>
+                                <ion-button size="small" shape="round" color="dark" slot="end"
+                                    (click)="chat(user.user.username)">
                                     <ion-icon name="send" item-right></ion-icon>
 
                                 </ion-button>
@@ -64,7 +69,7 @@
 
     <ion-card color="dark" no-margin>
         <ion-card-content>
-            They want to meet you
+            {{ 'CONTACTS.THEY_WANT_TO_MEET_YOU' | translate}}
             <ion-icon name="arrow-dropdown"></ion-icon>
         </ion-card-content>
 

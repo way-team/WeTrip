@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="light">App Settings</ion-title>
+    <ion-title color="light">{{ 'SETTIGNS.APP_SETTINGS' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-item class="bg-profile">
     <ion-avatar slot="start">
-      <img src="assets/img/profile/{{userLogged.photo}}.jpg" class="user-avatar" alt="profile"
+      <img src="assets/img/profile/{{userLogged.photo}}.jpg" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}"
         (click)="goTo('user-profile')">
     </ion-avatar>
     <ion-label>
@@ -27,7 +27,7 @@
 
       <ion-button icon-left size="small" shape="round" color="secondary" (click)="logout()">
         <ion-icon name="log-out"></ion-icon>
-        logout
+        {{ 'SETTIGNS.LOGOUT' | translate}}
       </ion-button>
     </ion-label>
   </ion-item>
@@ -35,19 +35,20 @@
   <ion-list no-border>
     <ion-list-header>
       <ion-text color="dark">
-        <h5>General</h5>
+        <h5>{{ 'SETTIGNS.GENERAL' | translate}}</h5>
       </ion-text>
     </ion-list-header>
     <ion-item>
       <ion-icon name="settings" slot="start" color="primary"></ion-icon>
-      <ion-label color="primary">App Language</ion-label>
-      <ion-select [(ngModel)]="lang">
-        <ion-select-option *ngFor="let language of languages" [value]="language">{{language}}</ion-select-option>
+      <ion-label color="primary">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
+      <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
+        <ion-select-option value="es">Español</ion-select-option>
+        <ion-select-option value="en">English</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
       <ion-icon name="notifications" slot="start" color="primary"></ion-icon>
-      <ion-label class="label" color="primary"> Enable notifications </ion-label>
+      <ion-label class="label" color="primary"> {{ 'SETTIGNS.ENABLE_NOTIFICATIONS' | translate}} </ion-label>
       <ion-toggle [(ngModel)]="enableNotifications"></ion-toggle>
     </ion-item>
   </ion-list>
