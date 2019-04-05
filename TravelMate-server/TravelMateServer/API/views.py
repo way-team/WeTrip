@@ -384,8 +384,8 @@ class DashboardData(APIView):
     """
     Method to apply to a trip specified by its ID
     """
-    #permission_classes = (IsAdminUser, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAdminUser, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
