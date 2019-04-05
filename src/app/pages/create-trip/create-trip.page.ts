@@ -22,6 +22,8 @@ export class CreateTripPage implements OnInit {
   userImage: File = null;
   privacyPolicites: boolean;
   validateDatesAttr: boolean = true;
+  validateDatesBeforeToday: boolean = true;
+  minDate: Date = new Date();
 
   constructor(
     public navCtrl: NavController,
@@ -97,6 +99,11 @@ export class CreateTripPage implements OnInit {
       this.validateDatesAttr = false;
     } else {
       this.validateDatesAttr = true;
+    }
+    if (start < this.minDate) {
+      this.validateDatesBeforeToday = false;
+    } else {
+      this.validateDatesBeforeToday = true;
     }
   }
   onFileInputChange(file: File) {

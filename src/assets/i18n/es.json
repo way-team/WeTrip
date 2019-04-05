@@ -35,7 +35,8 @@
 		"TRIP": "Viaje",
 		"TYPE": "Tipo",
 		"UPLOAD_AN_IMAGE": "Subir una imagen",
-		"WARNING_DATE": "La fecha de finalización no puede ser anterior a la fecha de comienzo"
+		"WARNING_DATE": "La fecha de finalización no puede ser anterior a la fecha de comienzo",
+		"WARNING_DATE_MIN": "No se puede establecer una fecha pasada"
 	},
 	"DISCOVER": {
 		"CONTACT": "Contactar",
