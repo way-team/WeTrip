@@ -80,7 +80,7 @@ export class RestWS extends AbstractWS {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getFriends/', fd)
+    return this.makePostRequest(this.path + 'getFriends/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })
@@ -94,21 +94,19 @@ export class RestWS extends AbstractWS {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd)
-      .then(res => {
+    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token).then(res => {
         return Promise.resolve(res);
-      })
-      .catch(error => {
+      }).catch(error => {
         console.log('Error: ' + error);
         return Promise.reject(error);
       });
   }
 
   public listMeetYou(): Promise<any> {
-    let token = this.cookieService.get('token');
+    const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getPending/', fd)
+    return this.makePostRequest(this.path + 'getPending/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })
@@ -121,11 +119,7 @@ export class RestWS extends AbstractWS {
   public listYourTrips(): Promise<any> {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(
-      this.path + 'trips/myTrips/',
-      null,
-      Authorization
-    )
+    return this.makeGetRequest(this.path + 'trips/myTrips/', null, Authorization)
       .then(res => {
         return Promise.resolve(res.results);
       })
@@ -138,11 +132,7 @@ export class RestWS extends AbstractWS {
   public listSearchTrips(): Promise<any> {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(
-      this.path + 'trips/',
-      null,
-      Authorization
-    )
+    return this.makeGetRequest(this.path + 'trips/', null, Authorization)
       .then(res => {
         return Promise.resolve(res.results);
       })
@@ -232,6 +222,52 @@ export class RestWS extends AbstractWS {
   public listCities(): Promise<any> {
     const token = this.cookieService.get('token');
     return this.makeGetRequest(this.path + 'list-cities/', false, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
+  public getTripById(id: string) {
+    const Authorization = this.cookieService.get('token');
+    
+    return this.makeGetRequest(this.path + 'getTrip/' + id + '/', null, Authorization).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        console.log(error);
+      });
+  }
+  
+  public sendMessage(sender: string, receiver: string, message: string) {
+    const fd = new FormData();
+    let token: string;
+    token = this.cookieService.get('token');
+    fd.append('sender', sender);
+    fd.append('receiver', receiver);
+    fd.append('message', message);
+
+    return this.makePostRequest(this.path + 'messages/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
+  public getMessages(senderId: Number, receiverId: Number) {
+    let token: string;
+    token = this.cookieService.get('token');
+
+    return this.makeGetRequest(
+      this.path + 'messages/' + senderId + '/' + receiverId + '/',
+      false,
+      token
+    )
       .then(res => {
         return Promise.resolve(res);
       })
