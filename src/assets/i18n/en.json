@@ -118,10 +118,11 @@
 	},
 	"PREMIUM": {
 		"BUY_NOW": "Buy now with PayPal",
-		"JOIN": "Join to our Premium club",
+		"JOIN": "Our Premium club",
 		"PREMIUM": "Premium",
 		"TEXT_1": "With the premium version, you will enjoy our app without ads and your trips will have preferential location.",
-		"TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease."
+		"TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease.",
+		"IS_PREMIUM": "Your are Premium"
 	},
 	"PROFILE": {
 		"CITY": "City",
@@ -135,7 +136,8 @@
 		"WANTS_TO_GO_TO": "Wants to go to"
 	},
 	"RATING": {
-		"RATING": "Rating"
+		"RATING": "Rating",
+		"RATE": "Rate"
 	},
 	"REGISTER": {
 		"EMAIL": "Email",

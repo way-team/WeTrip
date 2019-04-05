@@ -1,6 +1,9 @@
 import { Component, OnInit ,AfterViewInit} from '@angular/core';
 import { NavController, LoadingController, ToastController } from '@ionic/angular';
 import * as $ from "jquery";
+import { User, UserProfile } from '../../app.data.model';
+import { DataManagement } from '../../services/dataManagement';
+import { CookieService } from 'ngx-cookie-service';
 
 declare let paypal: any;
 
@@ -10,15 +13,36 @@ declare let paypal: any;
   styleUrls: ['./premium.page.scss'],
 })
 export class PremiumPage implements OnInit {
+   public premium: boolean;
+   public logged: UserProfile;
+   private username: string;
+
+
 
   constructor(
-   public toastCtrl: ToastController,
-   public navCtrl: NavController,
-   public loadingCtrl: LoadingController) { }
+       public toastCtrl: ToastController,
+       public navCtrl: NavController,
+       public loadingCtrl: LoadingController,
+        public dM: DataManagement,
+        private cookieService: CookieService
+     ) {
+
+     const token = this.cookieService.get('token');
+     this.dM
+      .getUserLogged(token)
+      .then(res => {
+        this.logged = res;
+        this.premium=res.isPremium;
+        this.username=res.user.username;
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+      }); }
 
   ngOnInit() {
 
     }
+
 
   async payment() {
     const loader = await this.loadingCtrl.create({

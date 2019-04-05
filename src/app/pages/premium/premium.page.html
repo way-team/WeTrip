@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">{{ 'PREMIUM.PREMIUM' | translate}}</ion-title>
+    <ion-title color="light">{{ 'PREMIUM.PREMIUM' | translate}}</ion-title>
   </ion-toolbar>
 
 </ion-header>
@@ -19,21 +19,24 @@
           {{ 'PREMIUM.TEXT_1' | translate}}
       </p>
       <P>
-          {{ 'PREMIUM.TEXT_2' | translate}}</P>
+       {{ 'PREMIUM.TEXT_2' | translate}}</P>
+
 
 
     </ion-card-content>
-
-
-
-
-
   </ion-card>
+
+   <div *ngIf="premium" class="bg-light" text-center padding>
+     <h1>  {{ 'PREMIUM.IS_PREMIUM' | translate}}</h1>
+    <img src="assets/img/trofeo.png">
+  </div>
+
+
+
 
 
 
 </ion-content>
 
 
-
-<ion-button id="paypal-button" no-margin></ion-button>
+<ion-button *ngIf="!premium" id="paypal-button" no-margin></ion-button>

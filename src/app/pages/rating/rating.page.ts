@@ -41,7 +41,7 @@ export class RatingPage implements OnInit {
       .getUserBy(username, token)
       .then((res: UserProfile) => {
         this.user = res;
-        this.ratingActual=res.averageRate;
+        this.ratingActual=res.avarageRate;
         this.voted=this.username;
       })
       .catch(error => {
