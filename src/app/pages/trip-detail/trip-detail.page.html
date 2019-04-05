@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">Trip detail</ion-title>
+    <ion-title color="primary">{{ 'TRIP_DETAILS.TRIP_DETAILS' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,7 +19,7 @@
         <ion-text color="dark"><strong>{{ trip.creator }}</strong></ion-text>
       </h1>
       <h4> {{ trip.title }}: {{ trip.description }} </h4>
-      <h5> {{ 'TRIP.START_DATE' | translate }}: {{ trip.startDate }} {{ 'TRIP.TO' | translate }} {{ trip.endDate }} </h5>
+      <h5> {{ 'TRIP_DETAILS.START_DATE' | translate }}: {{ trip.startDate }} {{ 'TRIP_DETAILS.TO' | translate }} {{ trip.endDate }} </h5>
     </ion-card-content>
   </ion-card>
 
@@ -37,7 +37,7 @@
     <ion-label>
       <ion-text color="light">
         <h2>
-          <strong> {{ 'TRIP.CREATED_BY' | translate }} </strong>
+          <strong> {{ 'TRIP_DETAILS.CREATED_BY' | translate }} </strong>
         </h2>
       </ion-text>
       <ion-text color="warning">
@@ -49,7 +49,7 @@
 
       <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
 
-        {{ 'TRIP.JOIN' | translate }}
+        {{ 'TRIP_DETAILS.JOIN' | translate }}
       </ion-button>
     </ion-label>
   </ion-item>

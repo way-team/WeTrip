@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="ligth">
 
-    <ion-title color="dark">General Data Protection Regulation</ion-title>
+    <ion-title color="dark">{{ 'GDPR.TITLE' | translate}}</ion-title>
 
   </ion-toolbar>
 
@@ -15,112 +15,110 @@
     <ion-card-content>
 
 <ion-text>
-<h1>Privacy Informati​on</h1>
+<h1>{{ 'GDPR.PRIVACY_INFORMATION' | translate}}</h1>
 
 <h3>
 <p>
-In this article we explain how we collect and use personal data.
-</p><p>
+{{ 'GDPR.TEXT_1' | translate}}
+</p>
+<p>
 
-Our access and handling of this information is subject to the General Data Protection Regulations (GDPR).
+{{ 'GDPR.TEXT_2' | translate}}
 </p>
 </h3>
-    <h1>The data we collect</h1>
+    <h1>{{ 'GDPR.TEXT_3' | translate}}</h1>
 
 <h3>
     <p>
-Any issue we manage on your behalf typically makes it necessary to provide us with information.
-Depending upon the nature of the issue, the specific information may vary.
-    However, we will only request information that is relevant and required for managing the issue in question.
+            {{ 'GDPR.TEXT_4' | translate}}
+            {{ 'GDPR.TEXT_5' | translate}}
+            {{ 'GDPR.TEXT_6' | translate}}
 
 </p>
 <p>
-If the matter includes the gathering and assessing of evidence,
-    that evidence may include information that would be subject to GDPR and this policy.
+        {{ 'GDPR.TEXT_7' | translate}}
+        {{ 'GDPR.TEXT_8' | translate}}
 </p>
 
 <p>
-For example, we collect personal information such as names and contact details via contact forms on our website
-    and/or through voluntary subscriptions to premium version.</p>
+        {{ 'GDPR.TEXT_9' | translate}}</p>
 </h3>
-        <h1>How this data is protected</h1>
+        <h1>{{ 'GDPR.TEXT_10' | translate}}</h1>
 
 <h3>
 <p>
-Personal information may be stored in a number of locations,
-    depending upon the nature of the information and how it was acquired
-    (e.g. through being engaged to handle a matter or through a consensual subscription or contact request).
+        {{ 'GDPR.TEXT_11' | translate}}
+        {{ 'GDPR.TEXT_12' | translate}}
+        {{ 'GDPR.TEXT_13' | translate}}
 </p>
     <p>
 
 
-Information relating to engagements typically resides in our database in Heroku.
-        This includes any documents that you send us or that we produce.
-        Heroku is a secure server and is accessed via an encrypted network connection.
-        There may be working copies and backups of those documents on a system within our team devices.
-
+            {{ 'GDPR.TEXT_14' | translate}}
+            {{ 'GDPR.TEXT_15' | translate}}
+            {{ 'GDPR.TEXT_16' | translate}}
+            {{ 'GDPR.TEXT_17' | translate}}
 </p>
     <p>
 
-Information relating to matters that we handle is only retained as long as necessary.
-        This typically means that once a matter has been completed,
-        we will only retain your information for long enough to ensure that any supplementary queries or further actions can be handled.
+            {{ 'GDPR.TEXT_18' | translate}}
+            {{ 'GDPR.TEXT_19' | translate}}
+            {{ 'GDPR.TEXT_20' | translate}}
     </p>
     <p>
 
-We would not retain information for more than one year beyond the end of our engagement unless there is a specific requirement to do so.
+            {{ 'GDPR.TEXT_21' | translate}}
 
 </p>
 <p>
-Once an engagement is completed we may, with your consent,
-    retain your information in our customer database so that we can follow up with you in future on possible engagements
-    or keep you informed.
+        {{ 'GDPR.TEXT_22' | translate}}
+        {{ 'GDPR.TEXT_23' | translate}}
 </p>
 
 </h3>
-        <h1>Your rights regarding your data</h1>
+        <h1>{{ 'GDPR.TEXT_24' | translate}}</h1>
         <h3>
 
 <p>
-You have the right to request access (i.e. copies of) all your personal information held by us.
-    We will provide this information within thirty days of having received your request by mail (way.team.soft@gmail.com).
-    Where applicable, you can have your data in a “portable” format.
-</p>
+        {{ 'GDPR.TEXT_25' | translate}}
+        {{ 'GDPR.TEXT_26' | translate}}
+        {{ 'GDPR.TEXT_27' | translate}}
+    </p>
             <p>
 
 
-You have the right to ensure any information we retain is accurate.
-                You can inform us of any changes to your personal information and we will update our records.</p>
+                    {{ 'GDPR.TEXT_28' | translate}}
+                    {{ 'GDPR.TEXT_29' | translate}}</p>
 
 <p>
 
-You have the right to have your personal information erased,
-    provided it is no longer required for the handling of any unresolved matter or legal proceeding.</p>
+        {{ 'GDPR.TEXT_30' | translate}}
+        {{ 'GDPR.TEXT_31' | translate}}</p>
 <p>
 
 
-You have the right to restrict the use of your information under certain circumstances.
+        {{ 'GDPR.TEXT_32' | translate}}
 
-You also have the right to object against the use of your personal information,
-    for example by withdrawing consent to be contacted for direct marketing purposes.</p>
+        {{ 'GDPR.TEXT_33' | translate}}
+        {{ 'GDPR.TEXT_34' | translate}}</p>
 </h3>
 
-        <h1>Handling of data breaches</h1>
+        <h1>{{ 'GDPR.TEXT_35' | translate}}</h1>
 
 <h3>
     <p>
 
-A data breach is any occasion where security measures have been deliberately or accidentally circumvented in order to access, alter, disclose or destroy personal information.
+            {{ 'GDPR.TEXT_36' | translate}}
 
 
 
-For example, if unauthorised parties have gained access to and potentially obtained copies of your personal information from our systems.
+            {{ 'GDPR.TEXT_37' | translate}}
 
 </p>
     <p>
 
-In the unlikely event that there is a personal data breach that represents a risk to individuals or their businesses,
-        we will inform the Information Commissioners Office (ICO) within 72 hours of becoming aware of it.
+            {{ 'GDPR.TEXT_38' | translate}}
+            {{ 'GDPR.TEXT_39' | translate}}
     </p>
 </h3>
         </ion-text>
@@ -128,7 +126,7 @@ In the unlikely event that there is a personal data breach that represents a ris
  <a class="text08" tappable (click)="logout()">
                   <ion-text color="medium">
                    <h1> <ion-icon name="log-out" size="big"></ion-icon>
-                    <strong>go out</strong></h1>
+                    <strong>{{ 'GDPR.GO_OUT' | translate}}</strong></h1>
                   </ion-text>
                 </a>
     </ion-card-content>
