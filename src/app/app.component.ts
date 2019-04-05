@@ -101,12 +101,12 @@ export class AppComponent {
           this.navCtrl.navigateForward('discover');
         }
 
-        this.translateService.setDefaultLang('es');
+        this.translateService.setDefaultLang('en');
         if (this.cookieService.check('lang')) {
           let language = this.cookieService.get('lang');
           this.translateService.use(language);
         } else {
-          this.translateService.use('es');
+          this.translateService.use('en');
         }
       })
       .catch(() => { });

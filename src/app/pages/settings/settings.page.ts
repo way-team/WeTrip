@@ -49,7 +49,7 @@ export class SettingsPage implements OnInit {
     this.navCtrl.navigateForward(destination);
   }
 
-  cambioIdioma(selectedValue: { detail: { value: string; }; }){
+  changeLanguage(selectedValue: { detail: { value: string; }; }){
     
     this.cookieService.set('lang', selectedValue.detail.value);
     this.translateService.use(selectedValue.detail.value);

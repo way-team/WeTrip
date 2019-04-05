@@ -7,7 +7,7 @@
       <div class="logoCircle"></div>
       <h4 no-margin>
         <ion-text color="light" class="fw700">
-          travelmate
+            {{ 'LOGIN.TRAVELMATE' | translate}}
         </ion-text>
       </h4>
     </div>
@@ -17,7 +17,7 @@
       <ion-item no-padding class="animated fadeInUp">
         <ion-label position="floating">
           <ion-icon name="person" item-start></ion-icon>
-          Username
+          {{ 'LOGIN.USERNAME' | translate}}
         </ion-label>
         <ion-input [(ngModel)]="registerCredentials.username" color="secondary" type="text" formControlName="username">
         </ion-input>
@@ -25,14 +25,14 @@
       <p ion-text class="text08"
         *ngIf="onLoginForm.get('username').touched && onLoginForm.get('username').hasError('required')">
         <ion-text color="warning">
-          Required Field
+            {{ 'LOGIN.REQUIRED_FIELD' | translate}}
         </ion-text>
       </p>
 
       <ion-item no-padding class="animated fadeInUp">
         <ion-label position="floating">
           <ion-icon name="lock" item-start></ion-icon>
-          Password
+          {{ 'LOGIN.PASSWORD' | translate}}
         </ion-label>
         <ion-input [(ngModel)]="registerCredentials.password" color="secondary" type="password"
           formControlName="password"></ion-input>
@@ -40,14 +40,14 @@
       <p ion-text color="warning" class="text08"
         *ngIf="onLoginForm.get('password').touched && onLoginForm.get('password').hasError('required')">
         <ion-text color="warning">
-          Required Field
+            {{ 'LOGIN.REQUIRED_FIELD' | translate}}
         </ion-text>
       </p>
     </form>
 
     <p text-right tappable (click)="forgotPass()" class="paz">
       <ion-text color="light">
-        <strong>{{ 'FORGOT' | translate}}</strong>
+        <strong>{{ 'LOGIN.FORGOT_PASSWORD' | translate}}</strong>
       </ion-text>
     </p>
 
@@ -55,12 +55,12 @@
       <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="login()"
         [disabled]="!onLoginForm.valid" tappable>
         <ion-icon name="log-in"></ion-icon>
-        {{ 'SIGNIN' | translate}}
+        {{ 'LOGIN.SIGNIN' | translate}}
       </ion-button>
 
       <p text-center>
         <ion-text color="light">
-          Or Signin with:
+            {{ 'LOGIN.OR_SIGNIN_WITH' | translate}}:
         </ion-text>
       </p>
 
@@ -90,7 +90,7 @@
     <div text-center margin-top>
       <span (click)="goToRegister()" class="paz" tappable>
         <ion-text color="light">
-          New here? <strong>Sign Up</strong>
+            {{ 'LOGIN.NEW_HERE' | translate}} <strong>{{ 'LOGIN.SIGN_UP' | translate}}</strong>
         </ion-text>
       </span>
     </div>

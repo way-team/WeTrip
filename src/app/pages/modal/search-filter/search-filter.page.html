@@ -6,7 +6,7 @@
         </ion-button>
     </ion-buttons>
     <ion-title>
-    	Search Filter
+				{{ 'SEARCH_FILTER.SEARCH_FILTER' | translate}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,41 +17,41 @@
     <ion-label color="primary" stacked>
     	<ion-text color="dark" class="fw500">Area</ion-text>
     </ion-label>
-    <ion-input type="number" placeholder="Put your preference area"></ion-input>
+    <ion-input type="number" placeholder="{{ 'SEARCH_FILTER.PUT_YOUR_PREFERENCE_AREA' | translate}}"></ion-input>
   </ion-item>
 
 
 	<ion-item>
-	  <ion-label class="fw500" color="dark">Organize by</ion-label>
+	  <ion-label class="fw500" color="dark">{{ 'SEARCH_FILTER.ORGANIZE_BY' | translate}}</ion-label>
 	  <ion-select [(ngModel)]="organizeby">
-	    <ion-select-option>Authenticated user</ion-select-option>
-	    <ion-select-option>Anyone</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.AUTHENTICATED_USER' | translate}}</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.ANYONE' | translate}}</ion-select-option>
 
 	  </ion-select>
 	</ion-item>
 
 	<ion-item>
-	  <ion-label class="fw500" color="dark">Type</ion-label>
+	  <ion-label class="fw500" color="dark">{{ 'SEARCH_FILTER.TYPE' | translate}}</ion-label>
 	  <ion-select [(ngModel)]="dishtype" multiple="true">
-	    <ion-select-option>Adventure</ion-select-option>
-	    <ion-select-option>Other</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.ADVENTURE' | translate}}</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.OTHER' | translate}}</ion-select-option>
 
 	  </ion-select>
 	</ion-item>
 
 	<ion-item>
-	  <ion-label class="fw500" color="dark">Nationalities</ion-label>
+	  <ion-label class="fw500" color="dark">{{ 'SEARCH_FILTER.NATIONALITIES' | translate}}</ion-label>
 	  <ion-select [(ngModel)]="dishnationality" multiple="true">
-	    <ion-select-option>Spanish</ion-select-option>
-	    <ion-select-option>Italian</ion-select-option>
-	    <ion-select-option>Chinese</ion-select-option>
-		<ion-select-option>British</ion-select-option>
-	    <ion-select-option>Anyone</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.SPANISH' | translate}}</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.ITALIAN' | translate}}</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.CHINESE' | translate}}</ion-select-option>
+		<ion-select-option>{{ 'SEARCH_FILTER.BRITISH' | translate}}</ion-select-option>
+	    <ion-select-option>{{ 'SEARCH_FILTER.ANYONE' | translate}}</ion-select-option>
 
 	  </ion-select>
 	</ion-item>
 
 
 
-	<ion-button expand="full" color="primary" (click)="closeModal()">Filter Results</ion-button>
+	<ion-button expand="full" color="primary" (click)="closeModal()">{{ 'SEARCH_FILTER.FILTER_RESULTS' | translate}}</ion-button>
 </ion-content>
