@@ -158,7 +158,7 @@ export class RestWS extends AbstractWS {
 
         user = res;
         fd.append('user_id', String(user.id));
-
+        fd.append('user',String(user));
         return this.makePostRequest(this.path + 'rate/', fd, token)
           .then(res2 => {
             console.log('ok');

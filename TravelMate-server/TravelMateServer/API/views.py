@@ -52,37 +52,20 @@ class RateUser(APIView):
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
-        voter = User.objects.get(username=username).userprofile
-        voterTrips = Trip.objects.filter(user__user=voter)
+        voter0 = User.objects.get(username=username)
+        voter = UserProfile.objects.get(user=voter0)
 
-        votedUsername = request.data.get('voted', '')
-        voted = User.objects.get(username=votedUsername).userprofile
-        votedTrips = Trip.objects.filter(user__user=voted)
+        votedusername = request.data.get('voted', '')
+        voted0 = User.objects.get(username=votedusername)
+        voteduser = UserProfile.objects.get(user=voted0)
 
-        value = request.data.get('value', '')
 
-        tripTogether = False
-        for trip1 in voterTrips:
-            for trip2 in votedTrips:
-                if(trip1 == trip2):
-                    tripTogether = True
-                    break;
 
-        if(tripTogether):
-            rate = Rate.objects.filter(voted=voted, voter=voter).first()
-            if (rate == None):
-                rate = Rate(voted=voted, voter=voter, value=value)
-                rate.save()
-            else:
-                rate.value = value
-                rate.save()
+        value = request.data.get('rating', '0')
 
-            refreshUserAverageRating(voted)
-            userProfile = UserProfile.objects.get(user=voted)
-        else:
-            raise ValueError("You cannot rate this user")
-
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        rate = Rate(voter=voter, voted=voteduser, value=value)
+        rate.save()
+        return Response(UserProfileSerializer(voteduser, many=False).data)
     
     def refreshUserAverageRating(user):
         userRatings = Rate.objects.filter(voted=user)
