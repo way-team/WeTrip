@@ -98,7 +98,10 @@ export class AppComponent {
         this.splashScreen.hide();
 
         if (this.cookieService.check('token')) {
-          this.navCtrl.navigateForward('discover');
+          let isGdpr = document.URL.split('/')[3] === 'gdpr';
+          if (!isGdpr) {
+            this.navCtrl.navigateForward('discover');
+          }
         }
 
         this.translateService.setDefaultLang('en');
@@ -109,7 +112,7 @@ export class AppComponent {
           this.translateService.use('en');
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }
 
   logout() {

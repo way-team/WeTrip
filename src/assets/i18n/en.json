@@ -35,7 +35,9 @@
 		"TRIP": "Trip",
 		"TYPE": "Type",
 		"UPLOAD_AN_IMAGE": "Upload an image",
-		"WARNING_DATE": "End date can not been set before the start date"
+		"WARNING_DATE": "End date can not been set before the start date",
+		"WARNING_DATE_MIN": "Can not set a past date"
+
 	},
 	"DISCOVER": {
 		"CONTACT": "Contact",
