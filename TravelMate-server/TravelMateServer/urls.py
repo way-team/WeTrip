@@ -50,4 +50,4 @@ urlpatterns = [
         name='message-detail'),
     path('messages/', views.message_list, name='message-list'),
 ] + static(
-    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)

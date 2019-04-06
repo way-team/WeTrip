@@ -10,7 +10,9 @@
 <div class="profile" *ngIf="user">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
+      <ion-avatar class="avatar">
       <img src="/assets/img/profile/{{user.photo}}.jpg" />
+      </ion-avatar>
       <h1 class="fw500">{{ user.first_name }}</h1>
       <h2 color="light" margin-bottom>{{user.description}}</h2>
       <ion-icon name="star"></ion-icon>
