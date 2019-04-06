@@ -39,7 +39,8 @@
                             </ion-buttons>
 
                             <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                <img [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward"
+                                    src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
 
                             </ion-avatar>
 
@@ -83,7 +84,8 @@
                     <div class="listMeetYou" *ngFor="let user of meetYou">
                         <ion-item class="bg-primary" no-margin>
                             <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar"
+                                    [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward">
                             </ion-avatar>
                             <ion-label>
                                 <ion-text color="dark">
