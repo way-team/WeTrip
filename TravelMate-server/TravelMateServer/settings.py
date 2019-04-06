@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'storages',
 ]
 
 REST_FRAMEWORK = {
@@ -132,12 +133,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = 'staticfiles'
-
-#To serve images
-MEDIA_URL = '/media/'
-
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
     'rest_framework.pagination.PageNumberPagination',
@@ -146,11 +141,29 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+import django_heroku
+django_heroku.settings(locals())
+
+from dotenv import load_dotenv
+load_dotenv()
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = 'wayteam-static'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'TravelMateServer.storage_backends.MediaStorage'
+
 import os.path
 from os.path import abspath, dirname
 
-MEDIA_ROOT = os.path.join(
-    os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static/img')
-
-import django_heroku
-django_heroku.settings(locals())
+STATICFILES_DIRS = [
+    os.path.join(
+        os.path.abspath(os.path.join(abspath(__file__), os.pardir)), 'static'),
+]

@@ -63,7 +63,7 @@
               {{ 'CREATE_TRIP.END_DATE' | translate}}
             </ion-label>
             <ion-datetime (ionChange)="validateDates()" displayFormat="DD/MM/YYYY" [(ngModel)]="end_date"
-              formControlName="end_date" max="2030-12-31"></ion-datetime>
+              formControlName="end_date" [min]="2019" max="2030-12-31"></ion-datetime>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('end_date').touched && onCreateForm.get('end_date').hasError('required')">
