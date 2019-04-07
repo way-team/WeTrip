@@ -10,7 +10,7 @@
 <ion-content *ngIf="trip">
 
   <div class="bg-light" text-center>
-    <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.image}}" width="100%">
+    <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}" width="100%">
   </div>
 
   <ion-card class="bg-light" no-margin>
@@ -32,7 +32,7 @@
     <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
     <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
     <ion-avatar slot="start">
-      <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}" class="user-avatar">
+      <img src="assets/img/trip/{{trip.image}}" class="user-avatar">
     </ion-avatar>
     <ion-label>
       <ion-text color="light">
