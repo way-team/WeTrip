@@ -174,6 +174,34 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
+
+   public paid(
+    ): Promise<any> {
+    const fd = new FormData();
+    let user: User;
+    let token: string;
+    token = this.cookieService.get('token');
+    return this.getUserLogged(token)
+      .then(res => {
+
+        user = res;
+        fd.append('user_id', String(user.id));
+        fd.append('user',String(user));
+        return this.makePostRequest(this.path + 'paid/', fd, token)
+          .then(res2 => {
+            console.log('ok');
+            return Promise.resolve(res2);
+          })
+          .catch(error => {
+            console.log('Error: ' + error);
+            return Promise.reject(error);
+          });
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
     public createTrip(
     title: string,
     description: string,
