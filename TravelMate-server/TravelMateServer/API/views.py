@@ -503,19 +503,22 @@ class ApplyTripView(APIView):
 
         return Response(TripSerializer(trip, many=False).data)
 
-class setUserToPremium(APIView):
+class SetUserToPremium(APIView):
     """
     Makes a user Premium
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
-        user = get_user_by_token(request)
-        user.isPremium = True
-        user.save()
+        usernamepaid = request.user.username
 
-        return Response(UserProfileSerializer(user).data)
+        userpaid = User.objects.get(username=usernamepaid)
+        userprofilepaid = UserProfile.objects.get(user=userpaid)
+        userprofilepaid.isPremium = True;
+        userprofilepaid.save()
+
+        return Response(UserProfileSerializer(userprofilepaid, many=False).data)
 
 @csrf_exempt
 def message_list(request, sender=None, receiver=None):

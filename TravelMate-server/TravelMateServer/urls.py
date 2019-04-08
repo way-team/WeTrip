@@ -49,6 +49,6 @@ urlpatterns = [
         views.message_list,
         name='message-detail'),
     path('messages/', views.message_list, name='message-list'),
-    path('paid/', views.setUserToPremium.as_view(), name='set-to-premium'),
+    path('paid/', views.SetUserToPremium.as_view()),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)
