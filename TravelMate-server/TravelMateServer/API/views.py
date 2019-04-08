@@ -12,7 +12,7 @@ from datetime import datetime
 from django.db.models import Q, Count, StdDev, Avg, Sum
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
 
 def get_user_by_token(request):
@@ -510,7 +510,7 @@ class setUserToPremium(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
-
+    @ensure_csrf_cookie
     def post(self, request):
         user = get_user_by_token(request)
         user.isPremium = True
