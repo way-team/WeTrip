@@ -510,7 +510,6 @@ class setUserToPremium(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
-    @ensure_csrf_cookie
     def post(self, request):
         user = get_user_by_token(request)
         user.isPremium = True
