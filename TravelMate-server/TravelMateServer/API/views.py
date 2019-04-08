@@ -344,14 +344,15 @@ class EditTripView(APIView):
     """
     Method to edit a trip by its ID
     """
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    #permission_classes = (IsAuthenticated, )
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        user = get_user_by_token(request)
+        #user = get_user_by_token(request)
+        user = User.objects.get(username="idelozar").userprofile
 
         trip_id = request.data.get("trip_id", "")
         title = request.data.get("title", "")
@@ -400,9 +401,9 @@ class EditTripView(APIView):
 
         finally:
             if not city in stored_cities:
-                city.trips.add(stored_trip)
+                city.trips.add(trip)
 
-        return Response(TripSerializer(stored_trip, many=False).data)
+        return Response(TripSerializer(trip, many=False).data)
 
 class DashboardData(APIView):
     """
