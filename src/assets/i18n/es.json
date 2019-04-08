@@ -121,7 +121,8 @@
 		"PREMIUM": "Premium",
 		"TEXT_1": "Con la versión premium, disfrutará de nuestra aplicación sin anuncios y sus viajes tendrán una ubicación preferencial.",
 		"TEXT_2": "Además, garantiza su identidad y sus compañeros de viaje se sentirán a gusto.",
-		"IS_PREMIUM": "Eres Premium"
+		"IS_PREMIUM": "Eres Premium",
+		"NEW_PREMIUM": "¡Enhorabuena! Eres miembro de nuestro club Premium"
 	},
 	"PROFILE": {
 		"CITY": "Ciudad",

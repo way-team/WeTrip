@@ -1,10 +1,11 @@
 import { Component, OnInit ,AfterViewInit} from '@angular/core';
-import { NavController, LoadingController, ToastController , AlertController} from '@ionic/angular';
+import { NavController, LoadingController, ToastController , AlertController, ActionSheetController} from '@ionic/angular';
 import * as $ from "jquery";
 import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
 import { Location } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 declare let paypal: any;
 
@@ -27,7 +28,9 @@ export class PremiumPage implements OnInit {
         public dM: DataManagement,
         private cookieService: CookieService,
         public alertCtrl: AlertController,
-        private location: Location
+        private location: Location,
+        public actionSheetCtrl: ActionSheetController,
+        private translate: TranslateService
      ) {
 
      const token = this.cookieService.get('token');
@@ -68,6 +71,27 @@ export class PremiumPage implements OnInit {
       });
   }
 
+
+
+ async success() {
+    const loader = await this.loadingCtrl.create({
+      duration: 2000
+    });
+    let translation:string = this.translate.instant('PREMIUM.NEW_PREMIUM');
+    loader.present();
+    loader.onWillDismiss().then(async l => {
+      const toast = await this.toastCtrl.create({
+        showCloseButton: true,
+        cssClass: 'bg-profile',
+        message: translation,
+
+         position: 'middle'
+      });
+
+      toast.present();
+      this.navCtrl.navigateForward('/discover');
+    });
+  }
   async payment() {
     const loader = await this.loadingCtrl.create({
       duration: 2000
@@ -104,7 +128,7 @@ ngAfterViewInit(): void {
           return actions.payment.execute().then( (payment) => {
 
              this.paid();
-             this.ngOnInit();
+             this.success();
           })
         }
       }, '#paypal-button');
