@@ -4,7 +4,7 @@ import { RestWS } from './restService';
 
 @Injectable()
 export class DataManagement {
-  constructor(private restService: RestWS) {}
+  constructor(private restService: RestWS) { }
 
   public login(credentials): Promise<any> {
     return this.restService
@@ -154,6 +154,37 @@ export class DataManagement {
         return Promise.reject('error');
       });
   }
+
+
+  public editTrip(
+    id: String,
+    title: string,
+    description: string,
+    start_date: String,
+    end_date: String,
+    trip_type: string,
+    city: Number,
+    userImage
+  ): Promise<any> {
+    return this.restService
+      .editTrip(
+        id,
+        title,
+        description,
+        start_date,
+        end_date,
+        trip_type,
+        city,
+        userImage
+      )
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
   public rate(
     voted: string,
     rating: Number
@@ -170,7 +201,7 @@ export class DataManagement {
         return Promise.reject('error');
       });
   }
-    public paid(): Promise<any> {
+  public paid(): Promise<any> {
     return this.restService
       .paid()
       .then(data => {
@@ -200,7 +231,7 @@ export class DataManagement {
     });
   }
 
-  public sendMessage(sender: string,receiver: string,message: string): Promise<any> {
+  public sendMessage(sender: string, receiver: string, message: string): Promise<any> {
     return this.restService
       .sendMessage(sender, receiver, message)
       .then(data => {
