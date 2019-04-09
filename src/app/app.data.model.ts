@@ -9,7 +9,7 @@ export class UserProfile {
   nationality: string;
   photo: string;
   discoverPhoto: string;
-  averageRate: Number;
+  avarageRate: Number;
   numRate: Number;
   isPremium: boolean;
   status: boolean;

@@ -4,7 +4,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">{{ 'RATING.RATING' | translate}}</ion-title>
+    <ion-title color="light">{{ 'RATING.RATING' | translate}}</ion-title>
   </ion-toolbar>
 
 </ion-header>
@@ -12,8 +12,13 @@
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
 
-      <h1 class="fw500">{{ user.first_name }}</h1>
-      <h2 color="light" margin-bottom>{{user.description}}</h2>
+                            <ion-avatar slot="start">
+                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+
+                            </ion-avatar>
+
+      <h1 >{{ user.first_name }} {{user.last_name}}</h1>
+
 
       <ion-icon *ngIf="ratingActual>=1" name="star"></ion-icon>
       <ion-icon *ngIf="ratingActual>=2" name="star"></ion-icon>
@@ -39,13 +44,26 @@
 
 
 <div class="rating">
-    <input type="radio" id="star5" name="rating" value="5" /><label for="star5"></label>
-    <input type="radio" id="star4" name="rating" value="4" /><label for="star4"></label>
-    <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
-    <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
-    <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+
+
+        <input type="radio" id="star5" [(ngModel)]="rating" value="5" /><label for="star5"></label>
+        <input type="radio" id="star4" [(ngModel)]="rating" value="4" /><label for="star4"></label>
+        <input type="radio" id="star3" [(ngModel)]="rating" value="3" /><label for="star3"></label>
+        <input type="radio" id="star2" [(ngModel)]="rating" value="2" /><label for="star2"></label>
+        <input type="radio" id="star1" [(ngModel)]="rating" value="1" /><label for="star1"></label>
+        <br>
+    <br>
+   </div>
+                </ion-item>
+                <div>
+  <ion-button icon-left size="medium"
+    expand="full" shape="round" color="dark" (click)="rate()" tappable>
+    <ion-icon name="rate"></ion-icon>
+   {{ 'RATING.RATE' | translate}}
+  </ion-button>
 </div>
-           </ion-item>
+
+
           </ion-list>
         </ion-col>
       </ion-row>

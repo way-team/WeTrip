@@ -12,7 +12,7 @@ from datetime import datetime
 from django.db.models import Q, Count, StdDev, Avg, Sum
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
 
 def get_user_by_token(request):
@@ -43,7 +43,6 @@ class RateUser(APIView):
 
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
-
     def post(self, request):
         """
         POST method
@@ -52,38 +51,27 @@ class RateUser(APIView):
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
-        voter = User.objects.get(username=username).userprofile
-        voterTrips = Trip.objects.filter(user__user=voter)
+        voter0 = User.objects.get(username=username)
+        voter = UserProfile.objects.get(user=voter0)
 
-        votedUsername = request.data.get('voted', '')
-        voted = User.objects.get(username=votedUsername).userprofile
-        votedTrips = Trip.objects.filter(user__user=voted)
+        votedusername = request.data.get('voted', '')
+        voted0 = User.objects.get(username=votedusername)
+        voteduser = UserProfile.objects.get(user=voted0)
 
-        value = request.data.get('value', '')
+        value = request.data.get('rating', '0')
 
-        tripTogether = False
-        for trip1 in voterTrips:
-            for trip2 in votedTrips:
-                if(trip1 == trip2):
-                    tripTogether = True
-                    break;
+        rate = Rate(voter=voter, voted=voteduser, value=value)
+        actualrating = int(voteduser.avarageRate)
+        numTimes = int(voteduser.numRate)
+        new = int(value)
+        voteduser.avarageRate = int((actualrating*numTimes + new)/(numTimes + 1))
+        voteduser.numRate = numTimes + 1
 
-        if(tripTogether):
-            rate = Rate.objects.filter(voted=voted, voter=voter).first()
-            if (rate == None):
-                rate = Rate(voted=voted, voter=voter, value=value)
-                rate.save()
-            else:
-                rate.value = value
-                rate.save()
+        voteduser.save()
+        rate.save()
 
-            refreshUserAverageRating(voted)
-            userProfile = UserProfile.objects.get(user=voted)
-        else:
-            raise ValueError("You cannot rate this user")
+        return Response(UserProfileSerializer(voteduser, many=False).data)
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
-    
     def refreshUserAverageRating(user):
         userRatings = Rate.objects.filter(voted=user)
         sumRatings = 0
@@ -188,10 +176,18 @@ class DiscoverPeopleView(APIView):
 
         # First, we obtain the people with the same interests
         #for interest in interests:
-        aux = UserProfile.objects.filter(interests__in=interests)
-        for person in aux:
-            if not person in discover_people:
-                discover_people.append(person)
+        # First, we obtain the people with the same interests
+        #for interest in interests:
+        ranking = []
+        for interest in interests:
+            l = []
+            l.append(interest)
+            aux = UserProfile.objects.filter(interests__in=l)
+            for person in aux:
+                ranking.append(person)
+        import collections
+        ranking = collections.Counter(ranking).most_common()
+        discover_people = [i[0] for i in ranking]
 
         # After, we obtain the people without the same interests
         # and append them at the end of the discover list
@@ -344,14 +340,16 @@ class EditTripView(APIView):
     """
     Method to edit a trip by its ID
     """
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    #permission_classes = (IsAuthenticated, )
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        user = get_user_by_token(request)
+        #user = get_user_by_token(request)
+        user = User.objects.get(username="idelozar").userprofile
 
         trip_id = request.data.get("trip_id", "")
         title = request.data.get("title", "")
@@ -400,9 +398,10 @@ class EditTripView(APIView):
 
         finally:
             if not city in stored_cities:
-                city.trips.add(stored_trip)
+                city.trips.add(trip)
 
-        return Response(TripSerializer(stored_trip, many=False).data)
+        return Response(TripSerializer(trip, many=False).data)
+
 
 class DashboardData(APIView):
     """
@@ -417,79 +416,107 @@ class DashboardData(APIView):
         """
         stats = {}
         numberOfTrips = Trip.objects.all().count()
-        stats['numberOfTrips']= numberOfTrips
-        stats['numberOfTripsJanuary']=Trip.objects.filter(Q(startDate__month='01')|Q(endDate__month='01')).count()
-        stats['numberOfTripsFebruary']=Trip.objects.filter(Q(startDate__month='02')|Q(endDate__month='02')).count()
-        stats['numberOfTripsMarch']=Trip.objects.filter(Q(startDate__month='03')|Q(endDate__month='03')).count()
-        stats['numberOfTripsApril']=Trip.objects.filter(Q(startDate__month='04')|Q(endDate__month='04')).count()
-        stats['numberOfTripsMay']=Trip.objects.filter(Q(startDate__month='05')|Q(endDate__month='05')).count()
-        stats['numberOfTripsJune']=Trip.objects.filter(Q(startDate__month='06')|Q(endDate__month='06')).count()
-        stats['numberOfTripsJuly']=Trip.objects.filter(Q(startDate__month='07')|Q(endDate__month='07')).count()
-        stats['numberOfTripsAugust']=Trip.objects.filter(Q(startDate__month='08')|Q(endDate__month='08')).count()
-        stats['numberOfTripsSeptember']=Trip.objects.filter(Q(startDate__month='09')|Q(endDate__month='09')).count()
-        stats['numberOfTripsOctober']=Trip.objects.filter(Q(startDate__month='10')|Q(endDate__month='10')).count()
-        stats['numberOfTripsNovember']=Trip.objects.filter(Q(startDate__month='11')|Q(endDate__month='11')).count()
-        stats['numberOfTripsDecember']=Trip.objects.filter(Q(startDate__month='12')|Q(endDate__month='12')).count()
-        
+        stats['numberOfTrips'] = numberOfTrips
+        stats['numberOfTripsJanuary'] = Trip.objects.filter(
+            Q(startDate__month='01') | Q(endDate__month='01')).count()
+        stats['numberOfTripsFebruary'] = Trip.objects.filter(
+            Q(startDate__month='02') | Q(endDate__month='02')).count()
+        stats['numberOfTripsMarch'] = Trip.objects.filter(
+            Q(startDate__month='03') | Q(endDate__month='03')).count()
+        stats['numberOfTripsApril'] = Trip.objects.filter(
+            Q(startDate__month='04') | Q(endDate__month='04')).count()
+        stats['numberOfTripsMay'] = Trip.objects.filter(
+            Q(startDate__month='05') | Q(endDate__month='05')).count()
+        stats['numberOfTripsJune'] = Trip.objects.filter(
+            Q(startDate__month='06') | Q(endDate__month='06')).count()
+        stats['numberOfTripsJuly'] = Trip.objects.filter(
+            Q(startDate__month='07') | Q(endDate__month='07')).count()
+        stats['numberOfTripsAugust'] = Trip.objects.filter(
+            Q(startDate__month='08') | Q(endDate__month='08')).count()
+        stats['numberOfTripsSeptember'] = Trip.objects.filter(
+            Q(startDate__month='09') | Q(endDate__month='09')).count()
+        stats['numberOfTripsOctober'] = Trip.objects.filter(
+            Q(startDate__month='10') | Q(endDate__month='10')).count()
+        stats['numberOfTripsNovember'] = Trip.objects.filter(
+            Q(startDate__month='11') | Q(endDate__month='11')).count()
+        stats['numberOfTripsDecember'] = Trip.objects.filter(
+            Q(startDate__month='12') | Q(endDate__month='12')).count()
+
         numberOfPublicTrips = Trip.objects.filter(tripType='PUBLIC').count()
         numberOfPrivateTrips = Trip.objects.filter(tripType='PRIVATE').count()
-        stats['numberOfPublicTrips']=numberOfPublicTrips
-        stats['numberOfPrivateTrips']=numberOfPrivateTrips
-        if(numberOfPublicTrips!=0):
-            stats['ratioOfPrivateTrips'] = numberOfPrivateTrips/numberOfPublicTrips
+        stats['numberOfPublicTrips'] = numberOfPublicTrips
+        stats['numberOfPrivateTrips'] = numberOfPrivateTrips
+        if (numberOfPublicTrips != 0):
+            stats[
+                'ratioOfPrivateTrips'] = numberOfPrivateTrips / numberOfPublicTrips
         else:
             stats['ratioOfPrivateTrips'] = 0
-        stats['percentagePrivateTrips'] = numberOfPrivateTrips/numberOfTrips
-        stats['percentagePublicTrips'] = numberOfPublicTrips/numberOfTrips
-
+        stats['percentagePrivateTrips'] = numberOfPrivateTrips / numberOfTrips
+        stats['percentagePublicTrips'] = numberOfPublicTrips / numberOfTrips
 
         numberOfUsers = UserProfile.objects.all().count()
-        stats['numberOfUsers']= numberOfUsers
-        
-        stats['percentageMen']=UserProfile.objects.filter(gender='M').count()/numberOfUsers
-        stats['percentageWomen']=UserProfile.objects.filter(gender='F').count()/numberOfUsers
-        stats['percentageNonBinary']=UserProfile.objects.filter(gender='N').count()/numberOfUsers
+        stats['numberOfUsers'] = numberOfUsers
 
+        stats['percentageMen'] = UserProfile.objects.filter(
+            gender='M').count() / numberOfUsers
+        stats['percentageWomen'] = UserProfile.objects.filter(
+            gender='F').count() / numberOfUsers
+        stats['percentageNonBinary'] = UserProfile.objects.filter(
+            gender='N').count() / numberOfUsers
 
-        numberOfPremiumUsers = UserProfile.objects.filter(isPremium=True).count()
-        numberOfNonPremiumUsers = UserProfile.objects.filter(isPremium=False).count()
-        stats['numberOfPremiumUsers']= numberOfPremiumUsers
-        stats['numberOfNonPremiumUsers']= numberOfNonPremiumUsers
-        stats['percentagePremiumUsers']= numberOfPremiumUsers/numberOfUsers
-        
-        activeUsers=UserProfile.objects.filter(status='Active').count()
-        deletedUsers=UserProfile.objects.filter(status='Deleted').count()
+        numberOfPremiumUsers = UserProfile.objects.filter(
+            isPremium=True).count()
+        numberOfNonPremiumUsers = UserProfile.objects.filter(
+            isPremium=False).count()
+        stats['numberOfPremiumUsers'] = numberOfPremiumUsers
+        stats['numberOfNonPremiumUsers'] = numberOfNonPremiumUsers
+        stats['percentagePremiumUsers'] = numberOfPremiumUsers / numberOfUsers
 
-        if(deletedUsers!=0):
-            stats['activeUsersRatio']= activeUsers/deletedUsers
+        activeUsers = UserProfile.objects.filter(status='Active').count()
+        deletedUsers = UserProfile.objects.filter(status='Deleted').count()
+
+        if (deletedUsers != 0):
+            stats['activeUsersRatio'] = activeUsers / deletedUsers
         else:
-            stats['activeUsersRatio']= 0
+            stats['activeUsersRatio'] = 0
 
-        if(numberOfNonPremiumUsers!=0):
-            stats['premiumUsersRatio']= numberOfPremiumUsers/numberOfNonPremiumUsers
+        if (numberOfNonPremiumUsers != 0):
+            stats[
+                'premiumUsersRatio'] = numberOfPremiumUsers / numberOfNonPremiumUsers
         else:
-            stats['premiumUsersRatio']= 0
+            stats['premiumUsersRatio'] = 0
 
-        stats['avgTripsPerUser']= numberOfTrips/numberOfUsers
+        stats['avgTripsPerUser'] = numberOfTrips / numberOfUsers
 
         numberOfApps = Application.objects.all().count()
-        stats['avgAppsPerTrip']= numberOfApps/numberOfTrips
+        stats['avgAppsPerTrip'] = numberOfApps / numberOfTrips
 
         numberOfLanguages = Language.objects.all().count()
-        stats['avgLanguagesPerUser']=numberOfLanguages/numberOfUsers
+        stats['avgLanguagesPerUser'] = numberOfLanguages / numberOfUsers
         #stats['stDevLanguagesPerUser']=
 
-
-        stats['avgRatingPerUser']=UserProfile.objects.aggregate(Avg('avarageRate'))['avarageRate__avg']
+        stats['avgRatingPerUser'] = UserProfile.objects.aggregate(
+            Avg('avarageRate'))['avarageRate__avg']
         #stats['stDevRatingPerUser']=
-        stats['top5AppsTrips']= TripSerializer(Trip.objects.annotate(apps=Count('applications')).order_by('-apps')[:5], many=True).data
-        stats['top5NumberOfCitiesTrips']=TripSerializer(Trip.objects.annotate(cities_count=Count('cities')).order_by('-cities_count')[:5], many=True).data
-        stats['top5NumberOfTripsCities']=CitySerializer(City.objects.annotate(trips_count=Count('trips')).order_by('-trips_count')[:5], many=True).data
-        stats['top5MostCommonInterests']=InterestSerializer(Interest.objects.annotate(users_count=Count('users')).order_by('-users_count')[:5], many=True).data
-
-
+        stats['top5AppsTrips'] = TripSerializer(
+            Trip.objects.annotate(
+                apps=Count('applications')).order_by('-apps')[:5],
+            many=True).data
+        stats['top5NumberOfCitiesTrips'] = TripSerializer(
+            Trip.objects.annotate(
+                cities_count=Count('cities')).order_by('-cities_count')[:5],
+            many=True).data
+        stats['top5NumberOfTripsCities'] = CitySerializer(
+            City.objects.annotate(
+                trips_count=Count('trips')).order_by('-trips_count')[:5],
+            many=True).data
+        stats['top5MostCommonInterests'] = InterestSerializer(
+            Interest.objects.annotate(
+                users_count=Count('users')).order_by('-users_count')[:5],
+            many=True).data
 
         return JsonResponse(stats)
+
 
 class ApplyTripView(APIView):
     """
@@ -519,6 +546,25 @@ class ApplyTripView(APIView):
             raise ValueError("You have already applied to this trip")
 
         return Response(TripSerializer(trip, many=False).data)
+
+
+class SetUserToPremium(APIView):
+    """
+    Makes a user Premium
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        usernamepaid = request.user.username
+
+        userpaid = User.objects.get(username=usernamepaid)
+        userprofilepaid = UserProfile.objects.get(user=userpaid)
+        userprofilepaid.isPremium = True
+        userprofilepaid.save()
+
+        return Response(
+            UserProfileSerializer(userprofilepaid, many=False).data)
 
 
 @csrf_exempt

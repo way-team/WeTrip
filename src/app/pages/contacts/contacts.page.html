@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button color="primary"></ion-back-button>
         </ion-buttons>
-        <ion-title color="primary">{{ 'CONTACTS.CONTACTS' | translate}}</ion-title>
+        <ion-title color="light">{{ 'CONTACTS.CONTACTS' | translate}}</ion-title>
     </ion-toolbar>
     <!-- <ion-toolbar color="dark">
             <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
@@ -27,7 +27,17 @@
                             <ion-buttons slot="end">
                                 <ion-button size="small" shape="round" color="warning" slot="end"
                                     [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
-                                    <ion-icon name="star" item-right></ion-icon>
+
+                                          <ion-icon *ngIf="user.avarageRate>=1" name="star"></ion-icon>
+                                          <ion-icon *ngIf="user.avarageRate>=2" name="star"></ion-icon>
+                                          <ion-icon  *ngIf="user.avarageRate>=3" name="star"></ion-icon>
+                                          <ion-icon  *ngIf="user.avarageRate>=4"name="star"></ion-icon>
+                                          <ion-icon *ngIf="user.avarageRate>=5" name="star"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<1" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<2" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<3" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<4" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<5" name="star-outline" color="dark"></ion-icon>
                                 </ion-button>
                                 <ion-button size="small" shape="round" color="dark" slot="end"
                                     (click)="chat(user.user.username)">
