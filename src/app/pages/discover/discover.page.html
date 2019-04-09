@@ -16,7 +16,9 @@
 
     <ion-item lines="none" color="medium">
       <ion-label>
-        <a id="urlBanner"><img class="banner" id="bannerAdv"></a>
+        <ng-container *ngIf="!isPremium">
+          <a id="urlBanner"><img class="banner" id="bannerAdv"></a>
+        </ng-container>
       </ion-label>
     </ion-item>
   </ion-card>
