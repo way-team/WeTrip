@@ -323,16 +323,18 @@ class GetTripView(APIView):
     """
     Method to get a trip by its ID
     """
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def get(self, request, *args, **kwargs):
         """
         GET method
         """
         trip_id = kwargs.get("trip_id", "")
-        trip = Trip.objects.get(pk=trip_id)
-
+        try:
+            trip = Trip.objects.get(pk=trip_id)
+        except Trip.DoesNotExist:
+            raise ValueError("The trip does not exist")
         return Response(TripSerializer(trip, many=False).data)
 
 
@@ -361,8 +363,11 @@ class EditTripView(APIView):
         serializer = TripSerializer(trip, data=data)
         if serializer.is_valid():
             serializer.save()
-            new_city = City.objects.get(pk=request.data["city"])
-            trip.city = new_city
+            try:
+                new_city = City.objects.get(pk=request.data["city"])
+                trip.city = new_city
+            except City.DoesNotExist:
+                raise ValueError("The city does not exist")       
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 

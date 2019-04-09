@@ -37,10 +37,6 @@ class TripSerializer(serializers.ModelSerializer):
         userImage_queryset = obj.userImage.name
         return userImage_queryset
 
-    def get_city(self, obj):
-        city_queryset = obj.city.name
-        return city_queryset
-
 
 class CitySerializer(serializers.ModelSerializer):
     country = CountrySerializer()
