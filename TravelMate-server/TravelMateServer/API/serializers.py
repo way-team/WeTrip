@@ -21,12 +21,13 @@ class CountrySerializer(serializers.ModelSerializer):
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
     userImage = serializers.SerializerMethodField()
+    city = serializers.SerializerMethodField()
 
     class Meta:
         model = Trip
         fields = [
             'id', 'creator', 'title', 'description', 'startDate', 'endDate',
-            'tripType', 'image', 'userImage', 'status'
+            'tripType', 'image', 'userImage', 'status', 'city'
         ]
 
     def get_creator(self, obj):
@@ -36,6 +37,10 @@ class TripSerializer(serializers.ModelSerializer):
     def get_userImage(self, obj):
         userImage_queryset = obj.userImage.name
         return userImage_queryset
+
+    def get_city(self, obj):
+        city_queryset = obj.city.name
+        return city_queryset
 
 
 class CitySerializer(serializers.ModelSerializer):

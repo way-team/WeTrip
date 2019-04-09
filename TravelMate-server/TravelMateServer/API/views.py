@@ -323,8 +323,8 @@ class GetTripView(APIView):
     """
     Method to get a trip by its ID
     """
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    #permission_classes = (IsAuthenticated, )
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def get(self, request, *args, **kwargs):
         """
@@ -340,67 +340,31 @@ class EditTripView(APIView):
     """
     Method to edit a trip by its ID
     """
-
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        #user = get_user_by_token(request)
-        user = User.objects.get(username="idelozar").userprofile
+        data = request.data
+        trip = Trip.objects.get(pk=request.data["tripId"])
 
-        trip_id = request.data.get("trip_id", "")
-        title = request.data.get("title", "")
-        description = request.data.get("description", "")
-        start_date = request.data.get("start_date", "")
-        end_date = request.data.get("end_date", "")
-        trip_type = request.data.get("trip_type", "")
-
-        city_id = request.data.get("city", "")
-
-        city = City.objects.get(pk=city_id)
-        image_name = city.country.name + '.jpg'
-
-        stored_trip = Trip.objects.get(pk=trip_id)
-        stored_creator = stored_trip.user
+        stored_creator = trip.user
+        user = get_user_by_token(request)
         if stored_creator != user:
             raise ValueError("You are not the creator of this trip")
 
-        stored_cities = stored_trip.cities.all()
-
-        try:
-            user_image = request.data['file']
-            trip = Trip(
-                id=trip_id,
-                user=user,
-                title=title,
-                description=description,
-                startDate=start_date,
-                endDate=end_date,
-                tripType=trip_type,
-                image=image_name,
-                userImage=user_image)
-            trip.save()
-
-        except MultiValueDictKeyError:
-            trip = Trip(
-                id=trip_id,
-                user=user,
-                title=title,
-                description=description,
-                startDate=start_date,
-                endDate=end_date,
-                tripType=trip_type,
-                image=image_name)
-            trip.save()
-
-        finally:
-            if not city in stored_cities:
-                city.trips.add(trip)
-
-        return Response(TripSerializer(trip, many=False).data)
+        if request.data["startDate"] > request.data["endDate"]:
+            raise ValueError("The start date must be before that the end date")
+        
+        serializer = TripSerializer(trip, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            new_city = City.objects.get(pk=request.data["city"])
+            trip.city = new_city
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
 
 class DashboardData(APIView):

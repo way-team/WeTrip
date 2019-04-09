@@ -17,6 +17,7 @@ import { NotificationsComponent } from './../../components/notifications/notific
 import { TranslateService } from '@ngx-translate/core';
 import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-discover',
@@ -28,7 +29,7 @@ export class DiscoverPage {
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
   discover: UserProfile[] = [];
-  //image: Number = 2;
+  isPremium: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -38,10 +39,11 @@ export class DiscoverPage {
     public modalCtrl: ModalController,
     public toastCtrl: ToastController,
     private _translate: TranslateService,
-    public dM: DataManagement
+    public dM: DataManagement,
+    public cookieService: CookieService
   ) {
     this.listDiscover();
-    // this.advertisements();
+    this.getUserPremium();
   }
 
   contact(id) {
@@ -53,13 +55,16 @@ export class DiscoverPage {
     this._translate.use(idioma);
   }
 
-  // private advertisements(): void {
-  //   this.image = this.randomInt(1, 5);
-  // }
 
-  // private randomInt(low, high): Number {
-  //   return this.math.floor(this.math.random() * (high - low) + low);
-  // }
+  private getUserPremium(): void {
+    user: UserProfile;
+    let token: String;
+    token = this.cookieService.get('token');
+    this.dM.getUserLogged(token).then((data: any) => {
+      this.isPremium = data.isPremium;
+    }).catch(error => { });
+
+  }
 
   private listDiscover(): void {
     this.dM
