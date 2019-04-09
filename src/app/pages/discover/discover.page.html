@@ -4,15 +4,9 @@
       <ion-menu-button color="secondary"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      <ion-text color="light">Discover
+      <ion-text color="light">{{ 'DISCOVER.DISCOVER' | translate}}
       </ion-text>
     </ion-title>
-    <ion-buttons slot="end">
-      <ion-button size="small" shape="round" color="medium" (click)="notifications()">
-        <ion-icon name="notifications"></ion-icon>
-        <ion-badge color="dark" slot="end"></ion-badge>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 
 </ion-header>
@@ -22,18 +16,10 @@
 
     <ion-item lines="none" color="medium">
       <ion-label>
-        <h2 no-margin class="fw500 no-margin">
-          <ion-text color="dark"></ion-text>
-        </h2>
-
-        <p class="text-11x no-margin">
-          <ion-text color="primary">{{yourLocation}}</ion-text>
-        </p>
+        <ng-container *ngIf="!isPremium">
+          <a id="urlBanner"><img class="banner" id="bannerAdv"></a>
+        </ng-container>
       </ion-label>
-      <ion-button shape="round" fill="outline" size="small" color="primary" (click)="alertLocation()">
-        Location
-        <ion-icon name="locate"></ion-icon>
-      </ion-button>
     </ion-item>
   </ion-card>
   <div class="listDiscover" *ngFor="let userProfile of discover">
@@ -46,7 +32,7 @@
       {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>
     <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin disabled>
-      contact
+      {{ 'DISCOVER.CONTACT' | translate}}
     </ion-button>
 
 

@@ -24,7 +24,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public navCtrl: NavController,
-    private _translate: TranslateService,
+    private translateService: TranslateService,
     private cookieService: CookieService,
     public dm: DataManagement,
     public events: Events
@@ -85,9 +85,9 @@ export class AppComponent {
     ];
 
     this.initializeApp();
-    let userLang = navigator.language.split('-')[0];
+    /* let userLang = navigator.language.split('-')[0];
     userLang = /(en|de|it|fr|es|be)/gi.test(userLang) ? userLang : 'en';
-    this._translate.use(userLang);
+    this._translate.use(userLang); */
   }
 
   initializeApp() {
@@ -98,10 +98,21 @@ export class AppComponent {
         this.splashScreen.hide();
 
         if (this.cookieService.check('token')) {
-          this.navCtrl.navigateForward('discover');
+          let isGdpr = document.URL.split('/')[3] === 'gdpr';
+          if (!isGdpr) {
+            this.navCtrl.navigateForward('discover');
+          }
+        }
+
+        this.translateService.setDefaultLang('en');
+        if (this.cookieService.check('lang')) {
+          let language = this.cookieService.get('lang');
+          this.translateService.use(language);
+        } else {
+          this.translateService.use('en');
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }
 
   logout() {

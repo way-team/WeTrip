@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">Premium</ion-title>
+    <ion-title color="light">{{ 'PREMIUM.PREMIUM' | translate}}</ion-title>
   </ion-toolbar>
 
 </ion-header>
@@ -12,27 +12,31 @@
 
     <ion-card-content>
       <h1 margin-bottom>
-        <ion-text color="dark"><strong>Join to our Premium club</strong></ion-text>
+        <ion-text color="dark"><strong>{{ 'PREMIUM.JOIN' | translate}}</strong></ion-text>
       </h1>
 
       <p margin-bottom>
-        With the premium version, you will enjoy our app without ads and your trips will have preferential location.
+          {{ 'PREMIUM.TEXT_1' | translate}}
       </p>
       <P>
-        Also, you guarantee your identity and your possible companions will feel at ease.</P>
+       {{ 'PREMIUM.TEXT_2' | translate}}</P>
+
 
 
     </ion-card-content>
-
-
-
-
-
   </ion-card>
+
+   <div *ngIf="premium" class="bg-light" text-center padding>
+     <h1>  {{ 'PREMIUM.IS_PREMIUM' | translate}}</h1>
+    <img src="assets/img/trofeo.png">
+  </div>
+
+
+
 
 
 
 </ion-content>
-<ion-button (click)="payment()" no-margin>
-  <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/buy-logo-large.png" alt="Buy now with PayPal" />
-</ion-button>
+
+
+<ion-button *ngIf="!premium" id="paypal-button" no-margin></ion-button>

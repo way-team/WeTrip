@@ -8,7 +8,7 @@
 
           <ion-item margin-bottom>
             <ion-avatar slot="start" class="user-avatar">
-              <img src="assets/img/profile/{{userLogged.photo}}.jpg" alt="profile" (click)="goTo('user-profile/')">
+              <img src="assets/img/profile/{{userLogged.photo}}.jpg" alt="{{ 'MENU.PROFILE' | translate }}" (click)="goTo('user-profile/')">
             </ion-avatar>
             <ion-label>
               <ion-text color="medium">
@@ -24,7 +24,7 @@
                 <a class="text08" tappable (click)="logout()">
                   <ion-text color="medium">
                     <ion-icon name="log-out"></ion-icon>
-                    <strong>logout</strong>
+                    <strong>{{ 'MENU.LOGOUT' | translate }}</strong>
                   </ion-text>
                 </a>
               </ion-menu-toggle>
@@ -37,14 +37,29 @@
       <ion-content class="bg-profile">
         <ion-list>
           <ion-list-header color="dark">
-            <ion-label>Menu</ion-label>
+            <ion-label>{{ 'MENU.LOGOUT' | translate }}</ion-label>
           </ion-list-header>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
             <ion-item [routerLink]="[p.url]" color="primary">
               <ion-icon slot="start" [name]="p.icon" color="light"></ion-icon>
-              <ion-label>
-                {{p.title}}
+              <ion-label *ngIf="[p.title]=='Discover'">
+                  {{ 'MENU.DISCOVER' | translate }}
+              </ion-label>
+              <ion-label *ngIf="[p.title]=='Trips'">
+                  {{ 'MENU.TRIPS' | translate }}
+              </ion-label>
+              <ion-label *ngIf="[p.title]=='Contacts'">
+                  {{ 'MENU.CONTACTS' | translate }}
+              </ion-label>
+              <ion-label *ngIf="[p.title]=='Premium'">
+                  {{ 'MENU.PREMIUM' | translate }}
+              </ion-label>
+              <ion-label *ngIf="[p.title]=='About'">
+                  {{ 'MENU.ABOUT' | translate }}
+              </ion-label>
+              <ion-label *ngIf="[p.title]=='App Settings'">
+                  {{ 'MENU.APP_SETTINGS' | translate }}
               </ion-label>
             </ion-item>
           </ion-menu-toggle>

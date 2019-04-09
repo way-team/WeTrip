@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button color="primary"></ion-back-button>
         </ion-buttons>
-        <ion-title color="primary">Contacts</ion-title>
+        <ion-title color="light">{{ 'CONTACTS.CONTACTS' | translate}}</ion-title>
     </ion-toolbar>
     <!-- <ion-toolbar color="dark">
             <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
@@ -25,13 +25,10 @@
                     <div class="listFriends" *ngFor="let user of friends">
                         <ion-item class="bg-primary" no-margin>
                             <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="warning" slot="end"
-                                    [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
-                                    <ion-icon name="star" item-right></ion-icon>
-                                </ion-button>
-                                <ion-button size="small" shape="round" color="dark" slot="end"
+
+                                <ion-button shape="round" color="dark" slot="end"
                                     (click)="chat(user.user.username)">
-                                    <ion-icon name="send" item-right></ion-icon>
+                                    <ion-icon name="send" class="larger" item-right></ion-icon>
 
                                 </ion-button>
                                 <br>
@@ -39,7 +36,8 @@
                             </ion-buttons>
 
                             <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                <img [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward"
+                                    src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
 
                             </ion-avatar>
 
@@ -50,11 +48,20 @@
                                         <strong>{{user.first_name}} {{user.last_name}}</strong>
                                     </h2>
                                 </ion-text>
-                                <ion-text color="tertiary">
-                                    <h3>
-                                        {{user.description}}
-                                    </h3>
-                                </ion-text>
+                                <ion-button size="small" shape="round" color="warning"
+                                    [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
+
+                                          <ion-icon *ngIf="user.avarageRate>=1" name="star" color="dark"></ion-icon>
+                                          <ion-icon *ngIf="user.avarageRate>=2" name="star" color="dark"></ion-icon>
+                                          <ion-icon  *ngIf="user.avarageRate>=3" name="star" color="dark"></ion-icon>
+                                          <ion-icon  *ngIf="user.avarageRate>=4"name="star" color="dark"></ion-icon>
+                                          <ion-icon *ngIf="user.avarageRate>=5" name="star" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<1" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<2" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<3" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<4" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<5" name="star-outline" color="dark"></ion-icon>
+                                </ion-button>
                             </ion-label>
                         </ion-item>
                     </div>
@@ -69,7 +76,7 @@
 
     <ion-card color="dark" no-margin>
         <ion-card-content>
-            They want to meet you
+            {{ 'CONTACTS.THEY_WANT_TO_MEET_YOU' | translate}}
             <ion-icon name="arrow-dropdown"></ion-icon>
         </ion-card-content>
 
@@ -83,7 +90,8 @@
                     <div class="listMeetYou" *ngFor="let user of meetYou">
                         <ion-item class="bg-primary" no-margin>
                             <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar"
+                                    [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward">
                             </ion-avatar>
                             <ion-label>
                                 <ion-text color="dark">

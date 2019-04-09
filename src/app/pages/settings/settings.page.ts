@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service';
 import { DataManagement } from 'src/app/services/dataManagement';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -24,7 +25,8 @@ export class SettingsPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     private cookieService: CookieService,
-    public dm: DataManagement
+    public dm: DataManagement,
+    private translateService: TranslateService
   ) {
     const token = this.cookieService.get('token');
     this.dm.getUserLogged(token).then(res => {
@@ -46,4 +48,11 @@ export class SettingsPage implements OnInit {
   goTo(destination: string) {
     this.navCtrl.navigateForward(destination);
   }
+
+  changeLanguage(selectedValue: { detail: { value: string; }; }){
+    
+    this.cookieService.set('lang', selectedValue.detail.value);
+    this.translateService.use(selectedValue.detail.value);
+  }
+
 }
