@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class AbstractWS {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getHeaders(token: string): Promise<HttpHeaders> {
     return new Promise(resolve => {
@@ -58,7 +58,7 @@ export class AbstractWS {
       .then((response: HttpResponse<any>) => {
         return Promise.resolve(response);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         return Promise.reject(null);
       });
   }
@@ -75,7 +75,7 @@ export class AbstractWS {
         .then((response: HttpResponse<any>) => {
           return Promise.resolve(response);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           return Promise.reject(null);
         });
     });

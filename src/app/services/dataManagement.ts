@@ -252,4 +252,21 @@ export class DataManagement {
         return Promise.reject('error');
       });
   }
+
+  public resolveFriendRequest(request: string, userId: string) {
+    return this.restService.resolveFriendRequest(request, userId).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        console.log(error);
+      });
+  }
+
+  public applyForTrip(tripId: string) {
+    return this.restService.applyForTrip(tripId).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        console.log(error);
+      });
+  }
+
 }
