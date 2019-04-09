@@ -21,8 +21,7 @@ class CountrySerializer(serializers.ModelSerializer):
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
     userImage = serializers.SerializerMethodField()
-''' city = serializers.SerializerMethodField()
-'''
+
     class Meta:
         model = Trip
         fields = [
