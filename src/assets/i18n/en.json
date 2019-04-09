@@ -138,7 +138,8 @@
 	},
 	"RATING": {
 		"RATING": "Rating",
-		"RATE": "Rate"
+		"RATE": "Rate",
+		"SUCCESS": "Thanks!. When you rate you are helping other users"
 	},
 	"REGISTER": {
 		"EMAIL": "Email",

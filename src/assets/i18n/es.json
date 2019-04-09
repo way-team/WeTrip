@@ -137,7 +137,8 @@
 	},
 	"RATING": {
 		"RATING": "Valoración",
-		"RATE": "valora"
+		"RATE": "valora",
+		"SUCCESS": "¡Gracias por ayudar a otros usuarios con tu valoración!"
 	},
 	"REGISTER": {
 		"EMAIL": "Correo electrónico",
