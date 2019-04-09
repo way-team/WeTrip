@@ -26,10 +26,29 @@
       google_ad_client: "ca-pub-3882394086055365",
       enable_page_level_ads: true
     });
+
+
+    function aleatorio(a, b) {
+      var imagenId = Math.round(Math.random() * (b - a) + parseInt(a));
+      var path = "assets/img/banner/" + imagenId + ".jpg";
+      document.getElementById('bannerAdv').setAttribute('src', path);
+      urlVueling = "https://www.vueling.com/es";
+      urlBooking = "https://www.booking.com/index.es.html";
+      urlSkyScanner = "https://www.skyscanner.es/";
+      urlTrivago = "https://www.trivago.es/";
+      urlExpedia = "https://www.expedia.es/";
+      imagenId == 1 ? document.getElementById('urlBanner').setAttribute('href', urlVueling) :
+        imagenId == 2 ? document.getElementById('urlBanner').setAttribute('href', urlBooking) :
+          imagenId == 3 ? document.getElementById('urlBanner').setAttribute('href', urlSkyScanner) :
+            imagenId == 4 ? document.getElementById('urlBanner').setAttribute('href', urlTrivago) :
+              document.getElementById('urlBanner').setAttribute('href', urlExpedia);
+    }
+
+
   </script>
 </head>
 
-<body>
+<body onload="aleatorio(1,5);">
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>

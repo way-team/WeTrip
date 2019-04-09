@@ -28,6 +28,7 @@ export class DiscoverPage {
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
   discover: UserProfile[] = [];
+  //image: Number = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -40,6 +41,7 @@ export class DiscoverPage {
     public dM: DataManagement
   ) {
     this.listDiscover();
+    // this.advertisements();
   }
 
   contact(id) {
@@ -51,13 +53,21 @@ export class DiscoverPage {
     this._translate.use(idioma);
   }
 
+  // private advertisements(): void {
+  //   this.image = this.randomInt(1, 5);
+  // }
+
+  // private randomInt(low, high): Number {
+  //   return this.math.floor(this.math.random() * (high - low) + low);
+  // }
+
   private listDiscover(): void {
     this.dM
       .listDiscover()
       .then((data: any) => {
         this.discover = data;
       })
-      .catch(error => {});
+      .catch(error => { });
   }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
