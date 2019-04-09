@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar color="ligth">
-
+      <ion-buttons slot="start">
+      <ion-back-button color="dark"></ion-back-button>
+    </ion-buttons>
     <ion-title color="dark">{{ 'GDPR.TITLE' | translate}}</ion-title>
 
   </ion-toolbar>
@@ -122,13 +124,17 @@
     </p>
 </h3>
         </ion-text>
-
+<br>
  <a class="text08" tappable (click)="logout()">
                   <ion-text color="medium">
-                   <h1> <ion-icon name="log-out" size="big"></ion-icon>
-                    <strong>{{ 'GDPR.GO_OUT' | translate}}</strong></h1>
+                   <h1>
+                    <strong>{{ 'GDPR.GO_OUT' | translate}}</strong><ion-icon name="log-out" size="big"></ion-icon></h1>
                   </ion-text>
                 </a>
+        <br>
+
+        <br>
+        <br>
     </ion-card-content>
   </ion-card>
 

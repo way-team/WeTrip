@@ -80,6 +80,10 @@ const routes: Routes = [
     loadChildren: './pages/create-trip/create-trip.module#CreateTripPageModule'
   },
   {
+    path: 'create-trip/:id',
+    loadChildren: './pages/create-trip/create-trip.module#CreateTripPageModule'
+  },
+  {
     path: 'gdpr',
     loadChildren: './pages/gdpr/gdpr.module#GdprPageModule'
   },
@@ -98,4 +102,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

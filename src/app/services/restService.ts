@@ -95,11 +95,11 @@ export class RestWS extends AbstractWS {
     const fd = new FormData();
     fd.append('token', token);
     return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log('Error: ' + error);
-        return Promise.reject(error);
-      });
+      return Promise.resolve(res);
+    }).catch(error => {
+      console.log('Error: ' + error);
+      return Promise.reject(error);
+    });
   }
 
   public listMeetYou(): Promise<any> {
@@ -158,7 +158,7 @@ export class RestWS extends AbstractWS {
 
         user = res;
         fd.append('user_id', String(user.id));
-        fd.append('user',String(user));
+        fd.append('user', String(user));
         return this.makePostRequest(this.path + 'rate/', fd, token)
           .then(res2 => {
             console.log('ok');
@@ -175,8 +175,8 @@ export class RestWS extends AbstractWS {
       });
   }
 
-   public paid(
-    ): Promise<any> {
+  public paid(
+  ): Promise<any> {
     const fd = new FormData();
     let user: User;
     let token: string;
@@ -186,7 +186,7 @@ export class RestWS extends AbstractWS {
 
         user = res;
         fd.append('user_id', String(user.id));
-        fd.append('user',String(user));
+        fd.append('user', String(user));
         return this.makePostRequest(this.path + 'paid/', fd, token)
           .then(res2 => {
             console.log('ok');
@@ -202,7 +202,7 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
-    public createTrip(
+  public createTrip(
     title: string,
     description: string,
     start_date: String,
@@ -246,6 +246,43 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public editTrip(
+    tripId: String,
+    title: string,
+    description: string,
+    startDate: String,
+    endDate: String,
+    tripType: string,
+    city: Number,
+    userImage
+  ): Promise<any> {
+    const fd = new FormData();
+    let user: User;
+    let token: string;
+    token = this.cookieService.get('token');
+    fd.append('tripId', String(tripId));
+    fd.append('title', title);
+    fd.append('description', description);
+    fd.append('startDate', String(startDate));
+    fd.append('endDate', String(endDate));
+    fd.append('tripType', tripType);
+    fd.append('city', String(city));
+    fd.append('token', token);
+    if (userImage !== null) {
+      fd.append('file', userImage, userImage.name);
+    }
+
+    return this.makePostRequest(this.path + 'editTrip/', fd, token)
+      .then(res2 => {
+        console.log('Se ha creado exitosamente');
+        return Promise.resolve(res2);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
 
   public listCities(): Promise<any> {
     const token = this.cookieService.get('token');
@@ -261,14 +298,14 @@ export class RestWS extends AbstractWS {
 
   public getTripById(id: string) {
     const Authorization = this.cookieService.get('token');
-    
+
     return this.makeGetRequest(this.path + 'getTrip/' + id + '/', null, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
+      return Promise.resolve(res);
+    }).catch(error => {
+      console.log(error);
+    });
   }
-  
+
   public sendMessage(sender: string, receiver: string, message: string) {
     const fd = new FormData();
     let token: string;
