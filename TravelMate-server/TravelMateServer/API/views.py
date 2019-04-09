@@ -64,7 +64,15 @@ class RateUser(APIView):
         value = request.data.get('rating', '0')
 
         rate = Rate(voter=voter, voted=voteduser, value=value)
+        actualrating = int(voteduser.avarageRate)
+        numTimes = int(voteduser.numRate)
+        new = int(value)
+        voteduser.avarageRate = int((actualrating*numTimes + new)/(numTimes + 1))
+        voteduser.numRate = numTimes + 1
+
+        voteduser.save()
         rate.save()
+
         return Response(UserProfileSerializer(voteduser, many=False).data)
     
     def refreshUserAverageRating(user):
