@@ -350,13 +350,11 @@ export class RestWS extends AbstractWS {
     fd.append('token', Authorization);
     fd.append('sendername', username);
     const action = request === 'accept' ? 'acceptFriend/' : 'rejectFriend/';
-    if (request === 'accept') {
-      return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        return Promise.reject(error);
-      });
-    }
+    return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
   }
 
   public sendFriendInvitation(username: string): Promise<any> {
