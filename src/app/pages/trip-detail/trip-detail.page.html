@@ -53,4 +53,63 @@
       </ng-container>
     </ion-label>
   </ion-item>
+
+  <ion-list>
+    <ion-radio-group>
+      <ion-list-header color="light">
+        <ion-label class="fw700">{{ 'PROFILE.USERS_ACCEPTED' | translate }}</ion-label>
+      </ion-list-header>
+
+      <ng-container *ngIf="usersAccepted.length != 0">
+        <ion-item *ngFor="let i of usersAccepted">
+          <ion-label color="primary" (click)="goTo('user-profile/', i.applicantName)">
+            {{ i.applicantName }} 
+          </ion-label>
+        </ion-item>
+      </ng-container>
+      <ng-container *ngIf="usersAccepted.length == 0">
+          <ion-item>
+            <ion-label>
+              {{ 'PROFILE.NO_USER_ACCEPTED' | translate }}
+            </ion-label>
+          </ion-item>
+      </ng-container>
+    </ion-radio-group>
+  </ion-list>
+
+  <ng-container *ngIf="myTrip">
+    <ion-list>
+      <ion-radio-group>
+        <ion-list-header color="light">
+          <ion-label class="fw700">{{ 'PROFILE.USERS_TO_ACCEPT' | translate }}</ion-label>
+        </ion-list-header>
+
+        <ng-container *ngIf="usersPending.length != 0">
+          <ion-item *ngFor="let i of usersPending">
+            <ion-label color="primary" (click)="goTo('user-profile/', i.applicantName)">
+              {{ i.applicantName }} 
+            </ion-label>
+            <ion-buttons slot="end">
+                <ion-button size="small" shape="round" color="dark" slot="end" (click)="acceptApplication(i.applicationId)">
+                    <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
+                </ion-button>
+
+                <ion-button size="small" shape="round" color="dark" slot="end" (click)="rejectApplication(i.applicationId)">
+                    <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
+                </ion-button>
+                
+            </ion-buttons>
+          </ion-item>
+        </ng-container>
+        <ng-container *ngIf="usersPending.length == 0">
+            <ion-item>
+              <ion-label>
+                {{ 'PROFILE.NO_USER_PENDING' | translate }}
+              </ion-label>
+            </ion-item>
+        </ng-container>
+      </ion-radio-group>
+    </ion-list>
+  </ng-container>
+
 </ion-content>

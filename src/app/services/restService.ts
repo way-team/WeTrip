@@ -392,4 +392,30 @@ export class RestWS extends AbstractWS {
       return Promise.reject(error);
     });
   }
+
+  public getUserById(id) {
+    const fd = new FormData();
+    const Authorization = this.cookieService.get('token');
+    fd.append('token', Authorization);
+    fd.append('user_id', id);
+    return this.makePostRequest(this.path + 'getUserById/', fd, Authorization).then(res => {
+        return Promise.resolve(res);
+      }).catch(err => {
+        console.log('Error: ' + err);
+        return Promise.reject(err);
+      });
+  }
+
+  public resolveTripApplication(request: string, application_id: string): Promise<any> {
+    const fd = new FormData();
+    const Authorization = this.cookieService.get('token');
+    fd.append('token', Authorization);
+    fd.append('application_id', application_id);
+    const action = request === 'accept' ? 'acceptApplication/' : 'rejectApplication/';
+    return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
 }

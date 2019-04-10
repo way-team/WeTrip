@@ -66,3 +66,14 @@ export class test {
   previous: string;
   results: User[];
 }
+
+export class application_user {
+  applicantName: string;
+  applicationId: string;
+
+  constructor(applicantName: string, applicationId: string) {
+    this.applicantName = applicantName;
+    this.applicationId = applicationId;
+  }
+
+} 

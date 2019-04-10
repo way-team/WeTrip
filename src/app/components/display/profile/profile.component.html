@@ -10,6 +10,15 @@
 <div class="profile" *ngIf="user">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
+      <ng-container *ngIf="false">
+          <h2 color="light" margin-bottom> {{ 'PROFILE.ADMIN' | translate }} </h2>
+      </ng-container>
+      <ng-container *ngIf="user.isPremium">
+        <h1> 
+          {{ 'PROFILE.PREMIUM' | translate }} 
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </h1>
+      </ng-container>
       <ion-avatar class="avatar">
       <img src="/assets/img/profile/{{user.photo}}.jpg" />
       </ion-avatar>
