@@ -17,6 +17,7 @@ import { NotificationsComponent } from './../../components/notifications/notific
 import { TranslateService } from '@ngx-translate/core';
 import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-discover',
@@ -28,6 +29,7 @@ export class DiscoverPage {
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
   discover: UserProfile[] = [];
+  isPremium: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -37,9 +39,11 @@ export class DiscoverPage {
     public modalCtrl: ModalController,
     public toastCtrl: ToastController,
     private _translate: TranslateService,
-    public dM: DataManagement
+    public dM: DataManagement,
+    public cookieService: CookieService
   ) {
     this.listDiscover();
+    this.getUserPremium();
   }
 
   contact(id) {
@@ -51,13 +55,24 @@ export class DiscoverPage {
     this._translate.use(idioma);
   }
 
+
+  private getUserPremium(): void {
+    user: UserProfile;
+    let token: String;
+    token = this.cookieService.get('token');
+    this.dM.getUserLogged(token).then((data: any) => {
+      this.isPremium = data.isPremium;
+    }).catch(error => { });
+
+  }
+
   private listDiscover(): void {
     this.dM
       .listDiscover()
       .then((data: any) => {
         this.discover = data;
       })
-      .catch(error => {});
+      .catch(error => { });
   }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
@@ -129,5 +144,14 @@ export class DiscoverPage {
       showBackdrop: true
     });
     return await popover.present();
+  }
+
+  async sendData(username: string) {
+    this.dM.sendFriendInvitation(username).then((res) => {
+      console.log('Hola');
+      this.listDiscover();
+    }).catch((err) => {
+      this.listDiscover();
+    });
   }
 }

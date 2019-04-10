@@ -3,6 +3,7 @@ import { City } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-create-trip',
@@ -11,12 +12,14 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class CreateTripPage implements OnInit {
   public onCreateForm: FormGroup;
+  id: String;
   title: string;
   description: string;
   start_date: string;
   end_date: string;
   trip_type: string = 'PUBLIC';
   city: Number;
+  image: File = null;
   error: string;
   cities: City[];
   userImage: File = null;
@@ -29,9 +32,11 @@ export class CreateTripPage implements OnInit {
     public navCtrl: NavController,
     public dm: DataManagement,
     private formBuilder: FormBuilder,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    private activatedRoute: ActivatedRoute
   ) {
     this.listCities();
+    this.id = this.activatedRoute.snapshot.paramMap.get('id');
   }
 
   ngOnInit() {
@@ -48,6 +53,40 @@ export class CreateTripPage implements OnInit {
     console.log(typeof this.userImage);
     this.dm
       .createTrip(
+        this.title,
+        this.description === undefined ? '' : this.description,
+        this.start_date.split('T')[0],
+        this.end_date.split('T')[0],
+        this.trip_type,
+        this.city,
+        this.userImage
+      )
+      .then(data => {
+        this.navCtrl.navigateForward('/trips');
+      })
+      .catch(error => {
+        this.alertCtrl
+          .create({
+            header: 'Error',
+            message: 'Something went wrong.',
+            buttons: [
+              {
+                text: 'Ok',
+                role: 'ok'
+              }
+            ]
+          })
+          .then(alertEl => {
+            alertEl.present();
+          });
+      });
+  }
+
+  public editTrip() {
+    console.log(typeof this.userImage);
+    this.dm
+      .editTrip(
+        this.id,
         this.title,
         this.description === undefined ? '' : this.description,
         this.start_date.split('T')[0],

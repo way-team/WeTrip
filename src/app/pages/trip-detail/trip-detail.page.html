@@ -10,7 +10,7 @@
 <ion-content *ngIf="trip">
 
   <div class="bg-light" text-center>
-    <img src="assets/img/profile/{{trip.image}}.jpg" width="100%">
+    <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}" width="100%">
   </div>
 
   <ion-card class="bg-light" no-margin>
@@ -32,7 +32,7 @@
     <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
     <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
     <ion-avatar slot="start">
-      <img src="assets/img/profile/{{trip.userImage}}.jpg" class="user-avatar">
+      <img src="assets/img/trip/{{trip.image}}" class="user-avatar">
     </ion-avatar>
     <ion-label>
       <ion-text color="light">
@@ -46,11 +46,11 @@
         </h3>
       </ion-text>
 
-
-      <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
-
-        {{ 'TRIP_DETAILS.JOIN' | translate }}
-      </ion-button>
+      <ng-container *ngIf="!myTrip">
+        <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
+          {{ 'TRIP_DETAILS.JOIN' | translate }}
+        </ion-button>
+      </ng-container>
     </ion-label>
   </ion-item>
 </ion-content>

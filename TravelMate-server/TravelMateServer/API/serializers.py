@@ -1,4 +1,4 @@
-from .models import UserProfile, Language, Trip, Application, City, Country, Interest, Message
+from .models import UserProfile, Language, Trip, Application, City, Country, Interest, Message, Invitation
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import datetime
@@ -16,6 +16,12 @@ class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
         fields = ['name']
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['applicant', 'status', 'id']
 
 
 class TripSerializer(serializers.ModelSerializer):
@@ -36,6 +42,12 @@ class TripSerializer(serializers.ModelSerializer):
     def get_userImage(self, obj):
         userImage_queryset = obj.userImage.name
         return userImage_queryset
+
+
+class FullTripSerializer(serializers.Serializer):
+    trip = TripSerializer(many=False)
+    applicationsList = ApplicationSerializer(many=True)
+    pendingsList = ApplicationSerializer(many=True)
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -126,3 +138,11 @@ class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interest
         fields = ['name', 'users']
+
+class InvitationSerializer(serializers.ModelSerializer):
+    sender = UserProfileSerializer(many=False)
+    receiver = UserProfileSerializer(many=False)
+
+    class Meta:
+        model = Invitation
+        fields = ['sender', 'receiver', 'status']

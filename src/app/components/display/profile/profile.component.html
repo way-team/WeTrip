@@ -15,11 +15,16 @@
       </ion-avatar>
       <h1 class="fw500">{{ user.first_name }}</h1>
       <h2 color="light" margin-bottom>{{user.description}}</h2>
-      <ion-icon name="star"></ion-icon>
-      <ion-icon name="star"></ion-icon>
-      <ion-icon name="star"></ion-icon>
-      <ion-icon name="star"></ion-icon>
-      <ion-icon name="star"></ion-icon>
+                <ion-icon *ngIf="user.avarageRate>=1" name="star" ></ion-icon>
+                <ion-icon *ngIf="user.avarageRate>=2" name="star" ></ion-icon>
+                <ion-icon  *ngIf="user.avarageRate>=3" name="star" ></ion-icon>
+                <ion-icon  *ngIf="user.avarageRate>=4"name="star" ></ion-icon>
+                <ion-icon *ngIf="user.avarageRate>=5" name="star" ></ion-icon>
+                  <ion-icon *ngIf="user.avarageRate<1" name="star-outline" ></ion-icon>
+                  <ion-icon *ngIf="user.avarageRate<2" name="star-outline" ></ion-icon>
+                  <ion-icon *ngIf="user.avarageRate<3" name="star-outline" ></ion-icon>
+                  <ion-icon *ngIf="user.avarageRate<4" name="star-outline" ></ion-icon>
+                  <ion-icon *ngIf="user.avarageRate<5" name="star-outline" ></ion-icon>
     </ion-card-content>
 
     <ion-grid fixed no-padding>

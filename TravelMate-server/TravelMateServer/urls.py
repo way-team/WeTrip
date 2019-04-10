@@ -39,15 +39,21 @@ urlpatterns = [
     path('createTrip/', views.CreateTrip.as_view()),
     path('getFriends/', views.GetFriendsView.as_view()),
     path('getPending/', views.GetPendingView.as_view()),
+    path('sendInvitation/', views.SendInvitation.as_view()),
+    path('acceptFriend/', views.AcceptFriend.as_view()),
+    path('rejectFriend/', views.RejectFriend.as_view()),
     path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
     url('^getTrip/(?P<trip_id>.+)/$', views.GetTripView.as_view()),
     path('editTrip/', views.EditTripView.as_view()),
     path('applyTrip/', views.ApplyTripView.as_view()),
+    path('acceptApplication/', views.AcceptApplicationView.as_view()),
+    path('rejectApplication/', views.RejectApplicationView.as_view()),
     path('dashboard/', views.DashboardData.as_view(), name='dashboard'),
     path(
         'messages/<int:sender>/<int:receiver>/',
         views.message_list,
         name='message-detail'),
     path('messages/', views.message_list, name='message-list'),
+    path('paid/', views.SetUserToPremium.as_view()),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)
