@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'password']
+        fields = ['id', 'username', 'password', 'is_staff']
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -57,6 +57,18 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['country', 'trips', 'name', 'id']
+
+class CityReducedSerializer(serializers.ModelSerializer):
+    country = CountrySerializer()
+
+    trips_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = City
+        fields = ['country', 'trips_count', 'name', 'id']
+
+    def get_trips_count(self, obj):
+        return obj.trips.count()
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -138,6 +150,16 @@ class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interest
         fields = ['name', 'users']
+
+class InterestReducedSerializer(serializers.ModelSerializer):
+    users_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Interest
+        fields = ['name', 'users_count']
+
+    def get_users_count(self, obj):
+        return obj.users.count()
 
 class InvitationSerializer(serializers.ModelSerializer):
     sender = UserProfileSerializer(many=False)

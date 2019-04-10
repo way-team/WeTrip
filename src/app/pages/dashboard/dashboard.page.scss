@@ -1,0 +1,44 @@
+:host {
+  ion-content {
+    --background: linear-gradient(
+      -135deg,
+      var(--ion-color-medium),
+      var(--ion-color-light)
+    );
+  }
+}
+
+ion-row {
+  height: 100%;
+
+ion-col {
+    height: 33.33%;
+  }
+}
+
+.ion-color-favorite {
+  --ion-color-base: #ee3679 ;
+  --ion-color-base-rgb: 238,54,121;
+  --ion-color-contrast: #ffffff;
+  --ion-color-contrast-rgb: 255,255,255;
+  --ion-color-shade: #d7125a ;
+  --ion-color-tint: #ffa5b9;
+}
+
+.ion-color-favorite2 {
+  --ion-color-base: #8f583c  ;
+  --ion-color-base-rgb: 143,88,60;
+  --ion-color-contrast: #ffffff;
+  --ion-color-contrast-rgb: 255,255,255;
+  --ion-color-shade: #724630   ;
+  --ion-color-tint: #b36e4b ;
+}
+
+.ion-color-favorite3 {
+  --ion-color-base: #8761e6   ;
+  --ion-color-base-rgb: 135,97,230;
+  --ion-color-contrast: #ffffff;
+  --ion-color-contrast-rgb: 255,255,255;
+  --ion-color-shade: #5c29dd    ;
+  --ion-color-tint: #bda8f1 ;
+}
