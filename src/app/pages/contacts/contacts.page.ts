@@ -62,7 +62,6 @@ export class ContactsPage implements OnInit {
 
   accept(username: string) {
     this.dM.resolveFriendRequest('accept', username).then((_) => {
-      console.log('Ha ido bien');
       this.listMeetYou();
       this.listFriends();
     });
@@ -70,7 +69,8 @@ export class ContactsPage implements OnInit {
 
   reject(username: string) {
     this.dM.resolveFriendRequest('reject', username).then((_) => {
-      this.navCtrl.navigateForward('contacts');
+      this.listMeetYou();
+      this.listFriends();
     });
   }
 }
