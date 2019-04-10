@@ -144,14 +144,14 @@ class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
     """
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        user = User.objects.get(username="pablo").userprofile
+        user = get_user_by_token(request)
 
         friends, pending = get_friends_or_pending(user)
 
