@@ -168,7 +168,6 @@ class SendInvitation(APIView):
         POST method
         """
         sender = get_user_by_token(request)
-        #sender = User.objects.get(username="pablo").userprofile
         
         receivername = request.data.get("username", "")
         receiver = User.objects.get(username=receivername).userprofile
@@ -237,16 +236,15 @@ class AcceptFriend(APIView):
         """
         user = get_user_by_token(request)
 
-        invitation_id = request.data.get("invitation_id", "")
-        invitation = Invitation.objects.get(pk=invitation_id)
-        sender = invitation.sender
+        sendername = request.data.get("sendername", "")
+        sender = User.objects.get(username=sendername).userprofile
 
         try:
-            query = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+            invitation = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
         except Invitation.DoesNotExist:
-            query = None
+            invitation = None
 
-        if query != None:
+        if invitation != None:
             invitation.status = "A"
             invitation.save()
         else:
@@ -267,18 +265,16 @@ class RejectFriend(APIView):
         POST method
         """
         user = get_user_by_token(request)
-        #user = User.objects.get(username="dmarin").userprofile
 
-        invitation_id = request.data.get("invitation_id", "")
-        invitation = Invitation.objects.get(pk=invitation_id)
-        sender = invitation.sender
+        sendername = request.data.get("sendername", "")
+        sender = User.objects.get(username=sendername).userprofile
 
         try:
-            query = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+            invitation = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
         except Invitation.DoesNotExist:
-            query = None
+            invitation = None
 
-        if query != None:
+        if invitation != None:
             invitation.status = "R"
             invitation.save()
         else:
