@@ -147,11 +147,11 @@ export class DiscoverPage {
   }
 
   async sendData(username: string) {
-    console.log('Hola');
     this.dM.sendFriendInvitation(username).then((res) => {
-      console.log(res);
+      console.log('Hola');
+      this.listDiscover();
     }).catch((err) => {
-      console.log(err);
+      this.listDiscover();
     });
   }
 }
