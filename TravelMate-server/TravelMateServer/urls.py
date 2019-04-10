@@ -30,6 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', obtain_auth_token),
     path('getUserByToken/', views.GetUserView.as_view()),
+    path('getUserById/', views.GetUserByIdView.as_view()),
     url('^users/(?P<username>.+)/$', views.UserList.as_view()),
     path('rate/', views.RateUser.as_view()),
     path('trips/', views.AvailableTripsList.as_view()),

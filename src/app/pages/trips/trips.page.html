@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button color="primary"></ion-back-button>
         </ion-buttons>
-        <ion-title color="primary">{{ 'TRIPS.TRIPS' | translate }}</ion-title>
+        <ion-title color="light">{{ 'TRIPS.TRIPS' | translate }}</ion-title>
     </ion-toolbar>
 
     <ion-button color="lightcyan" expand="full" (click)="goToCreate()" no-margin>
@@ -17,9 +17,7 @@
 <ion-content>
     <ng-container *ngIf="listTrips">
         <ion-card>
-            <ion-card-header class="bg-dark">
 
-            </ion-card-header>
             <ion-card-content class="bg-white">
 
                 <div class="listTrips" *ngFor="let trip of listTrips">
