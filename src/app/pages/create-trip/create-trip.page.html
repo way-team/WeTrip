@@ -147,7 +147,7 @@
       {{ 'CREATE_TRIP.SAVE' | translate}}
     </ion-button>
   </ng-container>
-  <ng-container *ngIf="id != 0">
+  <ng-container *ngIf="id">
     <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr" icon-left size="medium"
       expand="full" shape="round" color="dark" (click)="editTrip()" tappable>
       <ion-icon name="save"></ion-icon>
