@@ -162,7 +162,7 @@ class GetFriendsView(APIView):
         """
         POST method
         """
-        user = User.objects.get(username="pablo").userprofile
+        user = get_user_by_token(request)
 
         friends, pending, rejected = get_friends(user)
 
