@@ -35,7 +35,7 @@ export class LoginPage implements OnInit {
     public dm: DataManagement,
     private cookieService: CookieService,
     public events: Events
-  ) {}
+  ) { }
 
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
@@ -111,6 +111,7 @@ export class LoginPage implements OnInit {
           this.cookieService.set('token', data.token);
           this.dm.getUserLogged(data.token).then(user => {
             this.events.publish('user:logged', user);
+            this.navCtrl.navigateRoot('/discover');
             this.navCtrl.navigateRoot('/discover');
           });
         }, 1500);

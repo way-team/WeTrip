@@ -238,7 +238,7 @@ export class DataManagement {
       });
   }
 
-  public getTripById(id: string): Promise<Trip> {
+  public getTripById(id: string): Promise<any> {
     return this.restService.getTripById(id).then(response => {
       return Promise.resolve(response);
     }).catch(error => {
@@ -286,6 +286,22 @@ export class DataManagement {
 
   public sendFriendInvitation(username: string): Promise<any> {
     return this.restService.sendFriendInvitation(username).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
+  public getUserById(id: string): Promise<any> {
+    return this.restService.getUserById(id).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
+  public resolveTripApplication(request: string, applicationId: string): Promise<any> {
+    return this.restService.resolveTripApplication(request, applicationId).then(res => {
         return Promise.resolve(res);
       }).catch(error => {
         return Promise.reject(error);

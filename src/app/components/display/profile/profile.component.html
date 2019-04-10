@@ -10,6 +10,15 @@
 <div class="profile" *ngIf="user">
   <ion-card no-margin>
     <ion-card-content class="bg-profile">
+      <ng-container *ngIf="false">
+          <h2 color="light" margin-bottom> {{ 'PROFILE.ADMIN' | translate }} </h2>
+      </ng-container>
+      <ng-container *ngIf="user.isPremium">
+        <h1> 
+          {{ 'PROFILE.PREMIUM' | translate }} 
+          <ion-icon name="checkmark-circle"></ion-icon>
+        </h1>
+      </ng-container>
       <ion-avatar class="avatar">
       <img src="/assets/img/profile/{{user.photo}}.jpg" />
       </ion-avatar>
@@ -83,7 +92,6 @@
               <ion-list-header color="light">
                 <ion-label class="fw700">{{ 'PROFILE.HAS_VISITED' | translate }}</ion-label>
               </ion-list-header>
-
               <ion-item *ngFor="let i of user.past_joined_trips">
                 <div *ngIf=""></div>
                 <ion-label color="primary">
@@ -98,6 +106,27 @@
               </ion-item>
             </ion-radio-group>
           </ion-list>
+
+          <ion-list>
+              <ion-radio-group>
+                <ion-list-header color="light">
+                  <ion-label class="fw700">{{ 'PROFILE.FUTURE_VISIT' | translate }}</ion-label>
+                </ion-list-header>
+                <ion-item *ngFor="let i of user.active_joined_trips">
+                  <div *ngIf=""></div>
+                  <ion-label color="primary">
+                    {{ i.title }}
+                  </ion-label>
+                  <ion-label>
+                      {{ 'PROFILE.CREATOR' | translate }}
+                    <a class="creator" (click)="goTo('user-profile/', i.creator)">
+                      <ion-text color="tertiary"> {{ i.creator }} </ion-text>
+                    </a>
+                  </ion-label>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
+
         </ion-col>
       </ion-row>
     </ion-grid>
