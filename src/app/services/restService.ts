@@ -144,6 +144,18 @@ export class RestWS extends AbstractWS {
       });
   }
 
+ public search( searchKey: string): Promise<any> {
+    const Authorization = this.cookieService.get('token');
+
+    return this.makeGetRequest(this.path + 'trips/search/?search=' + searchKey, null, Authorization)
+      .then(res => {
+        return Promise.resolve(res.results);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
 
   public rate(
     voted: string,
