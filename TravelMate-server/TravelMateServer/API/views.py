@@ -39,17 +39,6 @@ class GetUserByIdView(APIView):
 
         return Response(UserProfileSerializer(user_profile, many=False).data)
 
-
-def refreshUserAverageRating(user):
-    userRatings = Rate.objects.filter(voted=user)
-    sumRatings = 0
-    for r in userRatings:
-         sumRatings += r.value
-    avgUserRating = sumRatings / userRatings.count()
-    user.avarageRate = avgUserRating
-    user.save()
-
-
 class RateUser(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
