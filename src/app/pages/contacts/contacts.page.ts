@@ -61,15 +61,15 @@ export class ContactsPage implements OnInit {
       .catch(error => {});
   }
 
-  accept(userId: string) {
-    this.dM.resolveFriendRequest('accept', userId).then((_) => {
-
+  accept(username: string) {
+    this.dM.resolveFriendRequest('accept', username).then((_) => {
+      this.navCtrl.navigateForward('contacts');
     });
   }
 
-  reject(userId: string) {
-    this.dM.resolveFriendRequest('reject', userId).then((_) => {
-
+  reject(username: string) {
+    this.dM.resolveFriendRequest('reject', username).then((_) => {
+      this.navCtrl.navigateForward('contacts');
     });
   }
 }

@@ -253,8 +253,8 @@ export class DataManagement {
       });
   }
 
-  public resolveFriendRequest(request: string, userId: string) {
-    return this.restService.resolveFriendRequest(request, userId).then(res => {
+  public resolveFriendRequest(request: string, username: string) {
+    return this.restService.resolveFriendRequest(request, username).then(res => {
         return Promise.resolve(res);
       }).catch(error => {
         console.log(error);

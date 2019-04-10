@@ -344,12 +344,12 @@ export class RestWS extends AbstractWS {
       });
   }
 
-  public resolveFriendRequest(request: string, userId: string): Promise<any> {
+  public resolveFriendRequest(request: string, username: string): Promise<any> {
     let prom;
     if(request === 'accept') {
-       prom = this.acceptFriendRequest(userId);
+       prom = this.acceptFriendRequest(username);
     } else if (request === 'reject') {
-      prom = this.rejectFriendRequest(userId);
+      prom = this.rejectFriendRequest(username);
     } else {
       return Promise.reject();
     }
@@ -361,24 +361,25 @@ export class RestWS extends AbstractWS {
     });
   }
 
-  public acceptFriendRequest(userId: string): Promise<any> {
+  public acceptFriendRequest(username: string): Promise<any> {
     const fd = new FormData();
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
-    // fd.append('')
+    fd.append('sendername', username);
 
-    return this.makePostRequest(this.path, fd, Authorization).then(res => {
+    return this.makePostRequest(this.path + 'acceptFriend/', fd, Authorization).then(res => {
         return Promise.resolve(res);
       }).catch(error => {
         console.log(error);
       });
   }
 
-  public rejectFriendRequest(userId: string): Promise<any> {
+  public rejectFriendRequest(username: string): Promise<any> {
     const fd = new FormData();
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
-    return this.makePostRequest(this.path, fd, Authorization).then(res => {
+    fd.append('sendername', username);
+    return this.makePostRequest(this.path + 'rejectFriend/', fd, Authorization).then(res => {
         return Promise.resolve(res);
       }).catch(error => {
         console.log(error);
