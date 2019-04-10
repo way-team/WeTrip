@@ -129,7 +129,7 @@ class Rate(models.Model):
                     MaxValueValidator(5)])
 
     def __str__(self):
-        return self.value
+        return str(self.value)
 
 
 class Global(models.Model):

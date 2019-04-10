@@ -52,29 +52,55 @@ class RateUser(APIView):
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
-        voter0 = User.objects.get(username=username)
-        voter = UserProfile.objects.get(user=voter0)
+        voterUser = User.objects.get(username=username)
+        voterUserProfile = UserProfile.objects.get(user=voterUser) #Voter User
 
-        votedusername = request.data.get('voted', '')
-        voted0 = User.objects.get(username=votedusername)
-        voteduser = UserProfile.objects.get(user=voted0)
+        votedUsername = request.data.get('voted', '')
+        votedUser = User.objects.get(username=votedUsername)
+        votedUserProfile = UserProfile.objects.get(user=votedUser) #Voted User
 
+        value = request.data.get('rating', '0') #Value of the rating
 
+        #Checks if the users are friends
+        areFriends = False
+        friends, pending = get_friends_or_pending(voterUserProfile)
+        for f in friends:
+            if (f==votedUserProfile):
+                areFriends = True
+                break
 
-        value = request.data.get('rating', '0')
+        oldRating = Rate.objects.filter(voter=voterUserProfile, voted=votedUserProfile).first()
+        print("Value=", oldRating)
 
-        rate = Rate(voter=voter, voted=voteduser, value=value)
-        rate.save()
-        return Response(UserProfileSerializer(voteduser, many=False).data)
+        if(areFriends):
+            if oldRating is None:
+                rate = Rate(voter=voterUserProfile, voted=votedUserProfile, value=value)
+                rate.save()
+            else:
+                oldRating.delete()
+                rate = Rate(voter=voterUserProfile, voted=votedUserProfile, value=value)
+                rate.save()
+        else:
+            raise ValueError("You can not rate this user")
+
+        refreshUserAverageRating(votedUserProfile)
+        return Response(UserProfileSerializer(votedUserProfile, many=False).data)
     
-    def refreshUserAverageRating(user):
-        userRatings = Rate.objects.filter(voted=user)
-        sumRatings = 0
-        for r in userRatings:
-            sumRatings += r.value
-        avgUserRating = sumRatings / userRatings.count()
-        user.avarageRate = avgUserRating
-        user.save()
+def refreshUserAverageRating(votedUserProfile):
+    userRatings = Rate.objects.filter(voted=votedUserProfile)
+    print(userRatings)
+    sumRatings = 0
+    numRatings = 0
+    for r in userRatings:
+        sumRatings += r.value
+        print(str(sumRatings))
+        numRatings = numRatings + 1
+        print(str(numRatings))
+    avgUserRating = sumRatings / numRatings
+    votedUserProfile.avarageRate = avgUserRating
+    votedUserProfile.numRate = numRatings
+    votedUserProfile.save()
+    print(votedUserProfile.avarageRate)
 
 
 class UserList(APIView):
