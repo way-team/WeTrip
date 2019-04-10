@@ -58,50 +58,55 @@ class RateUser(APIView):
         """
         POST method
         """
+
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
-        voter0 = User.objects.get(username=username)
-        voter = UserProfile.objects.get(user=voter0)
+        voterUser = User.objects.get(username=username)
+        voterUserProfile = UserProfile.objects.get(user=voterUser) #Voter User
 
-        votedusername = request.data.get('voted', '')
-        voted0 = User.objects.get(username=votedusername)
-        voteduser = UserProfile.objects.get(user=voted0)
+        votedUsername = request.data.get('voted', '')
+        votedUser = User.objects.get(username=votedUsername)
+        votedUserProfile = UserProfile.objects.get(user=votedUser) #Voted User
 
-        value = request.data.get('rating', '0')
+        value = request.data.get('rating', '0') #Value of the rating
 
-        # Checks if the users are friends
+        #Checks if the users are friends
         areFriends = False
-        friends, pending, rejected = get_friends(voter)
+        friends, pending, rejected = get_friends(voterUserProfile)
         for f in friends:
-            if f == voteduser:
+            if (f==votedUserProfile):
                 areFriends = True
                 break
 
-        oldRating = Rate.objects.filter(voter=voter, voted=voteduser).first()
-        if areFriends:
-            actualrating = int(voteduser.avarageRate)
-            numTimes = int(voteduser.numRate)
+        oldRating = Rate.objects.filter(voter=voterUserProfile, voted=votedUserProfile).first()
+        #print("Value=", oldRating)
 
-            new = int(value)
-            if oldRating:
-                oldRating.delete()
-                old = int(oldRating.value)
-                voteduser.avarageRate = int((actualrating * numTimes + new - old) / (numTimes))
-
+        if(areFriends):
+            if oldRating is None:
+                rate = Rate(voter=voterUserProfile, voted=votedUserProfile, value=value)
+                rate.save()
             else:
-                voteduser.avarageRate = int((actualrating * numTimes + new) / (numTimes + 1))
-                voteduser.numRate = numTimes + 1
-
-            rate = Rate(voter=voter, voted=voteduser, value=value)
-            voteduser.save()
-            rate.save()
+                oldRating.delete()
+                rate = Rate(voter=voterUserProfile, voted=votedUserProfile, value=value)
+                rate.save()
         else:
             raise ValueError("You can not rate this user")
 
+        refreshUserAverageRating(votedUserProfile)
+        return Response(UserProfileSerializer(votedUserProfile, many=False).data)
 
-        return Response(UserProfileSerializer(voteduser, many=False).data)
-
+def refreshUserAverageRating(votedUserProfile):
+    userRatings = Rate.objects.filter(voted=votedUserProfile)
+    sumRatings = 0
+    numRatings = 0
+    for r in userRatings:
+        sumRatings += r.value
+        numRatings = numRatings + 1
+    avgUserRating = sumRatings / numRatings
+    votedUserProfile.avarageRate = avgUserRating
+    votedUserProfile.numRate = numRatings
+    votedUserProfile.save()
 
 class UserList(APIView):
     permission_classes = (IsAuthenticated, )
