@@ -60,4 +60,16 @@ export class ContactsPage implements OnInit {
       })
       .catch(error => {});
   }
+
+  accept(userId: string) {
+    this.dM.resolveFriendRequest('accept', userId).then((_) => {
+
+    });
+  }
+
+  reject(userId: string) {
+    this.dM.resolveFriendRequest('reject', userId).then((_) => {
+
+    });
+  }
 }

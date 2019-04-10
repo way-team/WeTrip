@@ -269,4 +269,11 @@ export class DataManagement {
       });
   }
 
+  public sendFriendInvitation(username: string) {
+    return this.restService.sendFriendInvitation(username).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        console.log(error);
+      });
+  }
 }

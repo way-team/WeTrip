@@ -31,7 +31,7 @@
       routerDirection="forward" no-margin>
       {{userProfile.first_name}} {{userProfile.last_name}}
     </ion-button>
-    <ion-button expand="full" color="medium" (click)="sendData('${userProfile.user.id}')" no-margin disabled>
+    <ion-button expand="full" color="medium" (click)="sendData(userProfile.user.username)" no-margin>
       {{ 'DISCOVER.CONTACT' | translate}}
     </ion-button>
 
