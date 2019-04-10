@@ -253,20 +253,27 @@ export class DataManagement {
       });
   }
 
-  public resolveFriendRequest(request: string, userId: string) {
-    return this.restService.resolveFriendRequest(request, userId).then(res => {
+  public resolveFriendRequest(request: string, username: string): Promise<any> {
+    return this.restService.resolveFriendRequest(request, username).then(res => {
         return Promise.resolve(res);
       }).catch(error => {
-        console.log(error);
+        return Promise.reject(error);
       });
   }
 
-  public applyForTrip(tripId: string) {
+  public applyForTrip(tripId: string): Promise<any> {
     return this.restService.applyForTrip(tripId).then(res => {
         return Promise.resolve(res);
       }).catch(error => {
-        console.log(error);
+        return Promise.reject(error);
       });
   }
 
+  public sendFriendInvitation(username: string): Promise<any> {
+    return this.restService.sendFriendInvitation(username).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        return Promise.reject(error);
+      });
+  }
 }

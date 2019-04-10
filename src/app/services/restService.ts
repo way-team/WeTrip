@@ -4,6 +4,8 @@ import { AbstractWS } from './abstractService';
 import { Injectable } from '@angular/core';
 import { User, Trip, UserProfile, City } from '../app.data.model';
 import { CookieService } from 'ngx-cookie-service';
+import { resolve } from 'url';
+import { reject } from 'q';
 
 @Injectable()
 export class RestWS extends AbstractWS {
@@ -342,15 +344,29 @@ export class RestWS extends AbstractWS {
       });
   }
 
-  public resolveFriendRequest(request: string, userId: string) {
+  public resolveFriendRequest(request: string, username: string): Promise<any> {
     const fd = new FormData();
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
-    return this.makePostRequest(this.path, null, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
+    fd.append('sendername', username);
+    const action = request === 'accept' ? 'acceptFriend/' : 'rejectFriend/';
+    return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
+
+  public sendFriendInvitation(username: string): Promise<any> {
+    const fd = new FormData();
+    const Authorization = this.cookieService.get('token');
+    fd.append('token', Authorization);
+    fd.append('username', username);
+    return this.makePostRequest(this.path + 'sendInvitation/', fd, Authorization).then(res => {
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
   }
 
   public applyForTrip(tripId: string) {
@@ -358,11 +374,10 @@ export class RestWS extends AbstractWS {
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
     fd.append('trip_id', tripId);
-    
     return this.makePostRequest(this.path + 'applyTrip/', fd, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
   }
 }
