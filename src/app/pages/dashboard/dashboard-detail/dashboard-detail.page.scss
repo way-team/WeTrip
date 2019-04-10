@@ -1,0 +1,23 @@
+:host {
+    ion-content {
+      --background: linear-gradient(
+        -135deg,
+        var(--ion-color-medium),
+        var(--ion-color-light)
+      );
+    }
+  }
+
+
+  
+ion-card-header {
+    font-weight: bold;
+}
+
+.odometer {
+  font-size: 50px;
+}
+
+.invisible {
+  color:rgba(0,0,0,0);
+}

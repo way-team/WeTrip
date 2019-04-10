@@ -18,6 +18,7 @@ import { Events } from '@ionic/angular';
 export class AppComponent {
   public appPages: Array<Pages>;
   public userLogged;
+  public isUserAdmin;
 
   constructor(
     private platform: Platform,
@@ -38,6 +39,7 @@ export class AppComponent {
       const token = this.cookieService.get('token');
       this.dm.getUserLogged(token).then(res => {
         this.userLogged = res;
+        this.isUserAdmin = res.user.is_staff;
       });
     }
     /*this.userLogged = this.cookieService.check('token')
@@ -81,6 +83,12 @@ export class AppComponent {
         url: '/settings',
         direct: 'forward',
         icon: 'cog'
+      },
+      {
+        title: 'Admin Control Panel',
+        url: '/dashboard',
+        direct: 'forward',
+        icon: 'stats'
       }
     ];
 

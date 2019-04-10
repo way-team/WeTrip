@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './guards/auth/auth.guard';
+import { AdminGuard } from './guards/admin/admin.guard';
 
 const routes: Routes = [
   { path: '', loadChildren: './pages/login/login.module#LoginPageModule' },
@@ -95,6 +96,56 @@ const routes: Routes = [
     path: 'rating/:username',
     loadChildren: './pages/rating/rating.module#RatingPageModule',
     canLoad: [AuthGuard]
+  },
+  { path: 'dashboard',
+    canLoad: [AdminGuard],
+    children: [
+      {
+        path: '',
+        loadChildren: './pages/dashboard/dashboard.module#DashboardPageModule',
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'tripsByMonth',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'publicVsPrivate',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'applicationsPerTrip',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'visitedCities',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'usersByGender',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'premiumUsers',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'activeVsInactive',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      },
+      {
+        path: 'usersMetrics',
+        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        canLoad: [AdminGuard]
+      }
+    ]
   }
 ];
 

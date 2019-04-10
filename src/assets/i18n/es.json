@@ -110,7 +110,8 @@
 		"MENU": "Menú",
 		"PREMIUM": "Premium",
 		"PROFILE": "Perfil",
-		"TRIPS": "Viajes"
+		"TRIPS": "Viajes",
+		"ADMIN_CONTROL_PANEL": "Panel de control de administración"
 	},
 	"NOTIFICATIONS": {
 		"NOTIFICATIONS": "Notificaciones",
@@ -198,5 +199,39 @@
 		"START_DATE": "Fecha de comienzo",
 		"TO": "a",
 		"TRIP_DETAILS": "Detalles del viaje"
-	}
+	},
+	"DASHBOARD": {
+		"ADMIN_CONTROL_PANEL": "Panel de control de administración",
+		"TRIPS": "Viajes",
+		"USERS": "Usuarios",
+		"SEE_STATS": "Ver estadísticas",
+		"TRIPS_BY_MONTH": "Viajes por mes",
+		"PUBLIC_VS_PRIVATE": "Viajes: públicos VS. privados",
+		"APPLICATIONS_PER_TRIP": "Solicitudes por viaje",
+		"VISITED_CITIES": "Ciudades visitadas",
+		"USERS_BY_GENDER": "Usuarios por género",
+		"PREMIUM_USERS": "Usuarios premium",
+		"ACTIVE_VS_INACTIVE": "Usuarios: activos VS. inactivos",
+		"USERS_METRICS": "Otras estadísticas",
+		"TOTAL_NUMBER_TRIPS": "Número total de viajes:",
+		"BAR_CHART": "Diagrama de barras:",
+		"PERCENTAGE_PUBLIC_TRIPS": "% de viajes públicos:",
+		"PERCENTAGE_PRIVATE_TRIPS": "% de viajes privados:",
+		"RATIO_PRIVATE_TRIPS": "Viajes privados/viajes públicos:",
+		"AVERAGE_APPS_PER_TRIP": "Media de solicitudes por viaje:",
+		"TOTAL_NUMBER_USERS": "Número total de usuarios:",
+		"PERCENTAGE_MEN": "% de hombres:",
+		"PERCENTAGE_WOMEN": "% de mujeres:",
+		"PERCENTAGE_NONBINARY": "% de no binarios:",
+		"PERCENTAGE_PREMIUM_USERS": "% de usuarios Premium:",
+		"PERCENTAGE_NONPREMIUM_USERS": "% de usuarios no Premium:",
+		"RATIO_PREMIUM_USERS": "usuarios Premium/usuarios no Premium:",
+		"PERCENTAGE_ACTIVE_USERS": "% de usuarios activos:",
+		"PERCENTAGE_INACTIVE_USERS": "% de usuarios inactivos:",
+		"RATIO_ACTIVE_USERS": "usuarios activos/usuarios inactivos:",
+		"DOUGHNUT_CHART": "Diagrama circular:",
+		"AVERAGE_TRIPS_PER_USER": "Media de viajes por usuario:",
+		"AVERAGE_LANGUAGES_PER_USER": "Media de idiomas por usuario:",
+		"AVERAGE_RATING_PER_USER": "Valoración media por usuario:"
+	  }
 }

@@ -1,0 +1,175 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title color="primary">{{
+      "DASHBOARD.ADMIN_CONTROL_PANEL" | translate
+    }}</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="statsType">
+      <ion-segment-button value="trips">
+        <ion-label color="danger">
+          <strong>{{ "DASHBOARD.TRIPS" | translate }}</strong>
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="users">
+        <ion-label color="dark">
+          <strong>{{ "DASHBOARD.USERS" | translate }}</strong>
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div [ngSwitch]="statsType">
+    <div *ngSwitchCase="'trips'">
+        <ion-grid style="height: 100%">
+        <ion-row justify-content-center align-items-center style="height: 100%">
+          <ion-col size="auto">
+            <ion-card color="favorite3">
+              <img src="assets/img/dashboard/tripsByMonth.png" />
+              <ion-card-header>
+                <ion-card-title text-center > <ion-icon name="calendar"></ion-icon> {{ "DASHBOARD.TRIPS_BY_MONTH" | translate }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div margin-vertical text-center>
+                  <ion-button fill="outline" color="dark" (click)="onClickTripsByMonth()"
+                    ><ion-icon name="navigate" slot="start"></ion-icon
+                    >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                  >
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="auto">
+              <ion-card color="danger">
+                <img src="assets/img/dashboard/publicVsPrivate.png" />
+                <ion-card-header>
+                  <ion-card-title text-center > <ion-icon name="key"></ion-icon> {{ "DASHBOARD.PUBLIC_VS_PRIVATE" | translate }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <div margin-vertical text-center>
+                    <ion-button fill="outline" color="dark" (click)="onClickPublicVsPrivate()"
+                      ><ion-icon name="navigate" slot="start"></ion-icon
+                      >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                    >
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row justify-content-center align-items-center style="height: 100%"> 
+            <ion-col size="auto">
+              <ion-card color="warning">
+                <img src="assets/img/dashboard/applicationsPerTrip.png" />
+                <ion-card-header>
+                  <ion-card-title text-center> <ion-icon name="copy"></ion-icon> {{ "DASHBOARD.APPLICATIONS_PER_TRIP" | translate }}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <div margin-vertical text-center>
+                    <ion-button fill="outline" color="dark" (click)="onClickApplicationsPerTrip()"
+                      ><ion-icon name="navigate" slot="start"></ion-icon 
+                      >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                    >
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="auto">
+                <ion-card color="success">
+                  <img src="assets/img/dashboard/visitedCities.png" />
+                  <ion-card-header>
+                    <ion-card-title text-center > <ion-icon name="locate"></ion-icon> {{ "DASHBOARD.VISITED_CITIES" | translate }}</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <div margin-vertical text-center>
+                      <ion-button fill="outline" color="dark" (click)="onClickVisitedCities()"
+                        ><ion-icon name="navigate" slot="start"></ion-icon
+                        >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                      >
+                    </div>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+          </ion-row>
+      </ion-grid>
+    </div>
+
+    <div *ngSwitchCase="'users'">
+        <ion-grid style="height: 100%">
+            <ion-row justify-content-center align-items-center style="height: 100%">
+              <ion-col size="auto">
+                <ion-card color="favorite">
+                  <img src="assets/img/dashboard/usersByGender.png" />
+                  <ion-card-header>
+                    <ion-card-title text-center > <ion-icon name="female"></ion-icon> {{ "DASHBOARD.USERS_BY_GENDER" | translate }}</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <div margin-vertical text-center>
+                      <ion-button fill="outline" color="dark" (click)="onClickUsersByGender()"
+                        ><ion-icon name="navigate" slot="start"></ion-icon
+                        >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                      >
+                    </div>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size="auto">
+                  <ion-card color="warning">
+                    <img src="assets/img/dashboard/premiumUsers.png" />
+                    <ion-card-header>
+                      <ion-card-title text-center > <ion-icon name="star"></ion-icon> {{ "DASHBOARD.PREMIUM_USERS" | translate }}</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                      <div margin-vertical text-center>
+                        <ion-button fill="outline" color="dark" (click)="onClickPremiumUsers()"
+                          ><ion-icon name="navigate" slot="start"></ion-icon
+                          >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                        >
+                      </div>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+            </ion-row>
+            <ion-row justify-content-center align-items-center style="height: 100%">
+                <ion-col size="auto">
+                  <ion-card color="favorite2">
+                    <img src="assets/img/dashboard/activeVsInactive.png" />
+                    <ion-card-header>
+                      <ion-card-title text-center> <ion-icon name="contacts"></ion-icon> {{ "DASHBOARD.ACTIVE_VS_INACTIVE" | translate }}</ion-card-title>
+                    </ion-card-header>
+                    <ion-card-content>
+                      <div margin-vertical text-center>
+                        <ion-button fill="outline" color="dark" (click)="onClickActiveVsInactive()"
+                          ><ion-icon name="navigate" slot="start"></ion-icon
+                          >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                        >
+                      </div>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+                <ion-col size="auto">
+                    <ion-card color="light">
+                      <img src="assets/img/dashboard/usersMetrics.png" />
+                      <ion-card-header>
+                        <ion-card-title text-center > <ion-icon name="pie"></ion-icon> {{ "DASHBOARD.USERS_METRICS" | translate }}</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <div margin-vertical text-center>
+                          <ion-button fill="outline" color="dark" (click)="onClickUsersMetrics()"
+                            ><ion-icon name="navigate" slot="start"></ion-icon
+                            >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
+                          >
+                        </div>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+              </ion-row>
+          </ion-grid>
+          </div>
+  </div>
+</ion-content>

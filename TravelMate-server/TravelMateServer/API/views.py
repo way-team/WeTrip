@@ -552,107 +552,91 @@ class DashboardData(APIView):
         """
         stats = {}
         numberOfTrips = Trip.objects.all().count()
-        stats['numberOfTrips'] = numberOfTrips
-        stats['numberOfTripsJanuary'] = Trip.objects.filter(
-            Q(startDate__month='01') | Q(endDate__month='01')).count()
-        stats['numberOfTripsFebruary'] = Trip.objects.filter(
-            Q(startDate__month='02') | Q(endDate__month='02')).count()
-        stats['numberOfTripsMarch'] = Trip.objects.filter(
-            Q(startDate__month='03') | Q(endDate__month='03')).count()
-        stats['numberOfTripsApril'] = Trip.objects.filter(
-            Q(startDate__month='04') | Q(endDate__month='04')).count()
-        stats['numberOfTripsMay'] = Trip.objects.filter(
-            Q(startDate__month='05') | Q(endDate__month='05')).count()
-        stats['numberOfTripsJune'] = Trip.objects.filter(
-            Q(startDate__month='06') | Q(endDate__month='06')).count()
-        stats['numberOfTripsJuly'] = Trip.objects.filter(
-            Q(startDate__month='07') | Q(endDate__month='07')).count()
-        stats['numberOfTripsAugust'] = Trip.objects.filter(
-            Q(startDate__month='08') | Q(endDate__month='08')).count()
-        stats['numberOfTripsSeptember'] = Trip.objects.filter(
-            Q(startDate__month='09') | Q(endDate__month='09')).count()
-        stats['numberOfTripsOctober'] = Trip.objects.filter(
-            Q(startDate__month='10') | Q(endDate__month='10')).count()
-        stats['numberOfTripsNovember'] = Trip.objects.filter(
-            Q(startDate__month='11') | Q(endDate__month='11')).count()
-        stats['numberOfTripsDecember'] = Trip.objects.filter(
-            Q(startDate__month='12') | Q(endDate__month='12')).count()
-
+        stats['numberOfTrips']= numberOfTrips
+        stats['numberOfTripsJanuary']=Trip.objects.filter(Q(startDate__month='01')).count()
+        stats['numberOfTripsFebruary']=Trip.objects.filter(Q(startDate__month='02')).count()
+        stats['numberOfTripsMarch']=Trip.objects.filter(Q(startDate__month='03')).count()
+        stats['numberOfTripsApril']=Trip.objects.filter(Q(startDate__month='04')).count()
+        stats['numberOfTripsMay']=Trip.objects.filter(Q(startDate__month='05')).count()
+        stats['numberOfTripsJune']=Trip.objects.filter(Q(startDate__month='06')).count()
+        stats['numberOfTripsJuly']=Trip.objects.filter(Q(startDate__month='07')).count()
+        stats['numberOfTripsAugust']=Trip.objects.filter(Q(startDate__month='08')).count()
+        stats['numberOfTripsSeptember']=Trip.objects.filter(Q(startDate__month='09')).count()
+        stats['numberOfTripsOctober']=Trip.objects.filter(Q(startDate__month='10')).count()
+        stats['numberOfTripsNovember']=Trip.objects.filter(Q(startDate__month='11')).count()
+        stats['numberOfTripsDecember']=Trip.objects.filter(Q(startDate__month='12')).count()
+        
         numberOfPublicTrips = Trip.objects.filter(tripType='PUBLIC').count()
         numberOfPrivateTrips = Trip.objects.filter(tripType='PRIVATE').count()
-        stats['numberOfPublicTrips'] = numberOfPublicTrips
-        stats['numberOfPrivateTrips'] = numberOfPrivateTrips
-        if (numberOfPublicTrips != 0):
-            stats[
-                'ratioOfPrivateTrips'] = numberOfPrivateTrips / numberOfPublicTrips
+        stats['numberOfPublicTrips']=numberOfPublicTrips
+        stats['numberOfPrivateTrips']=numberOfPrivateTrips
+        if(numberOfPublicTrips!=0):
+            stats['ratioOfPrivateTrips'] = numberOfPrivateTrips/numberOfPublicTrips
         else:
             stats['ratioOfPrivateTrips'] = 0
-        stats['percentagePrivateTrips'] = numberOfPrivateTrips / numberOfTrips
-        stats['percentagePublicTrips'] = numberOfPublicTrips / numberOfTrips
+        stats['percentagePrivateTrips'] = numberOfPrivateTrips/numberOfTrips
+        stats['percentagePublicTrips'] = numberOfPublicTrips/numberOfTrips
+
 
         numberOfUsers = UserProfile.objects.all().count()
-        stats['numberOfUsers'] = numberOfUsers
+        stats['numberOfUsers']= numberOfUsers
+        
+        stats['numberMen']=UserProfile.objects.filter(gender='M').count()
+        stats['numberWomen']=UserProfile.objects.filter(gender='F').count()
+        stats['numberNonBinary']=UserProfile.objects.filter(gender='N').count()
 
-        stats['percentageMen'] = UserProfile.objects.filter(
-            gender='M').count() / numberOfUsers
-        stats['percentageWomen'] = UserProfile.objects.filter(
-            gender='F').count() / numberOfUsers
-        stats['percentageNonBinary'] = UserProfile.objects.filter(
-            gender='N').count() / numberOfUsers
+        stats['percentageMen']=UserProfile.objects.filter(gender='M').count()/numberOfUsers
+        stats['percentageWomen']=UserProfile.objects.filter(gender='F').count()/numberOfUsers
+        stats['percentageNonBinary']=UserProfile.objects.filter(gender='N').count()/numberOfUsers
 
-        numberOfPremiumUsers = UserProfile.objects.filter(
-            isPremium=True).count()
-        numberOfNonPremiumUsers = UserProfile.objects.filter(
-            isPremium=False).count()
-        stats['numberOfPremiumUsers'] = numberOfPremiumUsers
-        stats['numberOfNonPremiumUsers'] = numberOfNonPremiumUsers
-        stats['percentagePremiumUsers'] = numberOfPremiumUsers / numberOfUsers
 
-        activeUsers = UserProfile.objects.filter(status='Active').count()
-        deletedUsers = UserProfile.objects.filter(status='Deleted').count()
+        numberOfPremiumUsers = UserProfile.objects.filter(isPremium=True).count()
+        numberOfNonPremiumUsers = UserProfile.objects.filter(isPremium=False).count()
+        stats['numberOfPremiumUsers']= numberOfPremiumUsers
+        stats['numberOfNonPremiumUsers']= numberOfNonPremiumUsers
+        stats['percentagePremiumUsers']= numberOfPremiumUsers/numberOfUsers
+        stats['percentageNonPremiumUsers']= numberOfNonPremiumUsers/numberOfUsers
+        
+        activeUsers=UserProfile.objects.filter(status='A').count()
+        deletedUsers=UserProfile.objects.filter(status='D').count()
 
-        if (deletedUsers != 0):
-            stats['activeUsersRatio'] = activeUsers / deletedUsers
+        if(deletedUsers!=0):
+            stats['activeUsersRatio']= activeUsers/deletedUsers
         else:
-            stats['activeUsersRatio'] = 0
+            stats['activeUsersRatio']= 0
 
-        if (numberOfNonPremiumUsers != 0):
-            stats[
-                'premiumUsersRatio'] = numberOfPremiumUsers / numberOfNonPremiumUsers
+
+        stats['numberOfActiveUsers'] = activeUsers
+        stats['numberOfDeletedUsers'] = deletedUsers
+        stats['percentageActiveUsers'] = activeUsers/numberOfUsers
+        stats['percentageDeletedUsers'] = deletedUsers/numberOfUsers
+
+
+        if(numberOfNonPremiumUsers!=0):
+            stats['premiumUsersRatio']= numberOfPremiumUsers/numberOfNonPremiumUsers
         else:
-            stats['premiumUsersRatio'] = 0
+            stats['premiumUsersRatio']= 0
 
-        stats['avgTripsPerUser'] = numberOfTrips / numberOfUsers
+        stats['avgTripsPerUser']= numberOfTrips/numberOfUsers
 
         numberOfApps = Application.objects.all().count()
-        stats['avgAppsPerTrip'] = numberOfApps / numberOfTrips
+        stats['avgAppsPerTrip']= numberOfApps/numberOfTrips
 
         numberOfLanguages = Language.objects.all().count()
-        stats['avgLanguagesPerUser'] = numberOfLanguages / numberOfUsers
+        stats['avgLanguagesPerUser']=numberOfLanguages/numberOfUsers
         #stats['stDevLanguagesPerUser']=
 
-        stats['avgRatingPerUser'] = UserProfile.objects.aggregate(
-            Avg('avarageRate'))['avarageRate__avg']
+
+        stats['avgRatingPerUser']=UserProfile.objects.aggregate(Avg('avarageRate'))['avarageRate__avg']
         #stats['stDevRatingPerUser']=
-        stats['top5AppsTrips'] = TripSerializer(
-            Trip.objects.annotate(
-                apps=Count('applications')).order_by('-apps')[:5],
-            many=True).data
-        stats['top5NumberOfCitiesTrips'] = TripSerializer(
-            Trip.objects.annotate(
-                cities_count=Count('cities')).order_by('-cities_count')[:5],
-            many=True).data
-        stats['top5NumberOfTripsCities'] = CitySerializer(
-            City.objects.annotate(
-                trips_count=Count('trips')).order_by('-trips_count')[:5],
-            many=True).data
-        stats['top5MostCommonInterests'] = InterestSerializer(
-            Interest.objects.annotate(
-                users_count=Count('users')).order_by('-users_count')[:5],
-            many=True).data
+        stats['top5AppsTrips']= TripSerializer(Trip.objects.annotate(apps=Count('applications')).order_by('-apps')[:5], many=True).data
+        stats['top5NumberOfCitiesTrips']=TripSerializer(Trip.objects.annotate(cities_count=Count('cities')).order_by('-cities_count')[:5], many=True).data
+        stats['top5NumberOfTripsCities']=CityReducedSerializer(City.objects.annotate(trips_count=Count('trips')).order_by('-trips_count')[:5], many=True).data
+        stats['top5MostCommonInterests']=InterestReducedSerializer(Interest.objects.annotate(users_count=Count('users')).order_by('-users_count')[:5], many=True).data
+
+
 
         return JsonResponse(stats)
-
 
 class ApplyTripView(APIView):
     """
