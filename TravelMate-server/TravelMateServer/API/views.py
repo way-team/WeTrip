@@ -27,20 +27,17 @@ def get_user_by_token(request):
 
 class GetUserView(APIView):
     def post(self, request):
-        userProfile = get_user_by_token(request)
+        user_profile = get_user_by_token(request)
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        return Response(UserProfileSerializer(user_profile, many=False).data)
 
 
-def refreshUserAverageRating(user):
-    userRatings = Rate.objects.filter(voted=user)
-    sumRatings = 0
-    for r in userRatings:
-         sumRatings += r.value
-    avgUserRating = sumRatings / userRatings.count()
-    user.avarageRate = avgUserRating
-    user.save()
+class GetUserByIdView(APIView):
+    def post(self, request):
+        user_id = request.data.get('user_id', '')
+        user_profile = UserProfile.objects.get(pk=user_id)
 
+        return Response(UserProfileSerializer(user_profile, many=False).data)
 
 class RateUser(APIView):
     permission_classes = (IsAuthenticated, )
