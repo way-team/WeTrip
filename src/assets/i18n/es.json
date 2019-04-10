@@ -134,7 +134,13 @@
 		"HAS_VISITED": "Ha visitado",
 		"STATE": "Estado",
 		"TRAVEL_TYPE": "Tipo de viaje",
-		"WANTS_TO_GO_TO": "Quiere ir a"
+		"WANTS_TO_GO_TO": "Quiere ir a",
+		"PREMIUM": "Eres usuario premium",
+		"ADMIN": "Administrador",
+		"USERS_ACCEPTED": "Usuarios que asistirán a tu viaje",
+		"USERS_TO_ACCEPT": "Usuarios por aceptar",
+		"NO_USER_PENDING": "No hay usuarios pendientes de aceptar",
+		"NO_USER_ACCEPTED": "No hay asistentes"
 	},
 	"RATING": {
 		"RATING": "Valoración",
