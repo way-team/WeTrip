@@ -31,6 +31,16 @@ class GetUserView(APIView):
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
 
+def refreshUserAverageRating(user):
+    userRatings = Rate.objects.filter(voted=user)
+    sumRatings = 0
+    for r in userRatings:
+         sumRatings += r.value
+    avgUserRating = sumRatings / userRatings.count()
+    user.avarageRate = avgUserRating
+    user.save()
+
+
 class RateUser(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
@@ -41,13 +51,12 @@ class RateUser(APIView):
         refreshUserAverageRating(user)
         avgRating = user.avarageRate
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        return Response(UserProfileSerializer(user, many=False).data)
 
     def post(self, request):
         """
         POST method
         """
-
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
@@ -71,15 +80,6 @@ class RateUser(APIView):
         rate.save()
 
         return Response(UserProfileSerializer(voteduser, many=False).data)
-
-    def refreshUserAverageRating(user):
-        userRatings = Rate.objects.filter(voted=user)
-        sumRatings = 0
-        for r in userRatings:
-            sumRatings += r.value
-        avgUserRating = sumRatings / userRatings.count()
-        user.avarageRate = avgUserRating
-        user.save()
 
 
 class UserList(APIView):
@@ -464,8 +464,10 @@ class GetTripView(APIView):
         GET method
         """
         trip_id = kwargs.get("trip_id", "")
-        trip = Trip.objects.get(pk=trip_id)
-
+        try:
+            trip = Trip.objects.get(pk=trip_id)
+        except Trip.DoesNotExist:
+            raise ValueError("The trip does not exist")
         return Response(TripSerializer(trip, many=False).data)
 
 
@@ -473,67 +475,34 @@ class EditTripView(APIView):
     """
     Method to edit a trip by its ID
     """
-
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        #user = get_user_by_token(request)
-        user = User.objects.get(username="idelozar").userprofile
+        data = request.data
+        trip = Trip.objects.get(pk=request.data["tripId"])
 
-        trip_id = request.data.get("trip_id", "")
-        title = request.data.get("title", "")
-        description = request.data.get("description", "")
-        start_date = request.data.get("start_date", "")
-        end_date = request.data.get("end_date", "")
-        trip_type = request.data.get("trip_type", "")
-
-        city_id = request.data.get("city", "")
-
-        city = City.objects.get(pk=city_id)
-        image_name = city.country.name + '.jpg'
-
-        stored_trip = Trip.objects.get(pk=trip_id)
-        stored_creator = stored_trip.user
+        stored_creator = trip.user
+        user = get_user_by_token(request)
         if stored_creator != user:
             raise ValueError("You are not the creator of this trip")
 
-        stored_cities = stored_trip.cities.all()
-
-        try:
-            user_image = request.data['file']
-            trip = Trip(
-                id=trip_id,
-                user=user,
-                title=title,
-                description=description,
-                startDate=start_date,
-                endDate=end_date,
-                tripType=trip_type,
-                image=image_name,
-                userImage=user_image)
-            trip.save()
-
-        except MultiValueDictKeyError:
-            trip = Trip(
-                id=trip_id,
-                user=user,
-                title=title,
-                description=description,
-                startDate=start_date,
-                endDate=end_date,
-                tripType=trip_type,
-                image=image_name)
-            trip.save()
-
-        finally:
-            if not city in stored_cities:
-                city.trips.add(trip)
-
-        return Response(TripSerializer(trip, many=False).data)
+        if request.data["startDate"] > request.data["endDate"]:
+            raise ValueError("The start date must be before that the end date")
+        
+        serializer = TripSerializer(trip, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            try:
+                new_city = City.objects.get(pk=request.data["city"])
+                trip.city = new_city
+            except City.DoesNotExist:
+                raise ValueError("The city does not exist")       
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
 
 class DashboardData(APIView):
@@ -679,6 +648,64 @@ class ApplyTripView(APIView):
             raise ValueError("You have already applied to this trip")
 
         return Response(TripSerializer(trip, many=False).data)
+
+
+class AcceptApplicationView(APIView):
+    """
+    Method to accept an application to a trip specified by their IDs
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        aplication_id = request.data.get("application_id", "")
+
+        try:
+            application = Application.objects.get(pk=aplication_id)
+            creator = application.trip.user
+            if creator != user:
+                raise ValueError("You are not the creator of the application's trip")
+            if application.status != "P":
+                raise ValueError("The application has just accepted or rejected")
+            application.status = "A"
+            application.save()
+            return Response(TripSerializer(application.trip, many=False).data)
+        except Application.DoesNotExist:
+            raise ValueError("The application does not exist")
+
+
+class RejectApplicationView(APIView):
+    """
+    Method to reject an application to a trip specified by their IDs
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        aplication_id = request.data.get("application_id", "")
+
+        try:
+            application = Application.objects.get(pk=aplication_id)
+            creator = application.trip.user
+            if creator != user:
+                raise ValueError("You are not the creator of the application's trip")
+            if application.status != "P":
+                raise ValueError("The application has just accepted or rejected")
+            application.status = "R"
+            application.save()
+            return Response(TripSerializer(application.trip, many=False).data)
+        except Application.DoesNotExist:
+            raise ValueError("The application does not exist")
 
 
 class SetUserToPremium(APIView):

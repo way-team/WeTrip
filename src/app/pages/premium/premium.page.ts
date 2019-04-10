@@ -1,6 +1,6 @@
 import { Component, OnInit ,AfterViewInit} from '@angular/core';
 import { NavController, LoadingController, ToastController , AlertController, ActionSheetController} from '@ionic/angular';
-import * as $ from "jquery";
+
 import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';

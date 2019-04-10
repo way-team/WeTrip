@@ -9,6 +9,8 @@ import { ActivatedRoute } from '@angular/router';
 import { UserProfile } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
+import { Location } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-rating',
@@ -23,6 +25,12 @@ export class RatingPage implements OnInit {
   public voted: string;
 
   constructor(
+        public toastCtrl: ToastController,
+       public navCtrl: NavController,
+       public loadingCtrl: LoadingController,
+        private location: Location,
+
+        private translate: TranslateService,
     private dm: DataManagement,
     private cookieService: CookieService,
     private activatedRoute: ActivatedRoute,
@@ -55,7 +63,7 @@ export class RatingPage implements OnInit {
         this.rating
       )
       .then(data => {
-
+        this.success()
       })
       .catch(error => {
         this.alertCtrl
@@ -73,5 +81,24 @@ export class RatingPage implements OnInit {
             alertEl.present();
           });
       });
+  }
+  async success() {
+    const loader = await this.loadingCtrl.create({
+      duration: 2000
+    });
+    let translation:string = this.translate.instant('RATING.SUCCESS');
+    loader.present();
+    loader.onWillDismiss().then(async l => {
+      const toast = await this.toastCtrl.create({
+        showCloseButton: true,
+        cssClass: 'bg-profile',
+        message: translation,
+
+         position: 'middle'
+      });
+
+      toast.present();
+      this.navCtrl.navigateForward('/discover');
+    });
   }
 }

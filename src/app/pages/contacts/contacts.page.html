@@ -25,23 +25,10 @@
                     <div class="listFriends" *ngFor="let user of friends">
                         <ion-item class="bg-primary" no-margin>
                             <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="warning" slot="end"
-                                    [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
 
-                                          <ion-icon *ngIf="user.avarageRate>=1" name="star"></ion-icon>
-                                          <ion-icon *ngIf="user.avarageRate>=2" name="star"></ion-icon>
-                                          <ion-icon  *ngIf="user.avarageRate>=3" name="star"></ion-icon>
-                                          <ion-icon  *ngIf="user.avarageRate>=4"name="star"></ion-icon>
-                                          <ion-icon *ngIf="user.avarageRate>=5" name="star"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<1" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<2" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<3" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<4" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<5" name="star-outline" color="dark"></ion-icon>
-                                </ion-button>
-                                <ion-button size="small" shape="round" color="dark" slot="end"
+                                <ion-button shape="round" color="dark" slot="end"
                                     (click)="chat(user.user.username)">
-                                    <ion-icon name="send" item-right></ion-icon>
+                                    <ion-icon name="send" class="larger" item-right></ion-icon>
 
                                 </ion-button>
                                 <br>
@@ -61,11 +48,20 @@
                                         <strong>{{user.first_name}} {{user.last_name}}</strong>
                                     </h2>
                                 </ion-text>
-                                <ion-text color="tertiary">
-                                    <h3>
-                                        {{user.description}}
-                                    </h3>
-                                </ion-text>
+                                <ion-button size="small" shape="round" color="warning"
+                                    [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
+
+                                          <ion-icon *ngIf="user.avarageRate>=1" name="star" color="dark"></ion-icon>
+                                          <ion-icon *ngIf="user.avarageRate>=2" name="star" color="dark"></ion-icon>
+                                          <ion-icon  *ngIf="user.avarageRate>=3" name="star" color="dark"></ion-icon>
+                                          <ion-icon  *ngIf="user.avarageRate>=4"name="star" color="dark"></ion-icon>
+                                          <ion-icon *ngIf="user.avarageRate>=5" name="star" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<1" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<2" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<3" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<4" name="star-outline" color="dark"></ion-icon>
+                                            <ion-icon *ngIf="user.avarageRate<5" name="star-outline" color="dark"></ion-icon>
+                                </ion-button>
                             </ion-label>
                         </ion-item>
                     </div>
