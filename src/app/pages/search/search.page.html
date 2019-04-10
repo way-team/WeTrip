@@ -3,9 +3,16 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">{{ 'SEARCH.SEARCH' | translate}}</ion-title>
+    <ion-title color="light">{{ 'SEARCH.SEARCH' | translate}}</ion-title>
   </ion-toolbar>
-
+     <ion-toolbar color="dark">
+    <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button size="small" shape="round" color="medium" (click)="search()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-button color="lightcyan" expand="full" (click)="goToMyTrips()" no-margin>
     <ion-text aling="left">
       {{ 'SEARCH.MY_TRIPS' | translate}}
@@ -17,9 +24,6 @@
 <ion-content>
   <ng-container *ngIf="listSearch">
     <ion-card>
-      <ion-card-header class="bg-dark">
-
-      </ion-card-header>
       <ion-card-content class="bg-white">
 
         <div class="listSearch" *ngFor="let trip of listSearch">

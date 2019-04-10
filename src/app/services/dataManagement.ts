@@ -201,6 +201,21 @@ export class DataManagement {
         return Promise.reject('error');
       });
   }
+  public search(
+    searchKey: string
+  ): Promise<any> {
+    return this.restService
+      .search(
+        searchKey
+      )
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
   public paid(): Promise<any> {
     return this.restService
       .paid()
