@@ -13,6 +13,7 @@ from django.db.models import Q, Count, StdDev, Avg, Sum
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from collections import namedtuple
 
 
 def get_user_by_token(request):
@@ -479,6 +480,8 @@ class CreateTrip(APIView):
             return Response(TripSerializer(trip, many=False).data)
 
 
+FullTrip = namedtuple('FullTrip', ('trip', 'applicationsList', 'pendingsList'))
+
 class GetTripView(APIView):
     """
     Method to get a trip by its ID
@@ -493,9 +496,17 @@ class GetTripView(APIView):
         trip_id = kwargs.get("trip_id", "")
         try:
             trip = Trip.objects.get(pk=trip_id)
+            applications = Application.objects.filter(trip=trip, status="A")
+            pendings = Application.objects.filter(trip=trip, status="P")
+
+            full_trip = FullTrip(
+                trip=trip,
+                applicationsList=applications,
+                pendingsList=pendings,
+            )
+            return Response(FullTripSerializer(full_trip, many=False).data)
         except Trip.DoesNotExist:
             raise ValueError("The trip does not exist")
-        return Response(TripSerializer(trip, many=False).data)
 
 
 class EditTripView(APIView):
