@@ -345,45 +345,18 @@ export class RestWS extends AbstractWS {
   }
 
   public resolveFriendRequest(request: string, username: string): Promise<any> {
-    let prom;
-    if(request === 'accept') {
-       prom = this.acceptFriendRequest(username);
-    } else if (request === 'reject') {
-      prom = this.rejectFriendRequest(username);
-    } else {
-      return Promise.reject();
+    const fd = new FormData();
+    const Authorization = this.cookieService.get('token');
+    fd.append('token', Authorization);
+    fd.append('sendername', username);
+    const action = request === 'accept' ? 'acceptFriend/' : 'rejectFriend/';
+    if (request === 'accept') {
+      return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
+        return Promise.resolve(res);
+      }).catch(error => {
+        return Promise.reject(error);
+      });
     }
-
-    Promise.all([prom]).then((response) => {
-      return Promise.resolve(response);
-    }).catch((error) => {
-      return Promise.reject(error);
-    });
-  }
-
-  public acceptFriendRequest(username: string): Promise<any> {
-    const fd = new FormData();
-    const Authorization = this.cookieService.get('token');
-    fd.append('token', Authorization);
-    fd.append('sendername', username);
-
-    return this.makePostRequest(this.path + 'acceptFriend/', fd, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
-  }
-
-  public rejectFriendRequest(username: string): Promise<any> {
-    const fd = new FormData();
-    const Authorization = this.cookieService.get('token');
-    fd.append('token', Authorization);
-    fd.append('sendername', username);
-    return this.makePostRequest(this.path + 'rejectFriend/', fd, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
   }
 
   public sendFriendInvitation(username: string): Promise<any> {
@@ -392,10 +365,10 @@ export class RestWS extends AbstractWS {
     fd.append('token', Authorization);
     fd.append('username', username);
     return this.makePostRequest(this.path + 'sendInvitation/', fd, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
   }
 
   public applyForTrip(tripId: string) {
@@ -404,9 +377,9 @@ export class RestWS extends AbstractWS {
     fd.append('token', Authorization);
     fd.append('trip_id', tripId);
     return this.makePostRequest(this.path + 'applyTrip/', fd, Authorization).then(res => {
-        return Promise.resolve(res);
-      }).catch(error => {
-        console.log(error);
-      });
+      return Promise.resolve(res);
+    }).catch(error => {
+      return Promise.reject(error);
+    });
   }
 }
