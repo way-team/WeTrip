@@ -46,11 +46,11 @@
         </h3>
       </ion-text>
 
-
-      <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
-
-        {{ 'TRIP_DETAILS.JOIN' | translate }}
-      </ion-button>
+      <ng-container *ngIf="!myTrip">
+        <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
+          {{ 'TRIP_DETAILS.JOIN' | translate }}
+        </ion-button>
+      </ng-container>
     </ion-label>
   </ion-item>
 </ion-content>

@@ -31,6 +31,16 @@ class GetUserView(APIView):
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
 
+def refreshUserAverageRating(user):
+    userRatings = Rate.objects.filter(voted=user)
+    sumRatings = 0
+    for r in userRatings:
+         sumRatings += r.value
+    avgUserRating = sumRatings / userRatings.count()
+    user.avarageRate = avgUserRating
+    user.save()
+
+
 class RateUser(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
@@ -41,13 +51,12 @@ class RateUser(APIView):
         refreshUserAverageRating(user)
         avgRating = user.avarageRate
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        return Response(UserProfileSerializer(user, many=False).data)
 
     def post(self, request):
         """
         POST method
         """
-
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
@@ -92,15 +101,6 @@ class RateUser(APIView):
 
         return Response(UserProfileSerializer(voteduser, many=False).data)
 
-    def refreshUserAverageRating(user):
-        userRatings = Rate.objects.filter(voted=user)
-        sumRatings = 0
-        for r in userRatings:
-            sumRatings += r.value
-        avgUserRating = sumRatings / userRatings.count()
-        user.avarageRate = avgUserRating
-        user.save()
-
 
 class UserList(APIView):
     permission_classes = (IsAuthenticated, )
@@ -144,14 +144,14 @@ class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
     """
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    #permission_classes = (IsAuthenticated, )
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        user = get_user_by_token(request)
+        user = User.objects.get(username="pablo").userprofile
 
         friends, pending = get_friends_or_pending(user)
 
@@ -174,6 +174,139 @@ class GetPendingView(APIView):
         friends, pending = get_friends_or_pending(user)
 
         return Response(UserProfileSerializer(pending, many=True).data)
+
+
+class SendInvitation(APIView):
+    """
+    Method to send a friend invitation to other user
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        sender = get_user_by_token(request)
+        #sender = User.objects.get(username="pablo").userprofile
+        
+        receivername = request.data.get("username", "")
+        receiver = User.objects.get(username=receivername).userprofile
+
+        allinvitations = Invitation.objects.all()
+
+        control = None
+
+        for invitation in allinvitations:
+            if invitation.sender == receiver and invitation.receiver == sender and invitation.status == "P":
+                control = "A"
+                break
+            elif invitation.sender == sender and invitation.receiver == receiver and invitation.status == "P":
+                control = "B"
+                break
+            elif invitation.sender == receiver and invitation.receiver == sender and invitation.status == "R":
+                control = "C"
+                break
+            elif invitation.sender == sender and invitation.receiver == receiver and invitation.status == "R":
+                control = "D"
+                break
+            elif invitation.sender == receiver and invitation.receiver == sender and invitation.status == "A":
+                control = "E"
+                break
+            elif invitation.sender == sender and invitation.receiver == receiver and invitation.status == "A":
+                control = "F"
+                break
+            elif sender == receiver:
+                control = "G"
+                break
+
+
+        if control == "A":
+            raise ValueError("This person has sent you a friend request before")
+        elif control == "B":
+            raise ValueError("You already sent a friend request to this person before")
+        elif control == "C":
+            raise ValueError("You already rejected this person")
+        elif control == "D":
+            raise ValueError("This person has rejected you")
+        elif control == "E":
+            raise ValueError("You are already friends")
+        elif control == "F":
+            raise ValueError("You are already friends")
+        elif control == "G":
+            raise ValueError("You can't be your own friend")
+        elif control == None:
+            newinvitation = Invitation(sender=sender, receiver=receiver, status="P")
+            newinvitation.save()
+
+        return Response(InvitationSerializer(newinvitation, many=False).data)
+            
+
+
+class AcceptFriend(APIView):
+    """
+    Method to accept or decline an invitation to be a friend of the logged user
+    """
+
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        invitation_id = request.data.get("invitation_id", "")
+        invitation = Invitation.objects.get(pk=invitation_id)
+        sender = invitation.sender
+
+        try:
+            query = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+        except Invitation.DoesNotExist:
+            query = None
+
+        if query != None:
+            invitation.status = "A"
+            invitation.save()
+        else:
+            raise ValueError("There is no pending invitation for that two users")
+
+        return Response(InvitationSerializer(invitation, many=False).data)
+            
+class RejectFriend(APIView):
+    """
+    Method to accept or decline an invitation to be a friend of the logged user
+    """
+
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+        #user = User.objects.get(username="dmarin").userprofile
+
+        invitation_id = request.data.get("invitation_id", "")
+        invitation = Invitation.objects.get(pk=invitation_id)
+        sender = invitation.sender
+
+        try:
+            query = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+        except Invitation.DoesNotExist:
+            query = None
+
+        if query != None:
+            invitation.status = "R"
+            invitation.save()
+        else:
+            raise ValueError("There is no pending invitation for that two users")
+
+        return Response(InvitationSerializer(invitation, many=False).data)
+
+
 
 
 class DiscoverPeopleView(APIView):
@@ -535,6 +668,64 @@ class ApplyTripView(APIView):
             raise ValueError("You have already applied to this trip")
 
         return Response(TripSerializer(trip, many=False).data)
+
+
+class AcceptApplicationView(APIView):
+    """
+    Method to accept an application to a trip specified by their IDs
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        aplication_id = request.data.get("application_id", "")
+
+        try:
+            application = Application.objects.get(pk=aplication_id)
+            creator = application.trip.user
+            if creator != user:
+                raise ValueError("You are not the creator of the application's trip")
+            if application.status != "P":
+                raise ValueError("The application has just accepted or rejected")
+            application.status = "A"
+            application.save()
+            return Response(TripSerializer(application.trip, many=False).data)
+        except Application.DoesNotExist:
+            raise ValueError("The application does not exist")
+
+
+class RejectApplicationView(APIView):
+    """
+    Method to reject an application to a trip specified by their IDs
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        aplication_id = request.data.get("application_id", "")
+
+        try:
+            application = Application.objects.get(pk=aplication_id)
+            creator = application.trip.user
+            if creator != user:
+                raise ValueError("You are not the creator of the application's trip")
+            if application.status != "P":
+                raise ValueError("The application has just accepted or rejected")
+            application.status = "R"
+            application.save()
+            return Response(TripSerializer(application.trip, many=False).data)
+        except Application.DoesNotExist:
+            raise ValueError("The application does not exist")
 
 
 class SetUserToPremium(APIView):

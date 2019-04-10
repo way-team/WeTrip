@@ -1,4 +1,4 @@
-from .models import UserProfile, Language, Trip, Application, City, Country, Interest, Message
+from .models import UserProfile, Language, Trip, Application, City, Country, Interest, Message, Invitation
 from rest_framework import serializers
 from django.contrib.auth.models import User
 import datetime
@@ -126,3 +126,11 @@ class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interest
         fields = ['name', 'users']
+
+class InvitationSerializer(serializers.ModelSerializer):
+    sender = UserProfileSerializer(many=False)
+    receiver = UserProfileSerializer(many=False)
+
+    class Meta:
+        model = Invitation
+        fields = ['sender', 'receiver', 'status']
