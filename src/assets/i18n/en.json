@@ -141,7 +141,8 @@
 		"USERS_ACCEPTED": "Attendants",
 		"USERS_TO_ACCEPT": "Users to accept",
 		"NO_USER_PENDING": "No users pending to accept",
-		"NO_USER_ACCEPTED": "No attendants"
+		"NO_USER_ACCEPTED": "No attendants",
+		"FUTURE_VISIT": "Future trips"
 	},
 	"RATING": {
 		"RATING": "Rating",

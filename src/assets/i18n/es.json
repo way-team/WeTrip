@@ -140,7 +140,8 @@
 		"USERS_ACCEPTED": "Usuarios que asistirán a tu viaje",
 		"USERS_TO_ACCEPT": "Usuarios por aceptar",
 		"NO_USER_PENDING": "No hay usuarios pendientes de aceptar",
-		"NO_USER_ACCEPTED": "No hay asistentes"
+		"NO_USER_ACCEPTED": "No hay asistentes",
+		"FUTURE_VISIT": "Viajes futuros"
 	},
 	"RATING": {
 		"RATING": "Valoración",
