@@ -13,6 +13,7 @@ from django.db.models import Q, Count, StdDev, Avg, Sum
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from collections import namedtuple
 
 
 def get_user_by_token(request):
@@ -57,50 +58,55 @@ class RateUser(APIView):
         """
         POST method
         """
+
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
         #username = request.data.get('username', '')
-        voter0 = User.objects.get(username=username)
-        voter = UserProfile.objects.get(user=voter0)
+        voterUser = User.objects.get(username=username)
+        voterUserProfile = UserProfile.objects.get(user=voterUser) #Voter User
 
-        votedusername = request.data.get('voted', '')
-        voted0 = User.objects.get(username=votedusername)
-        voteduser = UserProfile.objects.get(user=voted0)
+        votedUsername = request.data.get('voted', '')
+        votedUser = User.objects.get(username=votedUsername)
+        votedUserProfile = UserProfile.objects.get(user=votedUser) #Voted User
 
-        value = request.data.get('rating', '0')
+        value = request.data.get('rating', '0') #Value of the rating
 
-        # Checks if the users are friends
+        #Checks if the users are friends
         areFriends = False
-        friends, pending = get_friends_or_pending(voter)
+        friends, pending, rejected = get_friends(voterUserProfile)
         for f in friends:
-            if f == voteduser:
+            if (f==votedUserProfile):
                 areFriends = True
                 break
 
-        oldRating = Rate.objects.filter(voter=voter, voted=voteduser).first()
-        if areFriends:
-            actualrating = int(voteduser.avarageRate)
-            numTimes = int(voteduser.numRate)
+        oldRating = Rate.objects.filter(voter=voterUserProfile, voted=votedUserProfile).first()
+        #print("Value=", oldRating)
 
-            new = int(value)
-            if oldRating:
-                oldRating.delete()
-                old = int(oldRating.value)
-                voteduser.avarageRate = int((actualrating * numTimes + new - old) / (numTimes))
-
+        if(areFriends):
+            if oldRating is None:
+                rate = Rate(voter=voterUserProfile, voted=votedUserProfile, value=value)
+                rate.save()
             else:
-                voteduser.avarageRate = int((actualrating * numTimes + new) / (numTimes + 1))
-                voteduser.numRate = numTimes + 1
-
-            rate = Rate(voter=voter, voted=voteduser, value=value)
-            voteduser.save()
-            rate.save()
+                oldRating.delete()
+                rate = Rate(voter=voterUserProfile, voted=votedUserProfile, value=value)
+                rate.save()
         else:
             raise ValueError("You can not rate this user")
 
+        refreshUserAverageRating(votedUserProfile)
+        return Response(UserProfileSerializer(votedUserProfile, many=False).data)
 
-        return Response(UserProfileSerializer(voteduser, many=False).data)
-
+def refreshUserAverageRating(votedUserProfile):
+    userRatings = Rate.objects.filter(voted=votedUserProfile)
+    sumRatings = 0
+    numRatings = 0
+    for r in userRatings:
+        sumRatings += r.value
+        numRatings = numRatings + 1
+    avgUserRating = sumRatings / numRatings
+    votedUserProfile.avarageRate = avgUserRating
+    votedUserProfile.numRate = numRatings
+    votedUserProfile.save()
 
 class UserList(APIView):
     permission_classes = (IsAuthenticated, )
@@ -115,45 +121,56 @@ class UserList(APIView):
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
 
-def get_friends_or_pending(user):
+def get_friends(user):
     """
     Method to get the list of an user's friends or pending friends
     """
     friends = []
     pending = []
+    rejected = []
 
-    sended_invitations = Invitation.objects.filter(sender=user, status="A")
-    if sended_invitations:
-        for i in sended_invitations:
+    sended_accepted = Invitation.objects.filter(sender=user, status="A")
+    if sended_accepted:
+        for i in sended_accepted:
             friends.append(i.receiver)
 
-    received_invitations = Invitation.objects.filter(receiver=user, status="A")
-    if received_invitations:
-        for j in received_invitations:
+    received_accepted = Invitation.objects.filter(receiver=user, status="A")
+    if received_accepted:
+        for j in received_accepted:
             friends.append(j.sender)
+
+    sended_rejected = Invitation.objects.filter(sender=user, status="R")
+    if sended_rejected:
+        for k in sended_rejected:
+            rejected.append(k.receiver)
+
+    received_rejected = Invitation.objects.filter(receiver=user, status="R")
+    if received_rejected:
+        for l in received_rejected:
+            rejected.append(l.sender)
 
     pending_invitations = Invitation.objects.filter(receiver=user, status="P")
     if pending_invitations:
-        for k in pending_invitations:
-            pending.append(k.sender)
+        for m in pending_invitations:
+            pending.append(m.sender)
 
-    return (friends, pending)
+    return (friends, pending, rejected)
 
 
 class GetFriendsView(APIView):
     """
     Method to get the friends of the logged user
     """
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
         """
         POST method
         """
-        user = User.objects.get(username="pablo").userprofile
+        user = get_user_by_token(request)
 
-        friends, pending = get_friends_or_pending(user)
+        friends, pending, rejected = get_friends(user)
 
         return Response(UserProfileSerializer(friends, many=True).data)
 
@@ -171,7 +188,7 @@ class GetPendingView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending = get_friends_or_pending(user)
+        friends, pending, rejected = get_friends(user)
 
         return Response(UserProfileSerializer(pending, many=True).data)
 
@@ -188,7 +205,6 @@ class SendInvitation(APIView):
         POST method
         """
         sender = get_user_by_token(request)
-        #sender = User.objects.get(username="pablo").userprofile
         
         receivername = request.data.get("username", "")
         receiver = User.objects.get(username=receivername).userprofile
@@ -257,16 +273,15 @@ class AcceptFriend(APIView):
         """
         user = get_user_by_token(request)
 
-        invitation_id = request.data.get("invitation_id", "")
-        invitation = Invitation.objects.get(pk=invitation_id)
-        sender = invitation.sender
+        sendername = request.data.get("sendername", "")
+        sender = User.objects.get(username=sendername).userprofile
 
         try:
-            query = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+            invitation = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
         except Invitation.DoesNotExist:
-            query = None
+            invitation = None
 
-        if query != None:
+        if invitation is not None:
             invitation.status = "A"
             invitation.save()
         else:
@@ -287,18 +302,16 @@ class RejectFriend(APIView):
         POST method
         """
         user = get_user_by_token(request)
-        #user = User.objects.get(username="dmarin").userprofile
 
-        invitation_id = request.data.get("invitation_id", "")
-        invitation = Invitation.objects.get(pk=invitation_id)
-        sender = invitation.sender
+        sendername = request.data.get("sendername", "")
+        sender = User.objects.get(username=sendername).userprofile
 
         try:
-            query = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+            invitation = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
         except Invitation.DoesNotExist:
-            query = None
+            invitation = None
 
-        if query != None:
+        if invitation is not None:
             invitation.status = "R"
             invitation.save()
         else:
@@ -322,13 +335,11 @@ class DiscoverPeopleView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending = get_friends_or_pending(user)
+        friends, pending, rejected = get_friends(user)
 
         discover_people = []
         interests = user.interests.all()
 
-        # First, we obtain the people with the same interests
-        #for interest in interests:
         # First, we obtain the people with the same interests
         #for interest in interests:
         ranking = []
@@ -355,6 +366,8 @@ class DiscoverPeopleView(APIView):
         for person in friends:
             discover_people.remove(person)
         for person in pending:
+            discover_people.remove(person)
+        for person in rejected:
             discover_people.remove(person)
         discover_people.remove(user)
 
@@ -472,6 +485,8 @@ class CreateTrip(APIView):
             return Response(TripSerializer(trip, many=False).data)
 
 
+FullTrip = namedtuple('FullTrip', ('trip', 'applicationsList', 'pendingsList'))
+
 class GetTripView(APIView):
     """
     Method to get a trip by its ID
@@ -486,9 +501,17 @@ class GetTripView(APIView):
         trip_id = kwargs.get("trip_id", "")
         try:
             trip = Trip.objects.get(pk=trip_id)
+            applications = Application.objects.filter(trip=trip, status="A")
+            pendings = Application.objects.filter(trip=trip, status="P")
+
+            full_trip = FullTrip(
+                trip=trip,
+                applicationsList=applications,
+                pendingsList=pendings,
+            )
+            return Response(FullTripSerializer(full_trip, many=False).data)
         except Trip.DoesNotExist:
             raise ValueError("The trip does not exist")
-        return Response(TripSerializer(trip, many=False).data)
 
 
 class EditTripView(APIView):

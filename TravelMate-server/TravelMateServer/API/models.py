@@ -43,6 +43,7 @@ class UserProfile(models.Model):
     avarageRate = models.IntegerField(blank=False, default=0)
     numRate = models.IntegerField(blank=False, default=0)
     isPremium = models.BooleanField(default=False)
+    datePremium = models.DateField(default="2019-04-09")
 
     STATUS_OPTIONS = (
         ('A', 'Active'),

@@ -145,4 +145,13 @@ export class DiscoverPage {
     });
     return await popover.present();
   }
+
+  async sendData(username: string) {
+    this.dM.sendFriendInvitation(username).then((res) => {
+      console.log('Hola');
+      this.listDiscover();
+    }).catch((err) => {
+      this.listDiscover();
+    });
+  }
 }

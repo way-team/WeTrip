@@ -106,11 +106,11 @@
                                 </ion-text>
                             </ion-label>
                             <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="add()">
+                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="accept(user.user.username)">
                                     <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
 
                                 </ion-button>
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject()">
+                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject(user.user.username)">
                                     <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
 
                                 </ion-button>

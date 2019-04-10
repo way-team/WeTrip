@@ -18,6 +18,12 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
+class ApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['applicant', 'status', 'id']
+
+
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
     userImage = serializers.SerializerMethodField()
@@ -36,6 +42,12 @@ class TripSerializer(serializers.ModelSerializer):
     def get_userImage(self, obj):
         userImage_queryset = obj.userImage.name
         return userImage_queryset
+
+
+class FullTripSerializer(serializers.Serializer):
+    trip = TripSerializer(many=False)
+    applicationsList = ApplicationSerializer(many=True)
+    pendingsList = ApplicationSerializer(many=True)
 
 
 class CitySerializer(serializers.ModelSerializer):

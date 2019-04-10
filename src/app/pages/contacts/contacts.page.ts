@@ -39,25 +39,38 @@ export class ContactsPage implements OnInit {
       '/chat/' + this.logged.user.username + '/' + otherUsername
     );
   }
+
   editProfile(id) {
     this.navCtrl.navigateForward('/edit-profile/2');
   }
 
   private listFriends(): void {
-    this.dM
-      .listFriends()
-      .then((data: any) => {
+    this.dM.listFriends().then((data: any) => {
         this.friends = data;
-      })
-      .catch(error => {});
+      }).catch(error => {
+
+      });
   }
 
   private listMeetYou(): void {
-    this.dM
-      .listMeetYou()
-      .then((data: any) => {
-        this.meetYou = data;
-      })
-      .catch(error => {});
+    this.dM.listMeetYou().then((data: any) => {
+      this.meetYou = data;
+    }).catch(error => {
+
+    });
+  }
+
+  accept(username: string) {
+    this.dM.resolveFriendRequest('accept', username).then((_) => {
+      this.listMeetYou();
+      this.listFriends();
+    });
+  }
+
+  reject(username: string) {
+    this.dM.resolveFriendRequest('reject', username).then((_) => {
+      this.listMeetYou();
+      this.listFriends();
+    });
   }
 }
