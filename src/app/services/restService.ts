@@ -35,6 +35,50 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
+  public register(
+    username: string,
+    password: string,
+    email: string,
+    first_name: string,
+    last_name: string,
+    description: string,
+    birthdate: string,
+    gender: string,
+    nationality: string,
+    city: string,
+    languages: string[],
+    profilePic,
+    discoverPic
+  ) {
+    const fd = new FormData();
+    fd.append('username', username);
+    fd.append('password', password);
+    fd.append('email', email);
+    fd.append('first_name', first_name);
+    fd.append('last_name', last_name);
+    fd.append('description', description);
+    fd.append('birthdate', String(birthdate));
+    fd.append('nationality', nationality);
+    fd.append('city', city);
+    fd.append('gender', gender);
+    fd.append('languages', JSON.stringify(languages));
+    if (profilePic !== null) {
+      fd.append('photo', profilePic, profilePic.name);
+    }
+    if (discoverPic !== null) {
+      fd.append('discoverPhoto', discoverPic, discoverPic.name);
+    }
+
+    return this.makePostRequest(this.path + 'register/', fd)
+      .then(res => {
+        console.log('Sign up successfully');
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
 
   public test(): Promise<any> {
     const requestParams = {
@@ -96,12 +140,14 @@ export class RestWS extends AbstractWS {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token).then(res => {
-      return Promise.resolve(res);
-    }).catch(error => {
-      console.log('Error: ' + error);
-      return Promise.reject(error);
-    });
+    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
   }
 
   public listMeetYou(): Promise<any> {
@@ -121,7 +167,11 @@ export class RestWS extends AbstractWS {
   public listYourTrips(): Promise<any> {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(this.path + 'trips/myTrips/', null, Authorization)
+    return this.makeGetRequest(
+      this.path + 'trips/myTrips/',
+      null,
+      Authorization
+    )
       .then(res => {
         return Promise.resolve(res.results);
       })
@@ -189,15 +239,13 @@ export class RestWS extends AbstractWS {
       });
   }
 
-  public paid(
-  ): Promise<any> {
+  public paid(): Promise<any> {
     const fd = new FormData();
     let user: User;
     let token: string;
     token = this.cookieService.get('token');
     return this.getUserLogged(token)
       .then(res => {
-
         user = res;
         fd.append('user_id', String(user.id));
         fd.append('user', String(user));
@@ -297,7 +345,6 @@ export class RestWS extends AbstractWS {
       });
   }
 
-
   public listCities(): Promise<any> {
     const token = this.cookieService.get('token');
     return this.makeGetRequest(this.path + 'list-cities/', false, token)
@@ -310,14 +357,31 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public listLanguages(): Promise<any> {
+    return this.makeGetRequest(this.path + 'list-languages/', false)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
   public getTripById(id: string) {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(this.path + 'getTrip/' + id + '/', null, Authorization).then(res => {
-      return Promise.resolve(res);
-    }).catch(error => {
-      console.log(error);
-    });
+    return this.makeGetRequest(
+      this.path + 'getTrip/' + id + '/',
+      null,
+      Authorization
+    )
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   public sendMessage(sender: string, receiver: string, message: string) {
@@ -362,11 +426,13 @@ export class RestWS extends AbstractWS {
     fd.append('token', Authorization);
     fd.append('sendername', username);
     const action = request === 'accept' ? 'acceptFriend/' : 'rejectFriend/';
-    return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
-      return Promise.resolve(res);
-    }).catch(error => {
-      return Promise.reject(error);
-    });
+    return this.makePostRequest(this.path + action, fd, Authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
   }
 
   public sendFriendInvitation(username: string): Promise<any> {
@@ -374,11 +440,17 @@ export class RestWS extends AbstractWS {
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
     fd.append('username', username);
-    return this.makePostRequest(this.path + 'sendInvitation/', fd, Authorization).then(res => {
-      return Promise.resolve(res);
-    }).catch(error => {
-      return Promise.reject(error);
-    });
+    return this.makePostRequest(
+      this.path + 'sendInvitation/',
+      fd,
+      Authorization
+    )
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
   }
 
   public applyForTrip(tripId: string) {
@@ -386,11 +458,13 @@ export class RestWS extends AbstractWS {
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
     fd.append('trip_id', tripId);
-    return this.makePostRequest(this.path + 'applyTrip/', fd, Authorization).then(res => {
-      return Promise.resolve(res);
-    }).catch(error => {
-      return Promise.reject(error);
-    });
+    return this.makePostRequest(this.path + 'applyTrip/', fd, Authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
   }
 
   public getUserById(id) {

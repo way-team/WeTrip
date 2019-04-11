@@ -32,6 +32,7 @@ export class AppComponent {
   ) {
     events.subscribe('user:logged', user => {
       this.userLogged = user;
+      this.isUserAdmin = user.user.is_staff;
     });
     if (!this.cookieService.check('token')) {
       this.userLogged = null;

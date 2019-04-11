@@ -24,7 +24,7 @@
   </ion-card>
   <div class="listDiscover" *ngFor="let userProfile of discover">
 
-    <img src="assets/img/discover/{{userProfile.discoverPhoto}}.jpg" class="user-avatar"
+    <img src="{{userProfile.discoverPhoto}}" class="user-avatar"
       [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward">
 
     <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username"

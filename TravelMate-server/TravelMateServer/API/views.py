@@ -14,6 +14,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from collections import namedtuple
+from django.contrib.auth.hashers import make_password
 
 
 def get_user_by_token(request):
@@ -39,6 +40,20 @@ class GetUserByIdView(APIView):
 
         return Response(UserProfileSerializer(user_profile, many=False).data)
 
+    
+def refreshUserAverageRating(votedUserProfile):
+    userRatings = Rate.objects.filter(voted=votedUserProfile)
+    sumRatings = 0
+    numRatings = 0
+    for r in userRatings:
+        sumRatings += r.value
+        numRatings = numRatings + 1
+    avgUserRating = sumRatings / numRatings
+    votedUserProfile.avarageRate = avgUserRating
+    votedUserProfile.numRate = numRatings
+    votedUserProfile.save()
+
+
 class RateUser(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
@@ -49,7 +64,7 @@ class RateUser(APIView):
         refreshUserAverageRating(user)
         avgRating = user.avarageRate
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        return Response(UserProfileSerializer(user, many=False).data)
 
     def post(self, request):
         """
@@ -69,7 +84,7 @@ class RateUser(APIView):
         value = request.data.get('rating', '0')
 
         areFriends = False
-        friends, pending, rejected = get_friends(voter)
+        friends, pending, rejected = get_friends(voter, False)
         for f in friends:
             if f == voteduser:
                 areFriends = True
@@ -84,10 +99,12 @@ class RateUser(APIView):
             if oldRating:
                 oldRating.delete()
                 old = int(oldRating.value)
-                voteduser.avarageRate = int((actualrating * numTimes + new - old) / (numTimes))
+                voteduser.avarageRate = int(
+                    (actualrating * numTimes + new - old) / (numTimes))
 
             else:
-                voteduser.avarageRate = int((actualrating * numTimes + new) / (numTimes + 1))
+                voteduser.avarageRate = int(
+                    (actualrating * numTimes + new) / (numTimes + 1))
                 voteduser.numRate = numTimes + 1
 
             rate = Rate(voter=voter, voted=voteduser, value=value)
@@ -95,7 +112,6 @@ class RateUser(APIView):
             rate.save()
         else:
             raise ValueError("You can not rate this user")
-
 
         return Response(UserProfileSerializer(voteduser, many=False).data)
 
@@ -112,7 +128,7 @@ class UserList(APIView):
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
 
-def get_friends(user):
+def get_friends(user, discover):
     """
     Method to get the list of an user's friends or pending friends
     """
@@ -132,18 +148,24 @@ def get_friends(user):
 
     sended_rejected = Invitation.objects.filter(sender=user, status="R")
     if sended_rejected:
-        for k in sended_rejected:
-            rejected.append(k.receiver)
+        for i in sended_rejected:
+            rejected.append(i.receiver)
 
     received_rejected = Invitation.objects.filter(receiver=user, status="R")
     if received_rejected:
-        for l in received_rejected:
-            rejected.append(l.sender)
+        for j in received_rejected:
+            rejected.append(j.sender)
 
-    pending_invitations = Invitation.objects.filter(receiver=user, status="P")
-    if pending_invitations:
-        for m in pending_invitations:
-            pending.append(m.sender)
+    received_pending = Invitation.objects.filter(receiver=user, status="P")
+    if received_pending:
+        for i in received_pending:
+            pending.append(i.sender)
+
+    if discover:
+        sended_pending = Invitation.objects.filter(sender=user, status="P")
+        if sended_pending:
+            for j in sended_pending:
+                pending.append(j.sender)
 
     return (friends, pending, rejected)
 
@@ -161,7 +183,7 @@ class GetFriendsView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending, rejected = get_friends(user)
+        friends, pending, rejected = get_friends(user, False)
 
         return Response(UserProfileSerializer(friends, many=True).data)
 
@@ -179,7 +201,7 @@ class GetPendingView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending, rejected = get_friends(user)
+        friends, pending, rejected = get_friends(user, False)
 
         return Response(UserProfileSerializer(pending, many=True).data)
 
@@ -196,7 +218,7 @@ class SendInvitation(APIView):
         POST method
         """
         sender = get_user_by_token(request)
-        
+
         receivername = request.data.get("username", "")
         receiver = User.objects.get(username=receivername).userprofile
 
@@ -227,11 +249,12 @@ class SendInvitation(APIView):
                 control = "G"
                 break
 
-
         if control == "A":
-            raise ValueError("This person has sent you a friend request before")
+            raise ValueError(
+                "This person has sent you a friend request before")
         elif control == "B":
-            raise ValueError("You already sent a friend request to this person before")
+            raise ValueError(
+                "You already sent a friend request to this person before")
         elif control == "C":
             raise ValueError("You already rejected this person")
         elif control == "D":
@@ -243,11 +266,11 @@ class SendInvitation(APIView):
         elif control == "G":
             raise ValueError("You can't be your own friend")
         elif control == None:
-            newinvitation = Invitation(sender=sender, receiver=receiver, status="P")
+            newinvitation = Invitation(
+                sender=sender, receiver=receiver, status="P")
             newinvitation.save()
 
         return Response(InvitationSerializer(newinvitation, many=False).data)
-            
 
 
 class AcceptFriend(APIView):
@@ -255,7 +278,7 @@ class AcceptFriend(APIView):
     Method to accept or decline an invitation to be a friend of the logged user
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
@@ -268,7 +291,8 @@ class AcceptFriend(APIView):
         sender = User.objects.get(username=sendername).userprofile
 
         try:
-            invitation = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+            invitation = Invitation.objects.filter(
+                sender=sender, status="P").get(receiver=user)
         except Invitation.DoesNotExist:
             invitation = None
 
@@ -276,16 +300,18 @@ class AcceptFriend(APIView):
             invitation.status = "A"
             invitation.save()
         else:
-            raise ValueError("There is no pending invitation for that two users")
+            raise ValueError(
+                "There is no pending invitation for that two users")
 
         return Response(InvitationSerializer(invitation, many=False).data)
-            
+
+
 class RejectFriend(APIView):
     """
     Method to accept or decline an invitation to be a friend of the logged user
     """
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
     def post(self, request):
@@ -298,7 +324,8 @@ class RejectFriend(APIView):
         sender = User.objects.get(username=sendername).userprofile
 
         try:
-            invitation = Invitation.objects.filter(sender=sender, status="P").get(receiver=user)
+            invitation = Invitation.objects.filter(
+                sender=sender, status="P").get(receiver=user)
         except Invitation.DoesNotExist:
             invitation = None
 
@@ -306,11 +333,10 @@ class RejectFriend(APIView):
             invitation.status = "R"
             invitation.save()
         else:
-            raise ValueError("There is no pending invitation for that two users")
+            raise ValueError(
+                "There is no pending invitation for that two users")
 
         return Response(InvitationSerializer(invitation, many=False).data)
-
-
 
 
 class DiscoverPeopleView(APIView):
@@ -326,7 +352,7 @@ class DiscoverPeopleView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending, rejected = get_friends(user)
+        friends, pending, rejected = get_friends(user, True)
 
         discover_people = []
         interests = user.interests.all()
@@ -417,6 +443,13 @@ class ListCities(APIView):
 
         cities = City.objects.all()
         return Response(CitySerializer(cities, many=True).data)
+
+
+class ListLanguages(APIView):
+    def get(self, request):
+
+        languages = Language.objects.all()
+        return Response(LanguageSerializer(languages, many=True).data)
 
 
 class CreateTrip(APIView):
@@ -526,7 +559,7 @@ class EditTripView(APIView):
 
         if request.data["startDate"] > request.data["endDate"]:
             raise ValueError("The start date must be before that the end date")
-        
+
         serializer = TripSerializer(trip, data=data)
         if serializer.is_valid():
             serializer.save()
@@ -534,7 +567,7 @@ class EditTripView(APIView):
                 new_city = City.objects.get(pk=request.data["city"])
                 trip.city = new_city
             except City.DoesNotExist:
-                raise ValueError("The city does not exist")       
+                raise ValueError("The city does not exist")
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
@@ -687,9 +720,11 @@ class AcceptApplicationView(APIView):
             application = Application.objects.get(pk=aplication_id)
             creator = application.trip.user
             if creator != user:
-                raise ValueError("You are not the creator of the application's trip")
+                raise ValueError(
+                    "You are not the creator of the application's trip")
             if application.status != "P":
-                raise ValueError("The application has just accepted or rejected")
+                raise ValueError(
+                    "The application has just accepted or rejected")
             application.status = "A"
             application.save()
             return Response(TripSerializer(application.trip, many=False).data)
@@ -716,9 +751,11 @@ class RejectApplicationView(APIView):
             application = Application.objects.get(pk=aplication_id)
             creator = application.trip.user
             if creator != user:
-                raise ValueError("You are not the creator of the application's trip")
+                raise ValueError(
+                    "You are not the creator of the application's trip")
             if application.status != "P":
-                raise ValueError("The application has just accepted or rejected")
+                raise ValueError(
+                    "The application has just accepted or rejected")
             application.status = "R"
             application.save()
             return Response(TripSerializer(application.trip, many=False).data)
@@ -772,3 +809,68 @@ def message_list(request, sender=None, receiver=None):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+
+class RegisterUser(APIView):
+    def post(self, request):
+        #username = request.user.username
+        #password = make_password(request.user.password)
+        username = request.data.get('username', '')
+        password = make_password(request.data.get('password', ''))
+        email = request.data.get('email', '')
+        firstName = request.data.get('first_name', '')
+        lastName = request.data.get('last_name', '')
+        description = request.data.get('description', '')
+        birthdate = request.data.get('birthdate', '')
+        gender = request.data.get('gender', '')
+        nationality = request.data.get('nationality', '')
+        city = request.data.get('city', '')
+        status = 'A'
+        import json
+        languages = json.loads(request.data.get('languages'))
+        print(languages)
+
+        user = User(username=username, password=password)
+        user.save()
+        try:
+            photo = request.data['photo']
+            discoverPhoto = request.data['discoverPhoto']
+
+            userProfile = UserProfile(
+                user=user,
+                email=email,
+                first_name=firstName,
+                last_name=lastName,
+                description=description,
+                birthdate=birthdate,
+                gender=gender,
+                nationality=nationality,
+                city=city,
+                status=status,
+                photo=photo,
+                discoverPhoto=discoverPhoto)
+
+            userProfile.save()
+            for i in languages:
+                lang = Language.objects.get(name=i)
+                userProfile.languages.add(lang)
+        except:
+            userProfile = UserProfile(
+                user=user,
+                email=email,
+                first_name=firstName,
+                last_name=lastName,
+                description=description,
+                birthdate=birthdate,
+                gender=gender,
+                nationality=nationality,
+                city=city,
+                status=status)
+            userProfile.save()
+            for i in languages:
+                lang = Language.objects.get(name=i)
+                userProfile.languages.add(lang)
+
+        finally:
+            return Response(
+                UserProfileSerializer(userProfile, many=False).data)

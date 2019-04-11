@@ -97,7 +97,6 @@ export class LoginPage implements OnInit {
 
   // // //
   goToRegister() {
-    return null;
     this.navCtrl.navigateRoot('/register');
   }
 
