@@ -73,7 +73,7 @@
               <ion-icon name="mail" item-start></ion-icon>
               {{ 'REGISTER.EMAIL' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="email" formControlName="email"></ion-input>
+            <ion-input color="secondary" [(ngModel)]="email" type="email" formControlName="email"></ion-input>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onRegisterForm.get('email').touched && onRegisterForm.get('email').hasError('required')">
