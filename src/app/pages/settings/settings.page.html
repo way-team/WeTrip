@@ -10,7 +10,7 @@
 <ion-content>
   <ion-item class="bg-profile">
     <ion-avatar slot="start">
-      <img src="assets/img/profile/{{userLogged.photo}}.jpg" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}"
+      <img src="{{userLogged.photo}}" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}"
         (click)="goTo('user-profile')">
     </ion-avatar>
     <ion-label>
