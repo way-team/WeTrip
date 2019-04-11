@@ -21,6 +21,12 @@ export class UserProfile {
   future_joined_trips: Trip[];
   active_joined_trips: Trip[];
 }
+export class Language {
+  name: String;
+}
+export class Interest {
+  name: String;
+}
 
 export class Trip {
   id: Number;
@@ -75,5 +81,4 @@ export class application_user {
     this.applicantName = applicantName;
     this.applicationId = applicationId;
   }
-
-} 
+}

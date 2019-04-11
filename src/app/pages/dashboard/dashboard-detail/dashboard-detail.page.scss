@@ -14,6 +14,31 @@ ion-card-header {
     font-weight: bold;
 }
 
+.trips {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.trips td, .trips th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.trips tr:nth-child(odd){background-color: #2fb99b;}
+
+.trips tr:nth-child(even){background-color: #9fecff;}
+
+.trips tr:hover {background-color: #ddd;}
+
+.trips th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #006666;
+  color: white;
+}
+
 .odometer {
   font-size: 50px;
 }

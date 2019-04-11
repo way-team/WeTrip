@@ -114,9 +114,138 @@
             </ion-card>
             </ion-col>
     </ion-row>
-<ion-row>
-   
+
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.TRIPS_MOST_APPLICATIONS" | translate }} </ion-title></ion-col>
 </ion-row>
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>
+    <div style="overflow-x:auto;">
+        <table class="trips">
+          <tr>
+            <th>{{ "DASHBOARD.TRIPS_NUMBER_APPLICATIONS" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_IMAGE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TITLE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_START_DATE" | translate }} </th>
+            <th>{{ "DASHBOARD.TRIPS_END_DATE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TYPE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_STATUS" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_CREATOR" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_DETAILS" | translate }}</th>
+          </tr>
+          <tr *ngFor="let trip of top5AppsTrips">
+            <td style='text-align: center;'>{{ trip.applications_count }}</td>
+            <td>
+                <ion-item>
+                  <ion-avatar>
+                      <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}">
+                  </ion-avatar>
+              </ion-item>
+            </td>
+            <td>{{ trip.title }}</td>
+            <td>{{ trip.startDate }}</td>
+            <td>{{ trip.endDate }}</td>
+            <td><span *ngIf="trip.tripType === 'PUBLIC'">
+                {{ "DASHBOARD.TRIPS_PUBLIC" | translate }}
+            </span>
+            <span *ngIf="trip.tripType === 'PRIVATE'">
+                {{ "DASHBOARD.TRIPS_PRIVATE" | translate }}
+              </span>
+          </td>
+          <td><span *ngIf="trip.status">
+              {{ "DASHBOARD.TRIPS_ACTIVE" | translate }}
+          </span>
+          <span *ngIf="!trip.status">
+              {{ "DASHBOARD.TRIPS_DELETED" | translate }}
+            </span>
+        </td>
+            <td>{{ trip.creator }}</td>
+            <td><ion-button (click)="goTo('trip-detail/', trip)"><ion-icon  name="arrow-forward"></ion-icon></ion-button></td>
+          </tr>
+         
+        </table>
+        </div>
+      </ion-col>
+</ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'visitedCities'">
+
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.TRIPS_MOST_CITIES" | translate }} </ion-title></ion-col>
+</ion-row>
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>
+    <div style="overflow-x:auto;">
+        <table class="trips">
+          <tr>
+            <th>{{ "DASHBOARD.TRIPS_NUMBER_CITIES" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_IMAGE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TITLE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_START_DATE" | translate }} </th>
+            <th>{{ "DASHBOARD.TRIPS_END_DATE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TYPE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_STATUS" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_CREATOR" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_DETAILS" | translate }}</th>
+          </tr>
+          <tr *ngFor="let trip of top5NumberOfCitiesTrips">
+            <td style='text-align: center;'>{{ trip.cities_count }}</td>
+            <td>
+                <ion-item>
+                  <ion-avatar>
+                      <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}">
+                  </ion-avatar>
+              </ion-item>
+            </td>
+            <td>{{ trip.title }}</td>
+            <td>{{ trip.startDate }}</td>
+            <td>{{ trip.endDate }}</td>
+            <td><span *ngIf="trip.tripType === 'PUBLIC'">
+                {{ "DASHBOARD.TRIPS_PUBLIC" | translate }}
+            </span>
+            <span *ngIf="trip.tripType === 'PRIVATE'">
+                {{ "DASHBOARD.TRIPS_PRIVATE" | translate }}
+              </span>
+          </td>
+          <td><span *ngIf="trip.status">
+              {{ "DASHBOARD.TRIPS_ACTIVE" | translate }}
+          </span>
+          <span *ngIf="!trip.status">
+              {{ "DASHBOARD.TRIPS_DELETED" | translate }}
+            </span>
+        </td>
+            <td>{{ trip.creator }}</td>
+            <td><ion-button (click)="goTo('trip-detail/', trip)"><ion-icon  name="arrow-forward"></ion-icon></ion-button></td>
+          </tr>
+         
+        </table>
+        </div>
+      </ion-col>
+</ion-row>
+
+<ion-row justify-content-center align-items-center style="height: 100%">
+    <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.CITIES_MOST_TRIPS" | translate }} </ion-title></ion-col>
+  </ion-row>
+  <ion-row justify-content-center align-items-center style="height: 100%">
+    <ion-col>
+      <div style="overflow-x:auto;">
+          <table class="trips">
+            <tr>
+              <th>{{ "DASHBOARD.CITIES_NUMBER_TRIPS" | translate }}</th>
+              <th>{{ "DASHBOARD.CITIES_NAME" | translate }}</th>
+              <th>{{ "DASHBOARD.CITIES_COUNTRY" | translate }}</th>
+            </tr>
+            <tr *ngFor="let city of top5NumberOfTripsCities">
+              <td style='text-align: center;'>{{ city.trips_count }}</td>
+              <td>{{ city.name }}</td>
+              <td>{{ city.country.name }}</td>
+            </tr>
+           
+          </table>
+          </div>
+        </ion-col>
+  </ion-row>
 </ion-grid>
 
 <ion-grid *ngIf="type === 'usersByGender'">
@@ -311,8 +440,26 @@
           </ion-card>
           </ion-col>
     </ion-row>
-<ion-row>
-</ion-row>
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.MOST_COMMON_INTERESTS" | translate }} </ion-title></ion-col>
+      </ion-row>
+      <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col>
+          <div style="overflow-x:auto;">
+              <table class="trips">
+                <tr>
+                  <th>{{ "DASHBOARD.INTERESTS_NAME" | translate }}</th>
+                  <th>{{ "DASHBOARD.INTERESTS_NUMBER_USERS" | translate }}</th>
+                </tr>
+                <tr *ngFor="let interest of top5MostCommonInterests">
+                  <td>{{ interest.name }}</td>
+                  <td style='text-align: center;'>{{ interest.users_count }}</td>
+                </tr>
+               
+              </table>
+              </div>
+            </ion-col>
+      </ion-row>
 </ion-grid>
 
 </ion-content>

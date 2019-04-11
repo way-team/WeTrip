@@ -8,7 +8,7 @@
 
           <ion-item margin-bottom>
             <ion-avatar slot="start" class="user-avatar">
-              <img src="assets/img/profile/{{userLogged.photo}}.jpg" alt="{{ 'MENU.PROFILE' | translate }}" (click)="goTo('user-profile/')">
+              <img src="{{userLogged.photo}}" alt="{{ 'MENU.PROFILE' | translate }}" (click)="goTo('user-profile/')">
             </ion-avatar>
             <ion-label>
               <ion-text color="medium">
@@ -44,22 +44,22 @@
             <ion-item [routerLink]="[p.url]" color="primary" *ngIf="[p.title] !='Admin Control Panel' || isUserAdmin">
               <ion-icon slot="start" [name]="p.icon" color="light"></ion-icon>
               <ion-label *ngIf="[p.title]=='Discover'">
-                  {{ 'MENU.DISCOVER' | translate }}
+                {{ 'MENU.DISCOVER' | translate }}
               </ion-label>
               <ion-label *ngIf="[p.title]=='Trips'">
-                  {{ 'MENU.TRIPS' | translate }}
+                {{ 'MENU.TRIPS' | translate }}
               </ion-label>
               <ion-label *ngIf="[p.title]=='Contacts'">
-                  {{ 'MENU.CONTACTS' | translate }}
+                {{ 'MENU.CONTACTS' | translate }}
               </ion-label>
               <ion-label *ngIf="[p.title]=='Premium'">
-                  {{ 'MENU.PREMIUM' | translate }}
+                {{ 'MENU.PREMIUM' | translate }}
               </ion-label>
               <ion-label *ngIf="[p.title]=='About'">
-                  {{ 'MENU.ABOUT' | translate }}
+                {{ 'MENU.ABOUT' | translate }}
               </ion-label>
               <ion-label *ngIf="[p.title]=='App Settings'">
-                  {{ 'MENU.APP_SETTINGS' | translate }}
+                {{ 'MENU.APP_SETTINGS' | translate }}
               </ion-label>
               <ion-label *ngIf="[p.title]=='Admin Control Panel'">
                 {{ 'MENU.ADMIN_CONTROL_PANEL' | translate }}
@@ -70,9 +70,14 @@
 
       </ion-content>
     </ion-menu>
-   <ion-router-outlet main></ion-router-outlet>
+    <ion-router-outlet main></ion-router-outlet>
   </ion-split-pane>
 
 
 </ion-app>
-<cookie-law learnMore="/gdpr"></cookie-law>
+
+<cookie-law >
+  {{ 'MENU.COOKIES' | translate }}
+
+  <a href="/gdpr">{{ 'MENU.PRIVACY_POLICY' | translate }}.</a>
+</cookie-law>

@@ -22,19 +22,10 @@
 </head>
 
 <ion-content>
-  <ion-card no-margin class="no-radius">
-
-    <ion-item lines="none" color="medium">
-      <ion-label>
-        <ng-container *ngIf="!isPremium">
-          <a id="urlBanner" target="_blank"><img class="banner" id="bannerAdv"></a>
-        </ng-container>
-      </ion-label>
-    </ion-item>
-  </ion-card>
+  <app-banner></app-banner>
   <div class="listDiscover" *ngFor="let userProfile of discover">
 
-    <img src="assets/img/discover/{{userProfile.discoverPhoto}}.jpg" class="user-avatar"
+    <img src="{{userProfile.discoverPhoto}}" class="user-avatar"
       [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward">
 
     <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username"

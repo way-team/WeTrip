@@ -56,5 +56,8 @@ urlpatterns = [
         name='message-detail'),
     path('messages/', views.message_list, name='message-list'),
     path('paid/', views.SetUserToPremium.as_view()),
+    path('register/', views.RegisterUser.as_view()),
+    path('list-languages/', views.ListLanguages.as_view()),
+    path('list-interests/', views.ListInterest.as_view()),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)

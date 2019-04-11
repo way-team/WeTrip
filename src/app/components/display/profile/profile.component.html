@@ -16,24 +16,24 @@
       <ng-container *ngIf="user.isPremium">
         <h1> 
           {{ 'PROFILE.PREMIUM' | translate }} 
-          <ion-icon name="checkmark-circle"></ion-icon>
+          <ion-icon name="trophy"></ion-icon>
         </h1>
       </ng-container>
       <ion-avatar class="avatar">
-      <img src="/assets/img/profile/{{user.photo}}.jpg" />
+        <img src="{{user.photo}}" />
       </ion-avatar>
       <h1 class="fw500">{{ user.first_name }}</h1>
       <h2 color="light" margin-bottom>{{user.description}}</h2>
-                <ion-icon *ngIf="user.avarageRate>=1" name="star" ></ion-icon>
-                <ion-icon *ngIf="user.avarageRate>=2" name="star" ></ion-icon>
-                <ion-icon  *ngIf="user.avarageRate>=3" name="star" ></ion-icon>
-                <ion-icon  *ngIf="user.avarageRate>=4"name="star" ></ion-icon>
-                <ion-icon *ngIf="user.avarageRate>=5" name="star" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<1" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<2" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<3" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<4" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<5" name="star-outline" ></ion-icon>
+      <ion-icon *ngIf="user.avarageRate>=1" name="star"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate>=2" name="star"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate>=3" name="star"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate>=4" name="star"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate>=5" name="star"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate<1" name="star-outline"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate<2" name="star-outline"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate<3" name="star-outline"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate<4" name="star-outline"></ion-icon>
+      <ion-icon *ngIf="user.avarageRate<5" name="star-outline"></ion-icon>
     </ion-card-content>
 
     <ion-grid fixed no-padding>
@@ -98,7 +98,7 @@
                   {{ i.title }}
                 </ion-label>
                 <ion-label>
-                    {{ 'PROFILE.CREATOR' | translate }}
+                  {{ 'PROFILE.CREATOR' | translate }}
                   <a class="creator" (click)="goTo('user-profile/', i.creator)">
                     <ion-text color="tertiary"> {{ i.creator }} </ion-text>
                   </a>
@@ -132,7 +132,8 @@
     </ion-grid>
 
     <div *ngIf="!myProfile">
-      <ion-button size="large" expand="full" color="dark" (click)="sendData()" no-margin>{{ 'PROFILE.CONTACT' | translate }}</ion-button>
+      <ion-button size="large" expand="full" color="dark" (click)="sendData()" no-margin>
+        {{ 'PROFILE.CONTACT' | translate }}</ion-button>
     </div>
   </ion-card>
 </div>
