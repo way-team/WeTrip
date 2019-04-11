@@ -170,7 +170,9 @@
 		"MENU": "Menu",
 		"PREMIUM": "Premium",
 		"PROFILE": "Profile",
-		"TRIPS": "Trips"
+		"TRIPS": "Trips",
+		"COOKIES": " By continuing to browse the site, you're agreeing to our use of cookies. Learn more in our ",
+		"PRIVACY_POLICY": "privacy policy"
 	},
 	"NOTIFICATIONS": {
 		"NOTIFICATIONS": "Notifications",
