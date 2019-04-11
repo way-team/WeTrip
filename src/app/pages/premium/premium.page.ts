@@ -57,7 +57,7 @@ export class PremiumPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'Something went wrong.',
+            message: 'error',
             buttons: [
               {
                 text: 'Ok',

@@ -180,7 +180,10 @@
 		"INTRUDUCE_INFORMATION": "Introduce your personal data",
 		"PASSWORD_VALIDATION_FALSE": "Passwords do not match!",
 		"EMAIL_VALIDATION": "Invalid email",
-		"FUTURE_BIRTHDATE": "Invalid birthdate"
+		"FUTURE_BIRTHDATE": "Invalid birthdate",
+		"SUCCESS": "Sign up done successfully!",
+		"HEADER_SUCCESS": "Success",
+		"ERROR_USERNAME": "The username is already taken"
 
 	},
 	"SEARCH": {
@@ -216,7 +219,9 @@
 		"CREATE_NEW_TRIP": "Create a new trip",
 		"TRIPS": "Trips",
 		"WITHOUT_TRIPS": "You don't have any trip yet",
-		"ERROR": "Something went wrong. Contact travelmate way.team.soft@gmail.com"
+		"ERROR": "Something went wrong. Contact travelmate way.team.soft@gmail.com",
+		"CONGRATULATIONS": "Congratulations!",
+		"APPLICATION_SEND": "Your application has been sent."
 	},
 	"TRIP_DETAILS": {
 		"CREATED_BY": "Created by",

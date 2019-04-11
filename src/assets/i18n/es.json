@@ -180,7 +180,10 @@
 		"INTRODUCE_INFORMATION": "Introduce sus datos personales",
 		"PASSWORD_VALIDATION_FALSE": "¡Las contraseñas no coinciden!",
 		"EMAIL_VALIDATION": "Correo electrónico inválido",
-		"FUTURE_BIRTHDATE": "Fecha de nacimiento inválida"
+		"FUTURE_BIRTHDATE": "Fecha de nacimiento inválida",
+		"SUCCESS": "Registro realizado correctamente",
+		"HEADER_SUCCESS": "Realizado",
+		"ERROR_USERNAME": "Este nombre de usuario está ya en uso."
 	},
 	"SEARCH": {
 		"MY_TRIPS": "Mis viajes",
@@ -215,7 +218,9 @@
 		"CREATE_NEW_TRIP": "Crear un viaje nuevo",
 		"TRIPS": "Viajes",
 		"WITHOUT_TRIPS": "Aún no tienes ningún viaje.",
-		"ERROR": "Se ha producido un error. Contacta con travelmate way.team.soft@gmail.com"
+		"ERROR": "Se ha producido un error. Contacta con travelmate way.team.soft@gmail.com",
+		"CONGRATULATIONS": "¡Enhorabuena!",
+		"APPLICATION_SEND": "Su solicitud se ha enviado."
 	},
 	"TRIP_DETAILS": {
 		"CREATED_BY": "Creado por",

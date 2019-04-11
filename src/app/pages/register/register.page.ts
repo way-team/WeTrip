@@ -13,6 +13,7 @@ import {
 } from '@ionic/angular';
 import { Language } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
@@ -43,6 +44,7 @@ export class RegisterPage implements OnInit {
     public loadingCtrl: LoadingController,
     private formBuilder: FormBuilder,
     public dm: DataManagement,
+    private translate: TranslateService,
     public alertCtrl: AlertController
   ) {
     this.listLanguages();
@@ -92,6 +94,10 @@ export class RegisterPage implements OnInit {
   }
 
   public signUp() {
+    let translation1:string = this.translate.instant('REGISTER.HEADER_SUCCESS');
+    let translation2:string = this.translate.instant('REGISTER.SUCCESS');
+    let translation3:string = this.translate.instant('REGISTER.ERROR_USERNAME');
+
     console.log(JSON.stringify(this.languages));
     this.dm
       .register(
@@ -112,8 +118,8 @@ export class RegisterPage implements OnInit {
       .then(data => {
         this.alertCtrl
           .create({
-            header: 'Succes',
-            message: 'Sign up done successfully!',
+            header: translation1,
+            message: translation2,
             buttons: [
               {
                 text: 'Ok',
@@ -144,7 +150,7 @@ export class RegisterPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'The username or email is already taken',
+            message: translation3,
             buttons: [
               {
                 text: 'Ok',
