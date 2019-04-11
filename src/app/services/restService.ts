@@ -418,4 +418,18 @@ export class RestWS extends AbstractWS {
       return Promise.reject(error);
     });
   }
+
+  public getStatistics(): Promise<any> {
+    const token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('token', token);
+    return this.makePostRequest(this.path + 'dashboard/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
 }

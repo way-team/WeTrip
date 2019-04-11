@@ -111,7 +111,8 @@
 		"MENU": "Menu",
 		"PREMIUM": "Premium",
 		"PROFILE": "Profile",
-		"TRIPS": "Trips"
+		"TRIPS": "Trips",
+		"ADMIN_CONTROL_PANEL": "Admin Control Panel"
 	},
 	"NOTIFICATIONS": {
 		"NOTIFICATIONS": "Notifications",
@@ -199,5 +200,39 @@
 		"START_DATE": "Start date",
 		"TO": "to",
 		"TRIP_DETAILS": "Trip details"
-	}
+	},
+	"DASHBOARD": {
+		"ADMIN_CONTROL_PANEL": "Admin Control Panel",
+		"TRIPS": "Trips",
+		"USERS": "Users",
+		"SEE_STATS": "See stats",
+		"TRIPS_BY_MONTH": "Trips by month",
+		"PUBLIC_VS_PRIVATE": "Trips: public VS. private",
+		"APPLICATIONS_PER_TRIP": "Applications per trip",
+		"VISITED_CITIES": "Visited cities",
+		"USERS_BY_GENDER": "Users by gender",
+		"PREMIUM_USERS": "Premium users",
+		"ACTIVE_VS_INACTIVE": "Users: active VS. inactive",
+		"USERS_METRICS": "Other user stats",
+		"TOTAL_NUMBER_TRIPS": "Total number of trips:",
+		"BAR_CHART": "Bar chart:",
+		"PERCENTAGE_PUBLIC_TRIPS": "% of public trips:",
+		"PERCENTAGE_PRIVATE_TRIPS": "% of private trips:",
+		"RATIO_PRIVATE_TRIPS": "private trips/public trips:",
+		"AVERAGE_APPS_PER_TRIP": "Average applications per trip:",
+		"TOTAL_NUMBER_USERS": "Total number of users:",
+		"PERCENTAGE_MEN": "% of men:",
+		"PERCENTAGE_WOMEN": "% of women:",
+		"PERCENTAGE_NONBINARY": "% of non-binary:",
+		"PERCENTAGE_PREMIUM_USERS": "% of Premium users:",
+		"PERCENTAGE_NONPREMIUM_USERS": "% of non-Premium users:",
+		"RATIO_PREMIUM_USERS": "Premium users/non-Premium users:",
+		"PERCENTAGE_ACTIVE_USERS": "% of active users:",
+		"PERCENTAGE_INACTIVE_USERS": "% of inactive users:",
+		"RATIO_ACTIVE_USERS": "active users/inactive users:",
+		"DOUGHNUT_CHART": "Doughnut chart:",
+		"AVERAGE_TRIPS_PER_USER": "Average trips per user:",
+		"AVERAGE_LANGUAGES_PER_USER": "Average languages per user:",
+		"AVERAGE_RATING_PER_USER": "Average rating per user:"
+	  }
 }

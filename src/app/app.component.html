@@ -41,7 +41,7 @@
           </ion-list-header>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-            <ion-item [routerLink]="[p.url]" color="primary">
+            <ion-item [routerLink]="[p.url]" color="primary" *ngIf="[p.title] !='Admin Control Panel' || isUserAdmin">
               <ion-icon slot="start" [name]="p.icon" color="light"></ion-icon>
               <ion-label *ngIf="[p.title]=='Discover'">
                   {{ 'MENU.DISCOVER' | translate }}
@@ -61,6 +61,9 @@
               <ion-label *ngIf="[p.title]=='App Settings'">
                   {{ 'MENU.APP_SETTINGS' | translate }}
               </ion-label>
+              <ion-label *ngIf="[p.title]=='Admin Control Panel'">
+                {{ 'MENU.ADMIN_CONTROL_PANEL' | translate }}
+            </ion-label>
             </ion-item>
           </ion-menu-toggle>
         </ion-list>

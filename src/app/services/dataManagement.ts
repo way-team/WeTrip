@@ -307,4 +307,21 @@ export class DataManagement {
         return Promise.reject(error);
       });
   }
+
+  public getStatistics(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .getStatistics()
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
 }

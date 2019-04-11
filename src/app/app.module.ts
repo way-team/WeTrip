@@ -25,7 +25,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CookieService } from 'ngx-cookie-service';
 import { ProfileComponent } from './components/display/profile/profile.component';
 import { CookieLawModule } from 'angular2-cookie-law';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './guards/auth/auth.guard';
+import { AdminGuard } from './guards/admin/admin.guard';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, "../assets/i18n/", ".json");
@@ -61,6 +62,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CookieService,
     ProfileComponent,
     AuthGuard,
+    AdminGuard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
