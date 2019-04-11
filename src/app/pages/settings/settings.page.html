@@ -10,7 +10,7 @@
 <ion-content>
   <ion-item class="bg-profile">
     <ion-avatar slot="start">
-      <img src="assets/img/profile/{{userLogged.photo}}.jpg" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}"
+      <img src="{{userLogged.photo}}" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}"
         (click)="goTo('user-profile')">
     </ion-avatar>
     <ion-label>
@@ -46,11 +46,7 @@
         <ion-select-option value="en">English</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item>
-      <ion-icon name="notifications" slot="start" color="primary"></ion-icon>
-      <ion-label class="label" color="primary"> {{ 'SETTIGNS.ENABLE_NOTIFICATIONS' | translate}} </ion-label>
-      <ion-toggle [(ngModel)]="enableNotifications"></ion-toggle>
-    </ion-item>
+
   </ion-list>
 
 
