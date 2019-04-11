@@ -182,10 +182,10 @@
 		"EMAIL_VALIDATION": "Invalid email",
 		"SUCCESS": "Sign up done successfully!",
 		"HEADER_SUCCESS": "Success",
-		"ERROR_USERNAME": "The username is already taken"
+		"ERROR_USERNAME": "The username is already taken",
 		"FUTURE_BIRTHDATE": "Invalid birthdate",
 		"INTERESTS": "Interests"
-		"FUTURE_BIRTHDATE": "Invalid birthdate",
+
 
 	},
 	"SEARCH": {
