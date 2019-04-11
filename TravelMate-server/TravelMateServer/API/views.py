@@ -40,6 +40,20 @@ class GetUserByIdView(APIView):
 
         return Response(UserProfileSerializer(user_profile, many=False).data)
 
+    
+def refreshUserAverageRating(votedUserProfile):
+    userRatings = Rate.objects.filter(voted=votedUserProfile)
+    sumRatings = 0
+    numRatings = 0
+    for r in userRatings:
+        sumRatings += r.value
+        numRatings = numRatings + 1
+    avgUserRating = sumRatings / numRatings
+    votedUserProfile.avarageRate = avgUserRating
+    votedUserProfile.numRate = numRatings
+    votedUserProfile.save()
+
+
 class RateUser(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
@@ -50,7 +64,7 @@ class RateUser(APIView):
         refreshUserAverageRating(user)
         avgRating = user.avarageRate
 
-        return Response(UserProfileSerializer(userProfile, many=False).data)
+        return Response(UserProfileSerializer(user, many=False).data)
 
     def post(self, request):
         """
@@ -70,7 +84,7 @@ class RateUser(APIView):
         value = request.data.get('rating', '0')
 
         areFriends = False
-        friends, pending, rejected = get_friends(voter)
+        friends, pending, rejected = get_friends(voter, False)
         for f in friends:
             if f == voteduser:
                 areFriends = True
@@ -114,7 +128,7 @@ class UserList(APIView):
         return Response(UserProfileSerializer(userProfile, many=False).data)
 
 
-def get_friends(user):
+def get_friends(user, discover):
     """
     Method to get the list of an user's friends or pending friends
     """
@@ -134,18 +148,24 @@ def get_friends(user):
 
     sended_rejected = Invitation.objects.filter(sender=user, status="R")
     if sended_rejected:
-        for k in sended_rejected:
-            rejected.append(k.receiver)
+        for i in sended_rejected:
+            rejected.append(i.receiver)
 
     received_rejected = Invitation.objects.filter(receiver=user, status="R")
     if received_rejected:
-        for l in received_rejected:
-            rejected.append(l.sender)
+        for j in received_rejected:
+            rejected.append(j.sender)
 
-    pending_invitations = Invitation.objects.filter(receiver=user, status="P")
-    if pending_invitations:
-        for m in pending_invitations:
-            pending.append(m.sender)
+    received_pending = Invitation.objects.filter(receiver=user, status="P")
+    if received_pending:
+        for i in received_pending:
+            pending.append(i.sender)
+
+    if discover:
+        sended_pending = Invitation.objects.filter(sender=user, status="P")
+        if sended_pending:
+            for j in sended_pending:
+                pending.append(j.sender)
 
     return (friends, pending, rejected)
 
@@ -163,7 +183,7 @@ class GetFriendsView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending, rejected = get_friends(user)
+        friends, pending, rejected = get_friends(user, False)
 
         return Response(UserProfileSerializer(friends, many=True).data)
 
@@ -181,7 +201,7 @@ class GetPendingView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending, rejected = get_friends(user)
+        friends, pending, rejected = get_friends(user, False)
 
         return Response(UserProfileSerializer(pending, many=True).data)
 
@@ -332,7 +352,7 @@ class DiscoverPeopleView(APIView):
         """
         user = get_user_by_token(request)
 
-        friends, pending, rejected = get_friends(user)
+        friends, pending, rejected = get_friends(user, True)
 
         discover_people = []
         interests = user.interests.all()
