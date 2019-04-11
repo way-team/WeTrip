@@ -35,7 +35,7 @@ export class BannerComponent implements OnInit {
       'https://www.expedia.es/'
     ];
     this.bannerSrc = 'assets/img/banner/' + imagenId + '.jpg';
-    this.bannerPath = urls[imagenId];
+    this.bannerPath = urls[imagenId - 1];
   }
 
   private getUserPremium(): void {
