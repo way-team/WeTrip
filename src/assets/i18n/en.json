@@ -113,11 +113,13 @@
     "PREMIUM": "Premium",
     "PROFILE": "Profile",
     "TRIPS": "Trips",
-    "ADMIN_CONTROL_PANEL": "Admin Control Panel"
+    "ADMIN_CONTROL_PANEL": "Admin Control Panel",
+    "COOKIES": " By continuing to browse the site, you're agreeing to our use of cookies. Learn more in our ",
+	"PRIVACY_POLICY": "privacy policy"
   },
   "NOTIFICATIONS": {
     "NOTIFICATIONS": "Notifications",
-    "THERE_ARE_NOT_NOTIFICATIONS": "Ther are not notifications."
+    "THERE_ARE_NOT_NOTIFICATIONS": "There are not notifications."
   },
   "PREMIUM": {
     "BUY_NOW": "Buy now with PayPal",

@@ -114,7 +114,9 @@
 		"PREMIUM": "Premium",
 		"PROFILE": "Perfil",
 		"TRIPS": "Viajes",
-		"ADMIN_CONTROL_PANEL": "Panel de control de administración"
+		"ADMIN_CONTROL_PANEL": "Panel de control de administración",
+	    "COOKIES": " Al continuar navegando, usted está aceptando el uso de cookies. Descubra más en nuestra ",
+		"PRIVACY_POLICY": "política de privacidad"
 	},
 	"NOTIFICATIONS": {
 		"NOTIFICATIONS": "Notificaciones",
