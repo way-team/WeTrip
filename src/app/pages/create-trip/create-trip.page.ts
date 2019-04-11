@@ -4,6 +4,7 @@ import { DataManagement } from '../../services/dataManagement';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-trip',
@@ -33,6 +34,7 @@ export class CreateTripPage implements OnInit {
     public dm: DataManagement,
     private formBuilder: FormBuilder,
     public alertCtrl: AlertController,
+    private translate: TranslateService,
     private activatedRoute: ActivatedRoute
   ) {
     this.listCities();
@@ -50,6 +52,7 @@ export class CreateTripPage implements OnInit {
   }
 
   public createTrip() {
+    let translation:string = this.translate.instant('TRIPS.ERROR');
     console.log(typeof this.userImage);
     this.dm
       .createTrip(
@@ -68,7 +71,7 @@ export class CreateTripPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'Something went wrong.',
+            message: translation,
             buttons: [
               {
                 text: 'Ok',
@@ -84,6 +87,7 @@ export class CreateTripPage implements OnInit {
 
   public editTrip() {
     console.log(typeof this.userImage);
+    let translation:string = this.translate.instant('TRIPS.ERROR');
     this.dm
       .editTrip(
         this.id,
@@ -102,7 +106,7 @@ export class CreateTripPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'Something went wrong.',
+            message: translation,
             buttons: [
               {
                 text: 'Ok',

@@ -213,7 +213,8 @@
 	"TRIPS": {
 		"CREATE_NEW_TRIP": "Create a new trip",
 		"TRIPS": "Trips",
-		"WITHOUT_TRIPS": "You don't have any trip yet"
+		"WITHOUT_TRIPS": "You don't have any trip yet",
+		"ERROR": "Something went wrong. Contact travelmate way.team.soft@gmail.com"
 	},
 	"TRIP_DETAILS": {
 		"CREATED_BY": "Created by",

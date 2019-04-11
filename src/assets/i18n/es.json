@@ -41,7 +41,8 @@
 	"DISCOVER": {
 		"CONTACT": "Contactar",
 		"DISCOVER": "Descubre",
-		"LOCATION": "Localización"
+		"LOCATION": "Localización",
+		"OK_LOCATION":'Localización modificada correctamente.'
 	},
 	"GDPR": {
 		"GO_OUT": "Salir",
@@ -211,7 +212,8 @@
 	"TRIPS": {
 		"CREATE_NEW_TRIP": "Crear un viaje nuevo",
 		"TRIPS": "Viajes",
-		"WITHOUT_TRIPS": "Aún no tienes ningún viaje."
+		"WITHOUT_TRIPS": "Aún no tienes ningún viaje.",
+		"ERROR": "Se ha producido un error. Contacta con travelmate way.team.soft@gmail.com"
 	},
 	"TRIP_DETAILS": {
 		"CREATED_BY": "Creado por",
