@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="primary">{{
+    <ion-title color="light">{{
       "DASHBOARD.ADMIN_CONTROL_PANEL" | translate
     }}</ion-title>
   </ion-toolbar>
@@ -11,7 +11,7 @@
   <ion-toolbar no-border-top>
     <ion-segment [(ngModel)]="statsType">
       <ion-segment-button value="trips">
-        <ion-label color="danger">
+        <ion-label color="tertiary">
           <strong>{{ "DASHBOARD.TRIPS" | translate }}</strong>
         </ion-label>
       </ion-segment-button>
@@ -30,14 +30,14 @@
         <ion-grid style="height: 100%">
         <ion-row justify-content-center align-items-center style="height: 100%">
           <ion-col size="auto">
-            <ion-card color="favorite3">
+            <ion-card color="dark">
               <img src="assets/img/dashboard/tripsByMonth.png" />
               <ion-card-header>
                 <ion-card-title text-center > <ion-icon name="calendar"></ion-icon> {{ "DASHBOARD.TRIPS_BY_MONTH" | translate }}</ion-card-title>
               </ion-card-header>
               <ion-card-content>
                 <div margin-vertical text-center>
-                  <ion-button fill="outline" color="dark" (click)="onClickTripsByMonth()"
+                  <ion-button fill="outline" color="light" (click)="onClickTripsByMonth()"
                     ><ion-icon name="navigate" slot="start"></ion-icon
                     >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
                   >
@@ -67,12 +67,12 @@
               <ion-card color="warning">
                 <img src="assets/img/dashboard/applicationsPerTrip.png" />
                 <ion-card-header>
-                  <ion-card-title text-center> <ion-icon name="copy"></ion-icon> {{ "DASHBOARD.APPLICATIONS_PER_TRIP" | translate }}</ion-card-title>
+                  <ion-card-title text-center> <ion-icon color="dark" name="copy"></ion-icon> {{ "DASHBOARD.APPLICATIONS_PER_TRIP" | translate }}</ion-card-title>
                 </ion-card-header>
                 <ion-card-content>
                   <div margin-vertical text-center>
                     <ion-button fill="outline" color="dark" (click)="onClickApplicationsPerTrip()"
-                      ><ion-icon name="navigate" slot="start"></ion-icon 
+                      ><ion-icon name="navigate" slot="start" color="dark"></ion-icon
                       >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
                     >
                   </div>
@@ -80,14 +80,14 @@
               </ion-card>
             </ion-col>
             <ion-col size="auto">
-                <ion-card color="success">
+                <ion-card color="favorite2">
                   <img src="assets/img/dashboard/visitedCities.png" />
                   <ion-card-header>
                     <ion-card-title text-center > <ion-icon name="locate"></ion-icon> {{ "DASHBOARD.VISITED_CITIES" | translate }}</ion-card-title>
                   </ion-card-header>
                   <ion-card-content>
                     <div margin-vertical text-center>
-                      <ion-button fill="outline" color="dark" (click)="onClickVisitedCities()"
+                      <ion-button fill="outline" color="light" (click)="onClickVisitedCities()"
                         ><ion-icon name="navigate" slot="start"></ion-icon
                         >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
                       >
@@ -103,14 +103,14 @@
         <ion-grid style="height: 100%">
             <ion-row justify-content-center align-items-center style="height: 100%">
               <ion-col size="auto">
-                <ion-card color="favorite">
+                <ion-card color="dark">
                   <img src="assets/img/dashboard/usersByGender.png" />
                   <ion-card-header>
                     <ion-card-title text-center > <ion-icon name="female"></ion-icon> {{ "DASHBOARD.USERS_BY_GENDER" | translate }}</ion-card-title>
                   </ion-card-header>
                   <ion-card-content>
                     <div margin-vertical text-center>
-                      <ion-button fill="outline" color="dark" (click)="onClickUsersByGender()"
+                      <ion-button fill="outline" color="light" (click)="onClickUsersByGender()"
                         ><ion-icon name="navigate" slot="start"></ion-icon
                         >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
                       >
@@ -137,14 +137,14 @@
             </ion-row>
             <ion-row justify-content-center align-items-center style="height: 100%">
                 <ion-col size="auto">
-                  <ion-card color="favorite2">
+                  <ion-card color="danger">
                     <img src="assets/img/dashboard/activeVsInactive.png" />
                     <ion-card-header>
                       <ion-card-title text-center> <ion-icon name="contacts"></ion-icon> {{ "DASHBOARD.ACTIVE_VS_INACTIVE" | translate }}</ion-card-title>
                     </ion-card-header>
                     <ion-card-content>
                       <div margin-vertical text-center>
-                        <ion-button fill="outline" color="dark" (click)="onClickActiveVsInactive()"
+                        <ion-button fill="outline" color="light" (click)="onClickActiveVsInactive()"
                           ><ion-icon name="navigate" slot="start"></ion-icon
                           >{{ "DASHBOARD.SEE_STATS" | translate }}</ion-button
                         >
