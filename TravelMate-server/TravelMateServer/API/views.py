@@ -895,24 +895,74 @@ class RegisterUser(APIView):
                 inter = Interest.objects.get(name=i)
                 inter.users.add(userProfile)
         except:
-            userProfile = UserProfile(
-                user=user,
-                email=email,
-                first_name=firstName,
-                last_name=lastName,
-                description=description,
-                birthdate=birthdate,
-                gender=gender,
-                nationality=nationality,
-                city=city,
-                status=status)
-            userProfile.save()
-            for i in languages:
-                lang = Language.objects.get(name=i)
-                userProfile.languages.add(lang)
-            for i in interests:
-                inter = Interest.objects.get(name=i)
-                inter.users.add(userProfile)
+
+            try:
+                photo = request.data['photo']
+
+                userProfile = UserProfile(
+                    user=user,
+                    email=email,
+                    first_name=firstName,
+                    last_name=lastName,
+                    description=description,
+                    birthdate=birthdate,
+                    gender=gender,
+                    nationality=nationality,
+                    city=city,
+                    status=status,
+                    photo=photo)
+
+                userProfile.save()
+                for i in languages:
+                    lang = Language.objects.get(name=i)
+                    userProfile.languages.add(lang)
+                for i in interests:
+                    inter = Interest.objects.get(name=i)
+                    inter.users.add(userProfile)
+            
+            except:
+                try:
+                    discoverPhoto = request.data['discoverPhoto']
+
+                    userProfile = UserProfile(
+                        user=user,
+                        email=email,
+                        first_name=firstName,
+                        last_name=lastName,
+                        description=description,
+                        birthdate=birthdate,
+                        gender=gender,
+                        nationality=nationality,
+                        city=city,
+                        status=status,
+                        discoverPhoto=discoverPhoto)
+
+                    userProfile.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        userProfile.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(userProfile)
+                except:
+                    userProfile = UserProfile(
+                        user=user,
+                        email=email,
+                        first_name=firstName,
+                        last_name=lastName,
+                        description=description,
+                        birthdate=birthdate,
+                        gender=gender,
+                        nationality=nationality,
+                        city=city,
+                        status=status)
+                    userProfile.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        userProfile.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(userProfile)
             
 
         finally:
