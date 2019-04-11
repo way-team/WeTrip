@@ -11,7 +11,7 @@ import {
   LoadingController,
   AlertController
 } from '@ionic/angular';
-import { Language } from 'src/app/app.data.model';
+import { Language, Interest } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -35,6 +35,8 @@ export class RegisterPage implements OnInit {
   city: string;
   languages;
   languagesOptions: Language[];
+  interests;
+  interestsOptions: Interest[];
   profilePic: File = null;
   discoverPic: File = null;
 
@@ -48,6 +50,7 @@ export class RegisterPage implements OnInit {
     public alertCtrl: AlertController
   ) {
     this.listLanguages();
+    this.listInterests();
   }
 
   public listLanguages() {
@@ -55,6 +58,16 @@ export class RegisterPage implements OnInit {
       .listLanguages()
       .then(data => {
         this.languagesOptions = data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  public listInterests() {
+    this.dm
+      .listInterests()
+      .then(data => {
+        this.interestsOptions = data;
       })
       .catch(error => {
         console.log(error);
@@ -81,7 +94,8 @@ export class RegisterPage implements OnInit {
       gender: [null, Validators.compose([Validators.required])],
       nationality: [null, Validators.compose([Validators.required])],
       city: [null, Validators.compose([Validators.required])],
-      languages: [null, Validators.compose([Validators.required])]
+      languages: [null, Validators.compose([Validators.required])],
+      interests: [null, Validators.compose([Validators.required])]
     });
   }
 
@@ -98,7 +112,6 @@ export class RegisterPage implements OnInit {
     let translation2:string = this.translate.instant('REGISTER.SUCCESS');
     let translation3:string = this.translate.instant('REGISTER.ERROR_USERNAME');
 
-    console.log(JSON.stringify(this.languages));
     this.dm
       .register(
         this.username,
@@ -112,6 +125,7 @@ export class RegisterPage implements OnInit {
         this.nationality,
         this.city,
         this.languages,
+        this.interests,
         this.profilePic,
         this.discoverPic
       )
@@ -143,6 +157,7 @@ export class RegisterPage implements OnInit {
           (this.nationality = ''),
           (this.city = ''),
           (this.languages = ''),
+          (this.interests = ''),
           (this.profilePic = null),
           (this.discoverPic = null);
       })

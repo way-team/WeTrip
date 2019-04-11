@@ -181,9 +181,11 @@
 		"PASSWORD_VALIDATION_FALSE": "¡Las contraseñas no coinciden!",
 		"EMAIL_VALIDATION": "Correo electrónico inválido",
 		"FUTURE_BIRTHDATE": "Fecha de nacimiento inválida",
+		"INTERESTS": "Intereses"
 		"SUCCESS": "Registro realizado correctamente",
 		"HEADER_SUCCESS": "Realizado",
 		"ERROR_USERNAME": "Este nombre de usuario está ya en uso."
+		"FUTURE_BIRTHDATE": "Fecha de nacimiento inválida",
 	},
 	"SEARCH": {
 		"MY_TRIPS": "Mis viajes",
@@ -262,5 +264,5 @@
 		"AVERAGE_TRIPS_PER_USER": "Media de viajes por usuario:",
 		"AVERAGE_LANGUAGES_PER_USER": "Media de idiomas por usuario:",
 		"AVERAGE_RATING_PER_USER": "Valoración media por usuario:"
-	  }
+	}
 }

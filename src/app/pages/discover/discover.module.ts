@@ -13,6 +13,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 // Configuración de traducción
 import { HttpLoaderFactory } from './../../app.module';
+import { BannerComponent } from 'src/app/components/banner/banner.component';
 const routes: Routes = [
   {
     path: '',
@@ -29,6 +30,6 @@ const routes: Routes = [
     TranslateModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DiscoverPage, PopmenuComponent]
+  declarations: [DiscoverPage, PopmenuComponent, BannerComponent]
 })
 export class DiscoverPageModule {}

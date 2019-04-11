@@ -24,6 +24,9 @@ export class UserProfile {
 export class Language {
   name: String;
 }
+export class Interest {
+  name: String;
+}
 
 export class Trip {
   id: Number;
@@ -78,5 +81,4 @@ export class application_user {
     this.applicantName = applicantName;
     this.applicationId = applicationId;
   }
-
-} 
+}

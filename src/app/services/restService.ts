@@ -47,6 +47,7 @@ export class RestWS extends AbstractWS {
     nationality: string,
     city: string,
     languages: string[],
+    interests: string[],
     profilePic,
     discoverPic
   ) {
@@ -62,6 +63,7 @@ export class RestWS extends AbstractWS {
     fd.append('city', city);
     fd.append('gender', gender);
     fd.append('languages', JSON.stringify(languages));
+    fd.append('interests', JSON.stringify(interests));
     if (profilePic !== null) {
       fd.append('photo', profilePic, profilePic.name);
     }
@@ -194,10 +196,14 @@ export class RestWS extends AbstractWS {
       });
   }
 
- public search( searchKey: string): Promise<any> {
+  public search(searchKey: string): Promise<any> {
     const Authorization = this.cookieService.get('token');
 
-    return this.makeGetRequest(this.path + 'trips/search/?search=' + searchKey, null, Authorization)
+    return this.makeGetRequest(
+      this.path + 'trips/search/?search=' + searchKey,
+      null,
+      Authorization
+    )
       .then(res => {
         return Promise.resolve(res.results);
       })
@@ -207,10 +213,7 @@ export class RestWS extends AbstractWS {
       });
   }
 
-  public rate(
-    voted: string,
-    rating: Number
-  ): Promise<any> {
+  public rate(voted: string, rating: Number): Promise<any> {
     const fd = new FormData();
     let user: User;
     let token: string;
@@ -368,6 +371,17 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public listInterests(): Promise<any> {
+    return this.makeGetRequest(this.path + 'list-interests/', false)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
   public getTripById(id: string) {
     const Authorization = this.cookieService.get('token');
 
@@ -472,25 +486,33 @@ export class RestWS extends AbstractWS {
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
     fd.append('user_id', id);
-    return this.makePostRequest(this.path + 'getUserById/', fd, Authorization).then(res => {
+    return this.makePostRequest(this.path + 'getUserById/', fd, Authorization)
+      .then(res => {
         return Promise.resolve(res);
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log('Error: ' + err);
         return Promise.reject(err);
       });
   }
 
-  public resolveTripApplication(request: string, application_id: string): Promise<any> {
+  public resolveTripApplication(
+    request: string,
+    application_id: string
+  ): Promise<any> {
     const fd = new FormData();
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
     fd.append('application_id', application_id);
-    const action = request === 'accept' ? 'acceptApplication/' : 'rejectApplication/';
-    return this.makePostRequest(this.path + action, fd, Authorization).then(res => {
-      return Promise.resolve(res);
-    }).catch(error => {
-      return Promise.reject(error);
-    });
+    const action =
+      request === 'accept' ? 'acceptApplication/' : 'rejectApplication/';
+    return this.makePostRequest(this.path + action, fd, Authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
   }
 
   public getStatistics(): Promise<any> {

@@ -180,10 +180,12 @@
 		"INTRUDUCE_INFORMATION": "Introduce your personal data",
 		"PASSWORD_VALIDATION_FALSE": "Passwords do not match!",
 		"EMAIL_VALIDATION": "Invalid email",
-		"FUTURE_BIRTHDATE": "Invalid birthdate",
 		"SUCCESS": "Sign up done successfully!",
 		"HEADER_SUCCESS": "Success",
 		"ERROR_USERNAME": "The username is already taken"
+		"FUTURE_BIRTHDATE": "Invalid birthdate",
+		"INTERESTS": "Interests"
+		"FUTURE_BIRTHDATE": "Invalid birthdate",
 
 	},
 	"SEARCH": {
@@ -263,5 +265,5 @@
 		"AVERAGE_TRIPS_PER_USER": "Average trips per user:",
 		"AVERAGE_LANGUAGES_PER_USER": "Average languages per user:",
 		"AVERAGE_RATING_PER_USER": "Average rating per user:"
-	  }
+	}
 }
