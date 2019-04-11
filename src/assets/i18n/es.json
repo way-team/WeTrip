@@ -42,7 +42,7 @@
 		"CONTACT": "Contactar",
 		"DISCOVER": "Descubre",
 		"LOCATION": "Localización",
-		"OK_LOCATION":'Localización modificada correctamente.'
+		"OK_LOCATION":"Localización modificada correctamente."
 	},
 	"GDPR": {
 		"GO_OUT": "Salir",
@@ -263,6 +263,29 @@
 		"DOUGHNUT_CHART": "Diagrama circular:",
 		"AVERAGE_TRIPS_PER_USER": "Media de viajes por usuario:",
 		"AVERAGE_LANGUAGES_PER_USER": "Media de idiomas por usuario:",
-		"AVERAGE_RATING_PER_USER": "Valoración media por usuario:"
+		"AVERAGE_RATING_PER_USER": "Valoración media por usuario:",
+		"TRIPS_MOST_APPLICATIONS": "Viajes con más solicitudes:",
+		"TRIPS_NUMBER_APPLICATIONS": "# de solicitudes:",
+		"TRIPS_IMAGE": "Imagen:",
+		"TRIPS_TITLE": "Título:",
+		"TRIPS_START_DATE": "Fecha de inicio:",
+		"TRIPS_END_DATE": "Fecha de fin:",
+		"TRIPS_TYPE": "Tipo:",
+		"TRIPS_STATUS": "Estado:",
+		"TRIPS_CREATOR": "Creador:",
+		"TRIPS_DETAILS": "Ver detalles:",
+		"TRIPS_PUBLIC": "Público",
+		"TRIPS_PRIVATE": "Privado",
+		"TRIPS_ACTIVE": "Activo",
+		"TRIPS_DELETED": "Borrado",
+		"TRIPS_MOST_CITIES":"Viajes con más ciudades:",
+		"TRIPS_NUMBER_CITIES":"# de ciudades:",
+		"CITIES_MOST_TRIPS":"Ciudades más visitadas:",
+		"CITIES_NUMBER_TRIPS":"# de viajes:",
+		"CITIES_NAME":"Ciudad:",
+		"CITIES_COUNTRY":"País:",
+		"MOST_COMMON_INTERESTS": "Intereses más comunes entre los usuarios:",
+		"INTERESTS_NAME": "Interés:",
+		"INTERESTS_NUMBER_USERS": "# de usuarios:"
 	}
 }

@@ -4,6 +4,7 @@ import { DataManagement } from "src/app/services/dataManagement";
 import { Router } from "@angular/router";
 import { Chart } from "chart.js";
 import { Color } from "@ionic/core";
+import { NavController } from "@ionic/angular";
 
 @Component({
   selector: "app-dashboard-detail",
@@ -24,7 +25,7 @@ export class DashboardDetailPage implements OnInit {
   percentagePublicTrips = null;
   avgAppsPerTrip = null;
   numberOfUsers = null;
-  percentageMen  = null;
+  percentageMen = null;
   percentageWomen = null;
   percentageNonBinary = null;
   percentagePremiumUsers = null;
@@ -32,10 +33,14 @@ export class DashboardDetailPage implements OnInit {
   premiumUsersRatio = null;
   percentageActiveUsers = null;
   percentageDeletedUsers = null;
-  activeUsersRatio  = null;
+  activeUsersRatio = null;
   avgTripsPerUser = null;
   avgLanguagesPerUser = null;
   avgRatingPerUser = null;
+  top5AppsTrips = null;
+  top5NumberOfCitiesTrips = null;
+  top5NumberOfTripsCities = null;
+  top5MostCommonInterests = null;
 
 
 
@@ -58,7 +63,8 @@ export class DashboardDetailPage implements OnInit {
   constructor(
     private data: DataManagement,
     private router: Router,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -66,6 +72,7 @@ export class DashboardDetailPage implements OnInit {
     this.stats = this.getStatistics();
   }
 
+  
   ngAfterViewInit() {
     if (this.type === "tripsByMonth") {
       this.numberOfTrips = this.stats.numberOfTrips;
@@ -73,32 +80,37 @@ export class DashboardDetailPage implements OnInit {
     }
     if (this.type === "publicVsPrivate") {
       this.numberOfTrips = this.stats.numberOfTrips;
-      this.percentagePrivateTrips = this.stats.percentagePrivateTrips;
-      this.percentagePublicTrips = this.stats.percentagePublicTrips;
+      this.percentagePrivateTrips = this.stats.percentagePrivateTrips *100;
+      this.percentagePublicTrips = this.stats.percentagePublicTrips *100;
       this.ratioOfPrivateTrips = this.stats.ratioOfPrivateTrips;
       this.loadChart2();
     }
     if (this.type === "applicationsPerTrip") {
       this.avgAppsPerTrip = this.stats.avgAppsPerTrip;
+      this.top5AppsTrips = this.stats.top5AppsTrips;
+    }
+    if (this.type === "visitedCities") {
+      this.top5NumberOfCitiesTrips = this.stats.top5NumberOfCitiesTrips;
+      this.top5NumberOfTripsCities = this.stats.top5NumberOfTripsCities;
     }
     if (this.type === "usersByGender") {
       this.numberOfUsers = this.stats.numberOfUsers;
-      this.percentageMen = this.stats.percentageMen;
-      this.percentageWomen = this.stats.percentageWomen;
-      this.percentageNonBinary = this.stats.percentageNonBinary;
+      this.percentageMen = this.stats.percentageMen *100;
+      this.percentageWomen = this.stats.percentageWomen *100;
+      this.percentageNonBinary = this.stats.percentageNonBinary *100;
       this.loadChart3();
     }
     if (this.type === "premiumUsers") {
       this.numberOfUsers = this.stats.numberOfUsers;
-      this.percentagePremiumUsers = this.stats.percentagePremiumUsers;
-      this.percentageNonPremiumUsers = this.stats.percentageNonPremiumUsers;
+      this.percentagePremiumUsers = this.stats.percentagePremiumUsers *100;
+      this.percentageNonPremiumUsers = this.stats.percentageNonPremiumUsers *100;
       this.premiumUsersRatio = this.stats.premiumUsersRatio;
       this.loadChart4();
     }
     if (this.type === "activeVsInactive") {
       this.numberOfUsers = this.stats.numberOfUsers;
-      this.percentageActiveUsers = this.stats.percentageActiveUsers;
-      this.percentageDeletedUsers = this.stats.percentageDeletedUsers;
+      this.percentageActiveUsers = this.stats.percentageActiveUsers *100;
+      this.percentageDeletedUsers = this.stats.percentageDeletedUsers *100;
       this.activeUsersRatio = this.stats.activeUsersRatio;
       this.loadChart5();
     }
@@ -106,6 +118,7 @@ export class DashboardDetailPage implements OnInit {
       this.avgTripsPerUser = this.stats.avgTripsPerUser;
       this.avgLanguagesPerUser = this.stats.avgLanguagesPerUser;
       this.avgRatingPerUser = this.stats.avgRatingPerUser;
+      this.top5MostCommonInterests = this.stats.top5MostCommonInterests;
     }
   }
 
@@ -341,5 +354,10 @@ export class DashboardDetailPage implements OnInit {
         this.stats = object;
       })
       .catch(error => {});
+  }
+
+  public goTo(destination: string, trip) {
+    const path = destination + trip.id;
+    this.navCtrl.navigateForward(path);
   }
 }

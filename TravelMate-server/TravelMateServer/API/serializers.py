@@ -33,12 +33,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
 class TripSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField()
     userImage = serializers.SerializerMethodField()
+    applications_count = serializers.SerializerMethodField()
+    cities_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Trip
         fields = [
             'id', 'creator', 'title', 'description', 'startDate', 'endDate',
-            'tripType', 'image', 'userImage', 'status'
+            'tripType', 'image', 'userImage', 'status', 'applications_count',
+            'cities_count'
         ]
 
     def get_creator(self, obj):
@@ -48,6 +51,13 @@ class TripSerializer(serializers.ModelSerializer):
     def get_userImage(self, obj):
         userImage_queryset = obj.userImage.name
         return userImage_queryset
+
+    def get_applications_count(self, obj):
+        return obj.applications.count()
+
+    def get_cities_count(self, obj):
+        return obj.cities.count()
+
 
 
 class FullTripSerializer(serializers.Serializer):
