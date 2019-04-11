@@ -185,7 +185,8 @@
     "NEW_PREMIUM": "Congratulations! You are a member of our Premium club",
     "PREMIUM": "Premium",
     "TEXT_1": "With the premium version, you will enjoy our app without ads and your trips will have preferential location.",
-    "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease."
+    "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease.",
+    "LANG": "en_US"
   },
   "PROFILE": {
     "ADMIN": "Admin",
