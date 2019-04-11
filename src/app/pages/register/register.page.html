@@ -218,6 +218,24 @@
             </ion-text>
           </p>
           <ion-item>
+            <ion-label position="floating">
+              <ion-icon name="globe" item-start></ion-icon>
+              {{ 'REGISTER.INTERESTS' | translate}}
+            </ion-label>
+            <ion-select multiple="true" [(ngModel)]="interests" formControlName="interests">
+              <ion-select-option value="interest.name" *ngFor="let interest of interestsOptions"
+                value="{{interest.name}}">
+                {{ interest.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <p ion-text class="text08"
+            *ngIf="onRegisterForm.get('interests').touched && onRegisterForm.get('interests').hasError('required')">
+            <ion-text color="warning">
+              {{ 'REGISTER.REQUIRED_FIELD' | translate}}
+            </ion-text>
+          </p>
+          <ion-item>
             <ion-card class="imageCard1">
               <ion-card-header>
                 <ion-title>

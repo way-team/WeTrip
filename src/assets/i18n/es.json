@@ -177,7 +177,8 @@
 		"INTRODUCE_INFORMATION": "Introduce sus datos personales",
 		"PASSWORD_VALIDATION_FALSE": "¡Las contraseñas no coinciden!",
 		"EMAIL_VALIDATION": "Correo electrónico inválido",
-		"FUTURE_BIRTHDATE": "Fecha de nacimiento inválida"
+		"FUTURE_BIRTHDATE": "Fecha de nacimiento inválida",
+		"INTERESTS": "Intereses"
 	},
 	"SEARCH": {
 		"MY_TRIPS": "Mis viajes",
@@ -253,5 +254,5 @@
 		"AVERAGE_TRIPS_PER_USER": "Media de viajes por usuario:",
 		"AVERAGE_LANGUAGES_PER_USER": "Media de idiomas por usuario:",
 		"AVERAGE_RATING_PER_USER": "Valoración media por usuario:"
-	  }
+	}
 }

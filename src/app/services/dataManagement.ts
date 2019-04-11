@@ -28,6 +28,7 @@ export class DataManagement {
     nationality: string,
     city: string,
     languages: string[],
+    interests: string[],
     profilePic,
     discoverPic
   ): Promise<any> {
@@ -44,6 +45,7 @@ export class DataManagement {
         nationality,
         city,
         languages,
+        interests,
         profilePic,
         discoverPic
       )
@@ -232,13 +234,9 @@ export class DataManagement {
         return Promise.reject('error');
       });
   }
-  public search(
-    searchKey: string
-  ): Promise<any> {
+  public search(searchKey: string): Promise<any> {
     return this.restService
-      .search(
-        searchKey
-      )
+      .search(searchKey)
       .then(data => {
         return Promise.resolve(data);
       })
@@ -272,6 +270,16 @@ export class DataManagement {
   public listLanguages(): Promise<any> {
     return this.restService
       .listLanguages()
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+  public listInterests(): Promise<any> {
+    return this.restService
+      .listInterests()
       .then(data => {
         return Promise.resolve(data);
       })
@@ -351,17 +359,26 @@ export class DataManagement {
   }
 
   public getUserById(id: string): Promise<any> {
-    return this.restService.getUserById(id).then(res => {
+    return this.restService
+      .getUserById(id)
+      .then(res => {
         return Promise.resolve(res);
-      }).catch(error => {
+      })
+      .catch(error => {
         return Promise.reject(error);
       });
   }
 
-  public resolveTripApplication(request: string, applicationId: string): Promise<any> {
-    return this.restService.resolveTripApplication(request, applicationId).then(res => {
+  public resolveTripApplication(
+    request: string,
+    applicationId: string
+  ): Promise<any> {
+    return this.restService
+      .resolveTripApplication(request, applicationId)
+      .then(res => {
         return Promise.resolve(res);
-      }).catch(error => {
+      })
+      .catch(error => {
         return Promise.reject(error);
       });
   }

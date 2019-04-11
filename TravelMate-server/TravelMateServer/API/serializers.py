@@ -158,6 +158,13 @@ class InterestSerializer(serializers.ModelSerializer):
         model = Interest
         fields = ['name', 'users']
 
+class InterestNameSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = Interest
+        fields = ['name']
+
 class InterestReducedSerializer(serializers.ModelSerializer):
     users_count = serializers.SerializerMethodField()
 
