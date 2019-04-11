@@ -100,7 +100,9 @@
 		"SIGNIN": "Inicia sesión",
 		"SIGN_UP": "Regístrate",
 		"TRAVELMATE": "Travelmate",
-		"USERNAME": "Nombre de usuario"
+		"USERNAME": "Nombre de usuario",
+		"FAIL": "Las credenciales introducidas no se encuentran en el sistema. Por favor, inténtelo de nuevo.",
+		"WAIT": "Por favor, espere..."
 	},
 	"MENU": {
 		"ABOUT": "Sobre nosotros",

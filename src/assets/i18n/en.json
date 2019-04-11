@@ -100,7 +100,9 @@
 		"SIGNIN": "Sign in",
 		"SIGN_UP": "Sign up",
 		"TRAVELMATE": "Travelmate",
-		"USERNAME": "Username"
+		"USERNAME": "Username",
+		"FAIL": "The credentials introduced were not found in the system. Please try again.",
+		"WAIT": "Please wait..."
 	},
 	"MENU": {
 		"ABOUT": "About us",
