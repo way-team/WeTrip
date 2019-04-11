@@ -166,7 +166,7 @@ def get_friends(user, discover):
         sended_pending = Invitation.objects.filter(sender=user, status="P")
         if sended_pending:
             for j in sended_pending:
-                pending.append(j.sender)
+                pending.append(j.receiver)
 
     return (friends, pending, rejected)
 
