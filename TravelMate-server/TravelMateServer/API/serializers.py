@@ -12,6 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'password', 'is_staff']
 
 
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ['name']
+
+
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
@@ -143,6 +149,7 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['sender', 'receiver', 'message', 'timestamp']
+
 
 class InterestSerializer(serializers.ModelSerializer):
     users = UserProfileSerializer(many=True)

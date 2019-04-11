@@ -21,6 +21,9 @@ export class UserProfile {
   future_joined_trips: Trip[];
   active_joined_trips: Trip[];
 }
+export class Language {
+  name: String;
+}
 
 export class Trip {
   id: Number;

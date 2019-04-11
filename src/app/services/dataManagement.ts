@@ -4,11 +4,49 @@ import { RestWS } from './restService';
 
 @Injectable()
 export class DataManagement {
-  constructor(private restService: RestWS) { }
+  constructor(private restService: RestWS) {}
 
   public login(credentials): Promise<any> {
     return this.restService
       .login(credentials)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+  public register(
+    username: string,
+    password: string,
+    email: string,
+    first_name: string,
+    last_name: string,
+    description: string,
+    birthdate: string,
+    gender: string,
+    nationality: string,
+    city: string,
+    languages: string[],
+    profilePic,
+    discoverPic
+  ): Promise<any> {
+    return this.restService
+      .register(
+        username,
+        password,
+        email,
+        first_name,
+        last_name,
+        description,
+        birthdate,
+        gender,
+        nationality,
+        city,
+        languages,
+        profilePic,
+        discoverPic
+      )
       .then(data => {
         return Promise.resolve(data);
       })
@@ -155,7 +193,6 @@ export class DataManagement {
       });
   }
 
-
   public editTrip(
     id: String,
     title: string,
@@ -185,15 +222,9 @@ export class DataManagement {
       });
   }
 
-  public rate(
-    voted: string,
-    rating: Number
-  ): Promise<any> {
+  public rate(voted: string, rating: Number): Promise<any> {
     return this.restService
-      .rate(
-        voted,
-        rating
-      )
+      .rate(voted, rating)
       .then(data => {
         return Promise.resolve(data);
       })
@@ -238,15 +269,33 @@ export class DataManagement {
       });
   }
 
-  public getTripById(id: string): Promise<any> {
-    return this.restService.getTripById(id).then(response => {
-      return Promise.resolve(response);
-    }).catch(error => {
-      return Promise.reject(error);
-    });
+  public listLanguages(): Promise<any> {
+    return this.restService
+      .listLanguages()
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
   }
 
-  public sendMessage(sender: string, receiver: string, message: string): Promise<any> {
+  public getTripById(id: string): Promise<Trip> {
+    return this.restService
+      .getTripById(id)
+      .then(response => {
+        return Promise.resolve(response);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
+  public sendMessage(
+    sender: string,
+    receiver: string,
+    message: string
+  ): Promise<any> {
     return this.restService
       .sendMessage(sender, receiver, message)
       .then(data => {
@@ -269,25 +318,34 @@ export class DataManagement {
   }
 
   public resolveFriendRequest(request: string, username: string): Promise<any> {
-    return this.restService.resolveFriendRequest(request, username).then(res => {
+    return this.restService
+      .resolveFriendRequest(request, username)
+      .then(res => {
         return Promise.resolve(res);
-      }).catch(error => {
+      })
+      .catch(error => {
         return Promise.reject(error);
       });
   }
 
   public applyForTrip(tripId: string): Promise<any> {
-    return this.restService.applyForTrip(tripId).then(res => {
+    return this.restService
+      .applyForTrip(tripId)
+      .then(res => {
         return Promise.resolve(res);
-      }).catch(error => {
+      })
+      .catch(error => {
         return Promise.reject(error);
       });
   }
 
   public sendFriendInvitation(username: string): Promise<any> {
-    return this.restService.sendFriendInvitation(username).then(res => {
+    return this.restService
+      .sendFriendInvitation(username)
+      .then(res => {
         return Promise.resolve(res);
-      }).catch(error => {
+      })
+      .catch(error => {
         return Promise.reject(error);
       });
   }
