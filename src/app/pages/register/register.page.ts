@@ -108,9 +108,13 @@ export class RegisterPage implements OnInit {
   }
 
   public signUp() {
-    let translation1:string = this.translate.instant('REGISTER.HEADER_SUCCESS');
-    let translation2:string = this.translate.instant('REGISTER.SUCCESS');
-    let translation3:string = this.translate.instant('REGISTER.ERROR_USERNAME');
+    let translation1: string = this.translate.instant(
+      'REGISTER.HEADER_SUCCESS'
+    );
+    let translation2: string = this.translate.instant('REGISTER.SUCCESS');
+    let translation3: string = this.translate.instant(
+      'REGISTER.ERROR_USERNAME'
+    );
 
     this.dm
       .register(
@@ -130,52 +134,70 @@ export class RegisterPage implements OnInit {
         this.discoverPic
       )
       .then(data => {
-        this.alertCtrl
-          .create({
-            header: translation1,
-            message: translation2,
-            buttons: [
-              {
-                text: 'Ok',
-                role: 'ok'
-              }
-            ]
-          })
-          .then(alertEl => {
-            alertEl.present();
-          });
-        this.navCtrl.navigateForward('/');
-        (this.username = ''),
-          (this.password = ''),
-          (this.confirmPassword = ''),
-          (this.email = ''),
-          (this.first_name = ''),
-          (this.last_name = ''),
-          (this.description = ''),
-          (this.birthdate = ''),
-          (this.gender = ''),
-          (this.nationality = ''),
-          (this.city = ''),
-          (this.languages = ''),
-          (this.interests = ''),
-          (this.profilePic = null),
-          (this.discoverPic = null);
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: translation1,
+              message: translation2,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+          this.navCtrl.navigateForward('/');
+          (this.username = ''),
+            (this.password = ''),
+            (this.confirmPassword = ''),
+            (this.email = ''),
+            (this.first_name = ''),
+            (this.last_name = ''),
+            (this.description = ''),
+            (this.birthdate = ''),
+            (this.gender = ''),
+            (this.nationality = ''),
+            (this.city = ''),
+            (this.languages = ''),
+            (this.interests = ''),
+            (this.profilePic = null),
+            (this.discoverPic = null);
+        }, 1500);
       })
       .catch(error => {
-        this.alertCtrl
-          .create({
-            header: 'Error',
-            message: translation3,
-            buttons: [
-              {
-                text: 'Ok',
-                role: 'ok'
-              }
-            ]
-          })
-          .then(alertEl => {
-            alertEl.present();
-          });
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: 'Error',
+              message: translation3,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+        }, 1500);
+      });
+  }
+  showLoading() {
+    const translation2: string = this.translate.instant('DISCOVER.WAIT');
+    this.loadingCtrl
+      .create({
+        message: translation2,
+        showBackdrop: true,
+        duration: 1000
+      })
+      .then(loadingEl => {
+        loadingEl.present();
       });
   }
 

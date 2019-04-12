@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title color="light">{{ 'SEARCH.SEARCH' | translate}}</ion-title>
   </ion-toolbar>
-     <ion-toolbar color="dark">
+  <ion-toolbar color="dark">
     <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button size="small" shape="round" color="medium" (click)="search()">
@@ -37,7 +37,6 @@
 
                 <ion-text color="dark">
                   <h1><strong>{{trip.title}}</strong></h1>
-                  <h5>{{trip.description}}</h5>
                   <h5>{{trip.startDate}} - {{trip.endDate}}</h5>
                 </ion-text>
 

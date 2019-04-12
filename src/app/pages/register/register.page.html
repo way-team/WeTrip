@@ -24,7 +24,8 @@
               <ion-icon name="person" item-start></ion-icon>
               {{ 'REGISTER.USERNAME' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="username" [(ngModel)]="username"></ion-input>
+            <ion-input color="secondary" type="text" maxlength="30" formControlName="username" [(ngModel)]="username">
+            </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('username').touched && onRegisterForm.get('username').hasError('required')">
@@ -38,7 +39,8 @@
               <ion-icon name="lock" item-start></ion-icon>
               {{ 'REGISTER.PASSWORD' | translate}}
             </ion-label>
-            <ion-input [(ngModel)]="password" color="secondary" type="password" formControlName="password"></ion-input>
+            <ion-input [(ngModel)]="password" color="secondary" maxlength="30" type="password"
+              formControlName="password"></ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('password').touched && onRegisterForm.get('password').hasError('required')">
@@ -52,8 +54,8 @@
               <ion-icon name="lock" item-start></ion-icon>
               {{ 'REGISTER.CONFIRM_PASSWORD' | translate}}
             </ion-label>
-            <ion-input (change)="confirmPasswordValidation()" [(ngModel)]="confirmPassword" color="secondary"
-              type="password" formControlName="confirmPassword">
+            <ion-input (change)="confirmPasswordValidation()" maxlength="30" [(ngModel)]="confirmPassword"
+              color="secondary" type="password" formControlName="confirmPassword">
             </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
@@ -73,7 +75,8 @@
               <ion-icon name="mail" item-start></ion-icon>
               {{ 'REGISTER.EMAIL' | translate}}
             </ion-label>
-            <ion-input color="secondary" [(ngModel)]="email" type="email" formControlName="email"></ion-input>
+            <ion-input color="secondary" [(ngModel)]="email" maxlength="60" type="email" formControlName="email">
+            </ion-input>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onRegisterForm.get('email').touched && onRegisterForm.get('email').hasError('required')">
@@ -93,7 +96,8 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.FIRST_NAME' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="first_name" [(ngModel)]="first_name"></ion-input>
+            <ion-input color="secondary" type="text" formControlName="first_name" maxlength="30"
+              [(ngModel)]="first_name"></ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('first_name').touched && onRegisterForm.get('first_name').hasError('required')">
@@ -107,7 +111,8 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.LAST_NAME' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="last_name" [(ngModel)]="last_name"></ion-input>
+            <ion-input color="secondary" type="text" formControlName="last_name" maxlength="50" [(ngModel)]="last_name">
+            </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('last_name').touched && onRegisterForm.get('last_name').hasError('required')">
@@ -143,7 +148,7 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.DESCRIPTION' | translate}}
             </ion-label>
-            <ion-textarea [(ngModel)]="description" formControlName="description"></ion-textarea>
+            <ion-textarea [(ngModel)]="description" maxlength="150" formControlName="description"></ion-textarea>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('description').touched && onRegisterForm.get('description').hasError('required')">

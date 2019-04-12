@@ -16,6 +16,7 @@ export class SearchPage implements OnInit {
   searchKey = '';
   path = '';
   listSearch: Trip[] = [];
+
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,

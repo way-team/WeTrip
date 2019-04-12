@@ -6,7 +6,8 @@ import {
   MenuController,
   ToastController,
   PopoverController,
-  ModalController
+  ModalController,
+  LoadingController
 } from '@ionic/angular';
 
 // Modals
@@ -39,7 +40,8 @@ export class DiscoverPage {
     public toastCtrl: ToastController,
     private _translate: TranslateService,
     public dM: DataManagement,
-    public cookieService: CookieService
+    public cookieService: CookieService,
+    public loadingCtrl: LoadingController
   ) {
     this.listDiscover();
   }
@@ -134,14 +136,49 @@ export class DiscoverPage {
   }
 
   async sendData(username: string) {
+    const translation1: string = this._translate.instant(
+      'DISCOVER.ALERT_MESSAGE'
+    );
+    const translation3: string = this._translate.instant(
+      'DISCOVER.ALERT_TITLE'
+    );
     this.dM
       .sendFriendInvitation(username)
       .then(res => {
-        console.log('Hola');
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: translation3,
+              message: translation1,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+        }, 1500);
         this.listDiscover();
       })
       .catch(err => {
         this.listDiscover();
+      });
+  }
+
+  showLoading() {
+    const translation2: string = this._translate.instant('DISCOVER.WAIT');
+    this.loadingCtrl
+      .create({
+        message: translation2,
+        showBackdrop: true,
+        duration: 1000
+      })
+      .then(loadingEl => {
+        loadingEl.present();
       });
   }
 }

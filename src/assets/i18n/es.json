@@ -36,7 +36,8 @@
 		"TYPE": "Tipo",
 		"UPLOAD_AN_IMAGE": "Subir una imagen",
 		"WARNING_DATE": "La fecha de finalización no puede ser anterior a la fecha de comienzo",
-		"WARNING_DATE_MIN": "No se puede establecer una fecha pasada"
+		"WARNING_DATE_MIN": "No se puede establecer una fecha pasada",
+		"EDIT": "Editar"
 	},
 	"DASHBOARD": {
 		"ACTIVE_VS_INACTIVE": "Usuarios: activos VS. inactivos",
@@ -97,7 +98,10 @@
 	},
 	"DISCOVER": {
 		"CONTACT": "Contactar",
-		"DISCOVER": "Descubre"
+		"DISCOVER": "Descubre",
+		"WAIT": "Por favor, espere...",
+		"ALERT_TITLE": "Petición de amistad enviada",
+		"ALERT_MESSAGE": "Pendiente de aceptación"
 	},
 	"GDPR": {
 		"GO_OUT": "Salir",
@@ -246,7 +250,7 @@
 	"SEARCH": {
 		"MY_TRIPS": "Mis viajes",
 		"SEARCH": "Buscar",
-		"WITHOUT_TRIPS": "Aún no tienes ningún viaje."
+		"WITHOUT_TRIPS": "No hay viajes."
 	},
 	"SEARCH_FILTER": {
 		"ADVENTURE": "Aventura",
