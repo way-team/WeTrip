@@ -246,7 +246,7 @@
   "SEARCH": {
     "MY_TRIPS": "My trips",
     "SEARCH": "Search",
-    "WITHOUT_TRIPS": "You don't have any trip yet"
+    "WITHOUT_TRIPS": "There are no trips"
   },
   "SEARCH_FILTER": {
     "ADVENTURE": "Adventure",
