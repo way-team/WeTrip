@@ -98,7 +98,10 @@
 	},
 	"DISCOVER": {
 		"CONTACT": "Contactar",
-		"DISCOVER": "Descubre"
+		"DISCOVER": "Descubre",
+		"WAIT": "Por favor, espere...",
+		"ALERT_TITLE": "Petición de amistad enviada",
+		"ALERT_MESSAGE": "Pendiente de aceptación"
 	},
 	"GDPR": {
 		"GO_OUT": "Salir",

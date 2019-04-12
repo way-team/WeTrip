@@ -98,7 +98,10 @@
   },
   "DISCOVER": {
     "CONTACT": "Contact",
-    "DISCOVER": "Discover"
+    "DISCOVER": "Discover",
+    "WAIT": "Please wait...",
+    "ALERT_TITLE": "Friendship invitation send",
+    "ALERT_MESSAGE": "Pending acceptance"
   },
   "GDPR": {
     "GO_OUT": "Go out",
@@ -243,6 +246,7 @@
     "SUCCESS": "Sign up done successfully!",
     "THIS_FIELD_IS_REQUIRED": "This field is required",
     "USERNAME": "Username"
+
   },
   "SEARCH": {
     "MY_TRIPS": "My trips",
