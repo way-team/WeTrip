@@ -150,23 +150,23 @@ export class RegisterPage implements OnInit {
             .then(alertEl => {
               alertEl.present();
             });
+          this.navCtrl.navigateForward('/');
+          (this.username = ''),
+            (this.password = ''),
+            (this.confirmPassword = ''),
+            (this.email = ''),
+            (this.first_name = ''),
+            (this.last_name = ''),
+            (this.description = ''),
+            (this.birthdate = ''),
+            (this.gender = ''),
+            (this.nationality = ''),
+            (this.city = ''),
+            (this.languages = ''),
+            (this.interests = ''),
+            (this.profilePic = null),
+            (this.discoverPic = null);
         }, 1500);
-        this.navCtrl.navigateForward('/');
-        (this.username = ''),
-          (this.password = ''),
-          (this.confirmPassword = ''),
-          (this.email = ''),
-          (this.first_name = ''),
-          (this.last_name = ''),
-          (this.description = ''),
-          (this.birthdate = ''),
-          (this.gender = ''),
-          (this.nationality = ''),
-          (this.city = ''),
-          (this.languages = ''),
-          (this.interests = ''),
-          (this.profilePic = null),
-          (this.discoverPic = null);
       })
       .catch(error => {
         this.showLoading();
