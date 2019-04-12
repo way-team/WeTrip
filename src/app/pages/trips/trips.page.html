@@ -21,10 +21,10 @@
             <ion-card-content class="bg-white">
 
                 <div class="listTrips" *ngFor="let trip of listTrips">
-                    <ion-card (click)="goTo('trip-detail/', trip)">
+                    <ion-card>
                         <ion-card-content class="bg-light">
 
-                            <ion-item>
+                            <ion-item (click)="goTo('trip-detail/', trip)">
                                 <ion-thumbnail class="ion-avatar" slot="start">
                                     <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}"
                                         class="user-avatar">
