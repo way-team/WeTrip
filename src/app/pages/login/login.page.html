@@ -19,7 +19,8 @@
           <ion-icon name="person" item-start></ion-icon>
           {{ 'LOGIN.USERNAME' | translate}}
         </ion-label>
-        <ion-input [(ngModel)]="registerCredentials.username" color="secondary" type="text" formControlName="username">
+        <ion-input [(ngModel)]="registerCredentials.username" maxlength="30" color="secondary" type="text"
+          formControlName="username">
         </ion-input>
       </ion-item>
       <p ion-text class="text08"
@@ -34,7 +35,7 @@
           <ion-icon name="lock" item-start></ion-icon>
           {{ 'LOGIN.PASSWORD' | translate}}
         </ion-label>
-        <ion-input [(ngModel)]="registerCredentials.password" color="secondary" type="password"
+        <ion-input [(ngModel)]="registerCredentials.password" maxlength="30" color="secondary" type="password"
           formControlName="password"></ion-input>
       </ion-item>
       <p ion-text color="warning" class="text08"
@@ -45,7 +46,7 @@
       </p>
     </form>
 
-<br><br>
+    <br><br>
 
     <div>
       <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="login()"
