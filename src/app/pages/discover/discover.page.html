@@ -15,7 +15,7 @@
   <app-banner></app-banner>
   <div class="listDiscover" *ngFor="let userProfile of discover">
 
-    <img src="{{userProfile.discoverPhoto}}" class="user-avatar"
+    <img style="cursor: pointer" src="{{userProfile.discoverPhoto}}" class="user-avatar"
       [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward">
 
     <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username"

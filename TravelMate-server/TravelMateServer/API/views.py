@@ -140,36 +140,53 @@ def get_friends(user, discover):
     sended_accepted = Invitation.objects.filter(sender=user, status="A")
     if sended_accepted:
         for i in sended_accepted:
-            friends.append(i.receiver)
+            if i.receiver.status=='A':
+                friends.append(i.receiver)
 
     received_accepted = Invitation.objects.filter(receiver=user, status="A")
     if received_accepted:
         for j in received_accepted:
-            friends.append(j.sender)
+            if j.sender.status=='A':
+                friends.append(j.sender)
 
     sended_rejected = Invitation.objects.filter(sender=user, status="R")
     if sended_rejected:
         for i in sended_rejected:
-            rejected.append(i.receiver)
+            if i.receiver.status=='A':
+                rejected.append(i.receiver)
 
     received_rejected = Invitation.objects.filter(receiver=user, status="R")
     if received_rejected:
         for j in received_rejected:
-            rejected.append(j.sender)
+            if j.sender.status=='A':
+                rejected.append(j.sender)
 
     received_pending = Invitation.objects.filter(receiver=user, status="P")
     if received_pending:
         for i in received_pending:
-            pending.append(i.sender)
+            if i.sender.status=='A':
+                pending.append(i.sender)
 
     if discover:
         sended_pending = Invitation.objects.filter(sender=user, status="P")
         if sended_pending:
             for j in sended_pending:
-                pending.append(j.receiver)
+                    pending.append(j.receiver)
+
 
     return (friends, pending, rejected)
 
+def get_deleted_users():
+    """
+    Method to get the list of all deleted users
+    """
+    users = []
+
+    users_deleted = UserProfile.objects.filter(status="D")
+    for i in users_deleted:
+        users.append(i)
+
+    return users
 
 class GetFriendsView(APIView):
     """
@@ -370,6 +387,7 @@ class DiscoverPeopleView(APIView):
         import collections
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
+        discover_people = set(discover_people)
 
         # After, we obtain the people without the same interests
         # and append them at the end of the discover list
@@ -377,17 +395,22 @@ class DiscoverPeopleView(APIView):
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.append(person)
+            discover_people.add(person)
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
         for person in friends:
-            discover_people.remove(person)
+            discover_people.discard(person)
         for person in pending:
-            discover_people.remove(person)
+            discover_people.discard(person)
         for person in rejected:
-            discover_people.remove(person)
-        discover_people.remove(user)
+            discover_people.discard(person)
+        # who are the deleted users and remove them
+        deleted_users = get_deleted_users()
+        for person in deleted_users:
+            discover_people.discard(person)
+
+        discover_people.discard(user)
 
         return Response(UserProfileSerializer(discover_people, many=True).data)
 

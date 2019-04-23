@@ -399,4 +399,16 @@ export class DataManagement {
       }
     });
   }
+
+  public deleteUser(): Promise<any> {
+    return this.restService
+      .deleteUser()
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
 }
+
