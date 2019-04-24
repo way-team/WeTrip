@@ -1001,3 +1001,106 @@ class RegisterUser(APIView):
         finally:
             return Response(
                 UserProfileSerializer(userProfile, many=False).data)
+
+
+class DeleteUser(APIView):
+    """
+    Change the user's status to deleted
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user_id = request.data.get("user_id", "")
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+
+        user.is_active = False
+        user.save()
+
+        userprofile.status = "D"
+        userprofile.save()
+
+        return Response(UserProfileSerializer(userprofile, many=False).data)
+
+
+def send_mail(subject, body, email, attachment):
+    server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    server.starttls()
+    server.login("integrity.system.cad@gmail.com", "SeguridadUS2019!")
+
+    msg = MIMEMultipart()
+
+    msg['From'] = "integrity.system.cad@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    if attachment != None:
+        part = MIMEApplication(open(attachment, "rb").read())
+        namePattern = re.compile(r"exported_data_.*")
+        name = namePattern.search(attachment).group(0)
+        part.add_header('Content-Disposition', 'attachment', filename=name)
+        msg.attach(part)
+
+    server.send_message(msg)
+    del msg
+
+    server.quit()
+
+
+class ExportUserData(APIView):
+    """
+    Export the user's data and send it to his email
+    """
+    def post(self, request):
+        """
+        POST method
+        """
+        user_id = request.data.get("user_id", "")
+        email = request.data.get("email", "")
+
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+
+        # date = time.strftime("%d-%m-%y_%H-%M-%S")
+
+        tableData = [("NOMBRE", userprofile.first_name)]
+        tableData.append([("APELLIDOS", userprofile.last_name)])
+        tableData.append([("USERNAME", user.username)])
+        tableData.append([("DESCRIPCIÓN", userprofile.description)])
+        tableData.append([("GÉNERO", userprofile.gender)])
+        tableData.append([("CUMPLEAÑOS", userprofile.birthdate)])
+        tableData.append([("CIUDAD", userprofile.city)])
+        tableData.append([("NACIONALIDAD", userprofile.nationality)])
+        tableData.append([("URL DE FOTO", userprofile.photo)])
+        tableData.append([("URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto)])
+        tableData.append([("VALORACIÓN MEDIA", userprofile.averageRate)])
+        tableData.append([("NÚMERO DE VALORACIONES", userprofile.numRate)])
+        if userprofile.isPremium is True:
+            tableData.append([("FECHA DE PREMIUM", userprofile.datePremium)])
+
+        estiloHoja = getSampleStyleSheet()
+        story = []
+
+        # TODO: Cambiar estilo de la tabla y añadir cabeceras, fechas, nombre de la compañia, etc
+        tabla = Table(data=tableData)
+        tabla.setStyle(TableStyle([('ALIGN', (1, 1), (-2, -2), 'RIGHT'),
+                                   ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+
+        story.append(tabla)
+        
+        # Problema actual: el doc se tendria que guardar en alguna carpeta del proyecto antes de enviarlo
+        doc = SimpleDocTemplate("exported_data_" + user.username + ".pdf", pagesize=A4, leftMargin=1, rightMargin=1, topMargin=2, bottomMargin=2)
+        doc.build(story)
+        
+        send_mail("Exported data", "This is the exported data of " + user.username, email, "exported_data_" + user.username + ".pdf")
+
+        os.remove("exported_data_" + user.username + ".pdf")
