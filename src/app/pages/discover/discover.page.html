@@ -13,26 +13,27 @@
 
 <ion-content>
   <app-banner></app-banner>
-  <div class="listDiscover" *ngFor="let userProfile of discover">
-
-    <img style="cursor: pointer" src="{{userProfile.discoverPhoto}}" class="user-avatar"
-      [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward">
-
-    <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username"
-      routerDirection="forward" no-margin>
-      {{userProfile.first_name}} {{userProfile.last_name}}
-    </ion-button>
-    <ion-button expand="full" color="medium" (click)="sendData(userProfile.user.username)" no-margin>
-      {{ 'DISCOVER.CONTACT' | translate}}
-    </ion-button>
-
-
-    <br>
-  </div>
 
 
 
+  <ion-list>
+     <ion-item class="listDiscover" *ngFor="let userProfile of discover">
+       <ion-card>
 
+     <img style="cursor: pointer" src="{{userProfile.discoverPhoto}}" class="user-avatar" [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward">
+       <br>
+         <ion-button expand="full" color="dark" [routerLink]="'/user-profile/' + userProfile.user.username" routerDirection="forward" no-margin>
+           {{'DISCOVER.CONTACT' | translate}}
+         </ion-button>
+         {{userProfile.first_name}} {{userProfile.last_name}}
+</ion-card>
+    </ion-item>
+  </ion-list>
 
-
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

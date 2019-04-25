@@ -101,7 +101,8 @@
     "ALERT_TITLE": "Friendship invitation send",
     "CONTACT": "Contact",
     "DISCOVER": "Discover",
-    "WAIT": "Please wait..."
+    "WAIT": "Please wait...",
+    "LOADING": "Loading more data..."
   },
   "GDPR": {
     "GO_OUT": "Go out",

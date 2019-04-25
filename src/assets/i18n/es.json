@@ -101,7 +101,8 @@
     "ALERT_TITLE": "Petición de amistad enviada",
     "CONTACT": "Contactar",
     "DISCOVER": "Descubre",
-    "WAIT": "Por favor, espere..."
+    "WAIT": "Por favor, espere...",
+    "LOADING": "Cargando más datos..."
   },
   "GDPR": {
     "GO_OUT": "Salir",
