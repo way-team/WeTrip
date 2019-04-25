@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="trip">
+<ion-content *ngIf="trip && isReady">
 
   <div class="bg-light" text-center>
     <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}" width="100%">
@@ -46,7 +46,7 @@
         </h3>
       </ion-text>
 
-      <ng-container *ngIf="!myTrip">
+      <ng-container *ngIf="!myTrip && showJoinButton()">
         <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
           {{ 'TRIP_DETAILS.JOIN' | translate }}
         </ion-button>
