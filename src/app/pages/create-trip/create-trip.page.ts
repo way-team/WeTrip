@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { City } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -13,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CreateTripPage implements OnInit {
   public onCreateForm: FormGroup;
-  id: String;
+  id: string;
   title: string;
   description: string;
   start_date: string;
@@ -35,10 +35,33 @@ export class CreateTripPage implements OnInit {
     private formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     private translate: TranslateService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private loadingCtrl: LoadingController,
   ) {
     this.listCities();
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    if (this.id) {
+      const translation2: string = this.translate.instant('LOGIN.WAIT');
+      this.loadingCtrl.create({
+        message: translation2,
+        showBackdrop: true,
+        duration: 1000
+      }).then(loadingEl => {
+        loadingEl.present();
+      });
+
+      this.dm.getTripById(this.id).then((response) => {
+        this.title = response['trip'].title;
+        this.description = response['trip'].description;
+        this.start_date = response['trip'].startDate;
+        this.end_date = response['trip'].endDate;
+        this.trip_type = response['trip'].tripType;
+        this.city = response['trip'].city;
+        this.userImage = response['trip'].userImage;
+        loadingCtrl.dismiss();
+      }).catch((_) => {});
+
+    }
   }
 
   ngOnInit() {
@@ -52,7 +75,7 @@ export class CreateTripPage implements OnInit {
   }
 
   public createTrip() {
-    let translation:string = this.translate.instant('TRIPS.ERROR');
+    const translation: string = this.translate.instant('TRIPS.ERROR');
     console.log(typeof this.userImage);
     this.dm
       .createTrip(
@@ -87,7 +110,7 @@ export class CreateTripPage implements OnInit {
 
   public editTrip() {
     console.log(typeof this.userImage);
-    let translation:string = this.translate.instant('TRIPS.ERROR');
+    const translation: string = this.translate.instant('TRIPS.ERROR');
     this.dm
       .editTrip(
         this.id,
