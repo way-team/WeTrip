@@ -18,6 +18,7 @@ export class TripdetailPage {
   myTrip = true;
   applicationsAccepted: [];
   applicationPending: [];
+  isReady: Boolean;
 
   usersAccepted: application_user[] = [];
   usersPending: application_user[] = [];
@@ -51,10 +52,10 @@ export class TripdetailPage {
       if (this.trip.creator !== this.userLogged.user.username) {
         this.myTrip = false;
       }
-      if (this.myTrip) {
-        this.getUserPending();
-        this.getUserAccepted();
-      }
+
+      this.getUserPending();
+      this.getUserAccepted();
+      this.isReady = true;
     }).catch((_) => {
 
     });
@@ -62,13 +63,15 @@ export class TripdetailPage {
 
   join() {
     this.dm.applyForTrip(String(this.trip.id)).then(response => {
-      response != null ? this.presentAlert() : this.noPresentAlert();
+      response != null ? this.presentAlert() : "";
+      this.getItems();
+    }).catch((err) => {
     });
   }
-
+ 
   async presentAlert() {
-     let translation1:string = this.translate.instant('TRIPS.CONGRATULATION');
-     let translation2:string = this.translate.instant('TRIPS.APPLICATION_SEND');
+     const translation1: string = this.translate.instant('TRIPS.CONGRATULATION');
+     const translation2: string = this.translate.instant('TRIPS.APPLICATION_SEND');
 
     const alert = await this.alertController.create({
       header: translation1,
@@ -78,8 +81,6 @@ export class TripdetailPage {
 
     await alert.present();
   }
-
-  async noPresentAlert() {}
 
   getUserPending() {
     this.applicationPending.forEach(element => {
@@ -116,6 +117,24 @@ export class TripdetailPage {
     this.dm.resolveTripApplication("reject", id).then((_) => {
       this.getItems();
     });
+  }
+
+  showJoinButton(): boolean {
+    let show = false;
+    const pastTrip = new Date(this.trip.startDate) < new Date();
+    const accepted = this.usersAccepted.find(x => x.applicantName === this.userLogged.user.username) != undefined;
+    const pending = this.usersPending.find(x => x.applicantName === this.userLogged.user.username) != undefined;
+    pastTrip || accepted || pending ? show = false : show = true;
+
+    console.log(this.usersAccepted);
+
+    console.log("Past trip - " + pastTrip);
+    console.log("User accepted " + accepted);
+    console.log("User pending " + pending);
+    console.log("Result" + String(show));
+
+
+    return show;
   }
 
 
