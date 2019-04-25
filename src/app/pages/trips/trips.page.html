@@ -36,7 +36,7 @@
                                 </ion-text>
 
                             </ion-item>
-                            <ion-item lines="none">
+                            <ion-item lines="none" *ngIf='trip.tripType != "PUBLIC"'>
                                 <ion-button size="small" shape="round" color="dark" class="editbutton"
                                     [routerLink]="'/create-trip/' + trip.id" routerDirection="forward">
                                     {{ 'CREATE_TRIP.EDIT' | translate }}
