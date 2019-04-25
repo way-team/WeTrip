@@ -57,6 +57,7 @@ export class RatingPage implements OnInit {
       });
   }
    public rate() {
+   let translationerror:string = this.translate.instant('TRIPS.ERROR');
     this.dm
       .rate(
         this.voted,
@@ -69,7 +70,7 @@ export class RatingPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'Something went wrong.',
+            message: translationerror,
             buttons: [
               {
                 text: 'Ok',

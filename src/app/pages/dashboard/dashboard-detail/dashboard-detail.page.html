@@ -1,0 +1,466 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="type === 'tripsByMonth'" color="primary"> {{ "DASHBOARD.TRIPS_BY_MONTH" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'publicVsPrivate'" color="primary">{{ "DASHBOARD.PUBLIC_VS_PRIVATE" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'applicationsPerTrip'" color="primary">{{ "DASHBOARD.APPLICATIONS_PER_TRIP" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'visitedCities'" color="primary">{{ "DASHBOARD.VISITED_CITIES" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'usersByGender'" color="primary">{{ "DASHBOARD.USERS_BY_GENDER" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'premiumUsers'" color="primary">{{ "DASHBOARD.PREMIUM_USERS" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'activeVsInactive'" color="primary">{{ "DASHBOARD.ACTIVE_VS_INACTIVE" | translate }}</ion-title>
+    <ion-title *ngIf="type === 'usersMetrics'" color="primary">{{ "DASHBOARD.USERS_METRICS" | translate }}</ion-title>
+  </ion-toolbar>
+  </ion-header>
+
+
+
+<ion-content>
+    <div class="invisible"> 
+        {{ stats.numberOfTrips }}
+    </div>
+
+<ion-grid *ngIf="type === 'tripsByMonth'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+      <ion-card>
+          <ion-card-header text-center>
+              <ion-card-subtitle ><strong>{{ "DASHBOARD.TOTAL_NUMBER_TRIPS" | translate }}</strong></ion-card-subtitle>
+              <ion-card-title><ng2-odometer style="font-size: 50px;" [number]="numberOfTrips" [config]="configuration1"></ng2-odometer></ion-card-title>
+            </ion-card-header>
+          
+      </ion-card>
+      </ion-col>
+    </ion-row>
+<ion-row>
+    <ion-col >
+  <ion-card>
+    <ion-card-header>
+        {{ "DASHBOARD.BAR_CHART" | translate }}
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #barCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  </ion-col>
+</ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'publicVsPrivate'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+            <ion-card>
+                <ion-card-header text-center>
+                    <ion-card-subtitle ><strong>{{ "DASHBOARD.TOTAL_NUMBER_TRIPS" | translate }}</strong></ion-card-subtitle>
+                    <ion-card-title><ng2-odometer style="font-size: 50px;" [number]="numberOfTrips" [config]="configuration1"></ng2-odometer></ion-card-title>
+                  </ion-card-header>
+                
+            </ion-card>
+            </ion-col>
+        <ion-col >
+      <ion-card>
+          <ion-card-header text-center>
+              <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_PUBLIC_TRIPS" | translate }}</strong></ion-card-subtitle>
+              <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentagePublicTrips" [config]="configuration2"></ng2-odometer></ion-card-title>
+            </ion-card-header>
+          
+      </ion-card>
+      </ion-col>
+      <ion-col >
+          <ion-card>
+              <ion-card-header text-center>
+                  <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_PRIVATE_TRIPS" | translate }}</strong></ion-card-subtitle>
+                  <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentagePrivateTrips" [config]="configuration2"></ng2-odometer></ion-card-title>
+                </ion-card-header>
+              
+          </ion-card>
+          </ion-col>
+          <ion-col >
+              <ion-card>
+                  <ion-card-header text-center>
+                      <ion-card-subtitle ><strong>{{ "DASHBOARD.RATIO_PRIVATE_TRIPS" | translate }}</strong></ion-card-subtitle>
+                      <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="ratioOfPrivateTrips" [config]="configuration3"></ng2-odometer></ion-card-title>
+                    </ion-card-header>
+                  
+              </ion-card>
+              </ion-col>
+          
+    </ion-row>
+<ion-row>
+    <ion-col>
+  <ion-card>
+    <ion-card-header>
+        {{ "DASHBOARD.DOUGHNUT_CHART" | translate }}
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #doughnutCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  </ion-col>
+</ion-row>
+</ion-grid>
+
+
+<ion-grid *ngIf="type === 'applicationsPerTrip'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+            <ion-card>
+                <ion-card-header text-center>
+                    <ion-card-subtitle ><strong>{{ "DASHBOARD.AVERAGE_APPS_PER_TRIP" | translate }}</strong></ion-card-subtitle>
+                    <ion-card-title><ng2-odometer style="font-size: 50px;" [number]="avgAppsPerTrip" [config]="configuration3"></ng2-odometer></ion-card-title>
+                  </ion-card-header>
+                
+            </ion-card>
+            </ion-col>
+    </ion-row>
+
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.TRIPS_MOST_APPLICATIONS" | translate }} </ion-title></ion-col>
+</ion-row>
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>
+    <div style="overflow-x:auto;">
+        <table class="trips">
+          <tr>
+            <th>{{ "DASHBOARD.TRIPS_NUMBER_APPLICATIONS" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_IMAGE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TITLE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_START_DATE" | translate }} </th>
+            <th>{{ "DASHBOARD.TRIPS_END_DATE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TYPE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_STATUS" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_CREATOR" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_DETAILS" | translate }}</th>
+          </tr>
+          <tr *ngFor="let trip of top5AppsTrips">
+            <td style='text-align: center;'>{{ trip.applications_count }}</td>
+            <td>
+                <ion-item>
+                  <ion-avatar>
+                      <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}">
+                  </ion-avatar>
+              </ion-item>
+            </td>
+            <td>{{ trip.title }}</td>
+            <td>{{ trip.startDate }}</td>
+            <td>{{ trip.endDate }}</td>
+            <td><span *ngIf="trip.tripType === 'PUBLIC'">
+                {{ "DASHBOARD.TRIPS_PUBLIC" | translate }}
+            </span>
+            <span *ngIf="trip.tripType === 'PRIVATE'">
+                {{ "DASHBOARD.TRIPS_PRIVATE" | translate }}
+              </span>
+          </td>
+          <td><span *ngIf="trip.status">
+              {{ "DASHBOARD.TRIPS_ACTIVE" | translate }}
+          </span>
+          <span *ngIf="!trip.status">
+              {{ "DASHBOARD.TRIPS_DELETED" | translate }}
+            </span>
+        </td>
+            <td>{{ trip.creator }}</td>
+            <td><ion-button style="cursor: pointer" (click)="goTo('trip-detail/', trip)"><ion-icon  name="arrow-forward"></ion-icon></ion-button></td>
+          </tr>
+         
+        </table>
+        </div>
+      </ion-col>
+</ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'visitedCities'">
+
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.TRIPS_MOST_CITIES" | translate }} </ion-title></ion-col>
+</ion-row>
+<ion-row justify-content-center align-items-center style="height: 100%">
+  <ion-col>
+    <div style="overflow-x:auto;">
+        <table class="trips">
+          <tr>
+            <th>{{ "DASHBOARD.TRIPS_NUMBER_CITIES" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_IMAGE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TITLE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_START_DATE" | translate }} </th>
+            <th>{{ "DASHBOARD.TRIPS_END_DATE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_TYPE" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_STATUS" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_CREATOR" | translate }}</th>
+            <th>{{ "DASHBOARD.TRIPS_DETAILS" | translate }}</th>
+          </tr>
+          <tr *ngFor="let trip of top5NumberOfCitiesTrips">
+            <td style='text-align: center;'>{{ trip.cities_count }}</td>
+            <td>
+                <ion-item>
+                  <ion-avatar>
+                      <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}">
+                  </ion-avatar>
+              </ion-item>
+            </td>
+            <td>{{ trip.title }}</td>
+            <td>{{ trip.startDate }}</td>
+            <td>{{ trip.endDate }}</td>
+            <td><span *ngIf="trip.tripType === 'PUBLIC'">
+                {{ "DASHBOARD.TRIPS_PUBLIC" | translate }}
+            </span>
+            <span *ngIf="trip.tripType === 'PRIVATE'">
+                {{ "DASHBOARD.TRIPS_PRIVATE" | translate }}
+              </span>
+          </td>
+          <td><span *ngIf="trip.status">
+              {{ "DASHBOARD.TRIPS_ACTIVE" | translate }}
+          </span>
+          <span *ngIf="!trip.status">
+              {{ "DASHBOARD.TRIPS_DELETED" | translate }}
+            </span>
+        </td>
+            <td>{{ trip.creator }}</td>
+            <td><ion-button style="cursor: pointer" (click)="goTo('trip-detail/', trip)"><ion-icon  name="arrow-forward"></ion-icon></ion-button></td>
+          </tr>
+         
+        </table>
+        </div>
+      </ion-col>
+</ion-row>
+
+<ion-row justify-content-center align-items-center style="height: 100%">
+    <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.CITIES_MOST_TRIPS" | translate }} </ion-title></ion-col>
+  </ion-row>
+  <ion-row justify-content-center align-items-center style="height: 100%">
+    <ion-col>
+      <div style="overflow-x:auto;">
+          <table class="trips">
+            <tr>
+              <th>{{ "DASHBOARD.CITIES_NUMBER_TRIPS" | translate }}</th>
+              <th>{{ "DASHBOARD.CITIES_NAME" | translate }}</th>
+              <th>{{ "DASHBOARD.CITIES_COUNTRY" | translate }}</th>
+            </tr>
+            <tr *ngFor="let city of top5NumberOfTripsCities">
+              <td style='text-align: center;'>{{ city.trips_count }}</td>
+              <td>{{ city.name }}</td>
+              <td>{{ city.country.name }}</td>
+            </tr>
+           
+          </table>
+          </div>
+        </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'usersByGender'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+            <ion-card>
+                <ion-card-header text-center>
+                    <ion-card-subtitle ><strong>{{ "DASHBOARD.TOTAL_NUMBER_USERS" | translate }}</strong></ion-card-subtitle>
+                    <ion-card-title><ng2-odometer style="font-size: 50px;" [number]="numberOfUsers" [config]="configuration1"></ng2-odometer></ion-card-title>
+                  </ion-card-header>
+                
+            </ion-card>
+            </ion-col>
+        <ion-col >
+      <ion-card>
+          <ion-card-header text-center>
+              <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_MEN" | translate }}</strong></ion-card-subtitle>
+              <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentageMen" [config]="configuration2"></ng2-odometer></ion-card-title>
+            </ion-card-header>
+          
+      </ion-card>
+      </ion-col>
+      <ion-col >
+          <ion-card>
+              <ion-card-header text-center>
+                  <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_WOMEN" | translate }}</strong></ion-card-subtitle>
+                  <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentageWomen" [config]="configuration2"></ng2-odometer></ion-card-title>
+                </ion-card-header>
+              
+          </ion-card>
+          </ion-col>
+          <ion-col >
+              <ion-card>
+                  <ion-card-header text-center>
+                      <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_NONBINARY" | translate }}</strong></ion-card-subtitle>
+                      <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentageNonBinary" [config]="configuration2"></ng2-odometer></ion-card-title>
+                    </ion-card-header>
+                  
+              </ion-card>
+              </ion-col>
+          
+    </ion-row>
+<ion-row>
+    <ion-col>
+  <ion-card>
+    <ion-card-header>
+        {{ "DASHBOARD.DOUGHNUT_CHART" | translate }}
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #doughnutCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  </ion-col>
+</ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'premiumUsers'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+            <ion-card>
+                <ion-card-header text-center>
+                    <ion-card-subtitle ><strong>{{ "DASHBOARD.TOTAL_NUMBER_USERS" | translate }}</strong></ion-card-subtitle>
+                    <ion-card-title><ng2-odometer style="font-size: 50px;" [number]="numberOfUsers" [config]="configuration1"></ng2-odometer></ion-card-title>
+                  </ion-card-header>
+                
+            </ion-card>
+            </ion-col>
+        <ion-col >
+      <ion-card>
+          <ion-card-header text-center>
+              <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_PREMIUM_USERS" | translate }}</strong></ion-card-subtitle>
+              <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentagePremiumUsers" [config]="configuration2"></ng2-odometer></ion-card-title>
+            </ion-card-header>
+          
+      </ion-card>
+      </ion-col>
+      <ion-col >
+          <ion-card>
+              <ion-card-header text-center>
+                  <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_NONPREMIUM_USERS" | translate }}</strong></ion-card-subtitle>
+                  <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentageNonPremiumUsers" [config]="configuration2"></ng2-odometer></ion-card-title>
+                </ion-card-header>
+              
+          </ion-card>
+          </ion-col>
+          <ion-col >
+              <ion-card>
+                  <ion-card-header text-center>
+                      <ion-card-subtitle ><strong>{{ "DASHBOARD.RATIO_PREMIUM_USERS" | translate }}</strong></ion-card-subtitle>
+                      <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="premiumUsersRatio" [config]="configuration3"></ng2-odometer></ion-card-title>
+                    </ion-card-header>
+                  
+              </ion-card>
+              </ion-col>
+          
+    </ion-row>
+<ion-row>
+    <ion-col>
+  <ion-card>
+    <ion-card-header>
+        {{ "DASHBOARD.DOUGHNUT_CHART" | translate }}
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #doughnutCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  </ion-col>
+</ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'activeVsInactive'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+            <ion-card>
+                <ion-card-header text-center>
+                    <ion-card-subtitle ><strong>{{ "DASHBOARD.TOTAL_NUMBER_USERS" | translate }}</strong></ion-card-subtitle>
+                    <ion-card-title><ng2-odometer style="font-size: 50px;" [number]="numberOfUsers" [config]="configuration1"></ng2-odometer></ion-card-title>
+                  </ion-card-header>
+                
+            </ion-card>
+            </ion-col>
+        <ion-col >
+      <ion-card>
+          <ion-card-header text-center>
+              <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_ACTIVE_USERS" | translate }}</strong></ion-card-subtitle>
+              <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentageActiveUsers" [config]="configuration2"></ng2-odometer></ion-card-title>
+            </ion-card-header>
+          
+      </ion-card>
+      </ion-col>
+      <ion-col >
+          <ion-card>
+              <ion-card-header text-center>
+                  <ion-card-subtitle ><strong>{{ "DASHBOARD.PERCENTAGE_INACTIVE_USERS" | translate }}</strong></ion-card-subtitle>
+                  <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="percentageDeletedUsers" [config]="configuration2"></ng2-odometer></ion-card-title>
+                </ion-card-header>
+              
+          </ion-card>
+          </ion-col>
+          <ion-col >
+              <ion-card>
+                  <ion-card-header text-center>
+                      <ion-card-subtitle ><strong>{{ "DASHBOARD.RATIO_ACTIVE_USERS" | translate }}</strong></ion-card-subtitle>
+                      <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="activeUsersRatio" [config]="configuration3"></ng2-odometer></ion-card-title>
+                    </ion-card-header>
+                  
+              </ion-card>
+              </ion-col>
+          
+    </ion-row>
+<ion-row>
+    <ion-col>
+  <ion-card>
+    <ion-card-header>
+        {{ "DASHBOARD.DOUGHNUT_CHART" | translate }}
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #doughnutCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  </ion-col>
+</ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="type === 'usersMetrics'">
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col >
+            <ion-card>
+                <ion-card-header text-center>
+                    <ion-card-subtitle ><strong>{{ "DASHBOARD.AVERAGE_TRIPS_PER_USER" | translate }}</strong></ion-card-subtitle>
+                    <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="avgTripsPerUser" [config]="configuration3"></ng2-odometer></ion-card-title>
+                  </ion-card-header>
+                
+            </ion-card>
+            </ion-col>
+        <ion-col >
+      <ion-card>
+          <ion-card-header text-center>
+              <ion-card-subtitle ><strong>{{ "DASHBOARD.AVERAGE_LANGUAGES_PER_USER" | translate }}</strong></ion-card-subtitle>
+              <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="avgLanguagesPerUser" [config]="configuration3"></ng2-odometer></ion-card-title>
+            </ion-card-header>
+          
+      </ion-card>
+      </ion-col>
+      <ion-col >
+          <ion-card>
+              <ion-card-header text-center>
+                  <ion-card-subtitle ><strong>{{ "DASHBOARD.AVERAGE_RATING_PER_USER" | translate }}</strong></ion-card-subtitle>
+                  <ion-card-title><ng2-odometer style="font-size: 35px;" [number]="avgRatingPerUser" [config]="configuration3"></ng2-odometer></ion-card-title>
+                </ion-card-header>
+              
+          </ion-card>
+          </ion-col>
+    </ion-row>
+    <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col>  <ion-title text-center color="dark">{{ "DASHBOARD.MOST_COMMON_INTERESTS" | translate }} </ion-title></ion-col>
+      </ion-row>
+      <ion-row justify-content-center align-items-center style="height: 100%">
+        <ion-col>
+          <div style="overflow-x:auto;">
+              <table class="trips">
+                <tr>
+                  <th>{{ "DASHBOARD.INTERESTS_NAME" | translate }}</th>
+                  <th>{{ "DASHBOARD.INTERESTS_NUMBER_USERS" | translate }}</th>
+                </tr>
+                <tr *ngFor="let interest of top5MostCommonInterests">
+                  <td>{{ interest.name }}</td>
+                  <td style='text-align: center;'>{{ interest.users_count }}</td>
+                </tr>
+               
+              </table>
+              </div>
+            </ion-col>
+      </ion-row>
+</ion-grid>
+
+</ion-content>
+ 

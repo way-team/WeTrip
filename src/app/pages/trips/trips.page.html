@@ -24,24 +24,26 @@
                     <ion-card>
                         <ion-card-content class="bg-light">
 
-                            <ion-item>
-                                <ion-item (click)="goTo('trip-detail/', trip)">
-                                    <ion-thumbnail class="ion-avatar" slot="start">
-                                        <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}"
-                                            class="user-avatar">
-                                    </ion-thumbnail>
-                                    <ion-text color="dark">
-                                        <h1><strong>{{trip.title}}</strong></h1>
-                                        <h5>{{trip.description}}</h5>
-                                        <h5>{{trip.startDate}} - {{trip.endDate}}</h5>
-                                    </ion-text>
-                                </ion-item>
+                            <ion-item  style="cursor: pointer" (click)="goTo('trip-detail/', trip)">
+                                <ion-thumbnail class="ion-avatar" slot="start">
+                                    <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}"
+                                        class="user-avatar">
+                                </ion-thumbnail>
 
-                                <ion-button size="small" shape="round" color="dark"
-                                    [routerLink]="'/create-trip/' + trip.id" slot="end" routerDirection="forward">
-                                    Edit
+                                <ion-text color="dark">
+                                    <h1><strong>{{trip.title}}</strong></h1>
+                                    <h5>{{trip.startDate}} - {{trip.endDate}}</h5>
+                                </ion-text>
+
+                            </ion-item>
+                            <ion-item lines="none">
+                                <ion-button size="small" shape="round" color="dark" class="editbutton"
+                                    [routerLink]="'/create-trip/' + trip.id" routerDirection="forward">
+                                    {{ 'CREATE_TRIP.EDIT' | translate }}
                                 </ion-button>
                             </ion-item>
+
+
 
                         </ion-card-content>
                     </ion-card>

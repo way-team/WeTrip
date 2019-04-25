@@ -15,6 +15,7 @@ import {
 } from '@ionic/angular';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -34,8 +35,9 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     public dm: DataManagement,
     private cookieService: CookieService,
+     private translate: TranslateService,
     public events: Events
-  ) {}
+  ) { }
 
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
@@ -97,11 +99,12 @@ export class LoginPage implements OnInit {
 
   // // //
   goToRegister() {
-    return null;
     this.navCtrl.navigateRoot('/register');
   }
 
   login() {
+    let translation:string = this.translate.instant('LOGIN.FAIL');
+
     this.dm
       .login(this.registerCredentials)
       .then(data => {
@@ -112,6 +115,7 @@ export class LoginPage implements OnInit {
           this.dm.getUserLogged(data.token).then(user => {
             this.events.publish('user:logged', user);
             this.navCtrl.navigateRoot('/discover');
+            this.navCtrl.navigateRoot('/discover');
           });
         }, 1500);
       })
@@ -120,9 +124,9 @@ export class LoginPage implements OnInit {
         setTimeout(() => {
           this.alertCtrl
             .create({
-              header: 'Invalid credentials',
+              header: 'Error',
               message:
-                'The credentials introduced were not found in the system. Please try again.',
+                translation,
               buttons: [
                 {
                   text: 'Ok',
@@ -140,9 +144,10 @@ export class LoginPage implements OnInit {
   }
 
   showLoading() {
+    let translation2:string = this.translate.instant('LOGIN.WAIT');
     this.loadingCtrl
       .create({
-        message: 'Please wait...',
+        message: translation2,
         showBackdrop: true,
         duration: 1000
       })

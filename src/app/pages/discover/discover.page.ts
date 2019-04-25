@@ -6,7 +6,8 @@ import {
   MenuController,
   ToastController,
   PopoverController,
-  ModalController
+  ModalController,
+  LoadingController
 } from '@ionic/angular';
 
 // Modals
@@ -29,7 +30,6 @@ export class DiscoverPage {
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
   discover: UserProfile[] = [];
-  isPremium: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -40,10 +40,10 @@ export class DiscoverPage {
     public toastCtrl: ToastController,
     private _translate: TranslateService,
     public dM: DataManagement,
-    public cookieService: CookieService
+    public cookieService: CookieService,
+    public loadingCtrl: LoadingController
   ) {
     this.listDiscover();
-    this.getUserPremium();
   }
 
   contact(id) {
@@ -55,24 +55,13 @@ export class DiscoverPage {
     this._translate.use(idioma);
   }
 
-
-  private getUserPremium(): void {
-    user: UserProfile;
-    let token: String;
-    token = this.cookieService.get('token');
-    this.dM.getUserLogged(token).then((data: any) => {
-      this.isPremium = data.isPremium;
-    }).catch(error => { });
-
-  }
-
   private listDiscover(): void {
     this.dM
       .listDiscover()
       .then((data: any) => {
         this.discover = data;
       })
-      .catch(error => { });
+      .catch(error => {});
   }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
@@ -147,11 +136,49 @@ export class DiscoverPage {
   }
 
   async sendData(username: string) {
-    this.dM.sendFriendInvitation(username).then((res) => {
-      console.log('Hola');
-      this.listDiscover();
-    }).catch((err) => {
-      this.listDiscover();
-    });
+    const translation1: string = this._translate.instant(
+      'DISCOVER.ALERT_MESSAGE'
+    );
+    const translation3: string = this._translate.instant(
+      'DISCOVER.ALERT_TITLE'
+    );
+    this.dM
+      .sendFriendInvitation(username)
+      .then(res => {
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: translation3,
+              message: translation1,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+        }, 1500);
+        this.listDiscover();
+      })
+      .catch(err => {
+        this.listDiscover();
+      });
+  }
+
+  showLoading() {
+    const translation2: string = this._translate.instant('DISCOVER.WAIT');
+    this.loadingCtrl
+      .create({
+        message: translation2,
+        showBackdrop: true,
+        duration: 1000
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+      });
   }
 }

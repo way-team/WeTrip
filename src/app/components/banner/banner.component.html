@@ -1,0 +1,10 @@
+<ion-card no-margin class="no-radius">
+
+  <ion-item lines="none" color="medium">
+    <ion-label>
+      <ng-container *ngIf="!isPremium">
+        <a href="{{bannerPath}}" target="_blank"><img class="banner" src="{{bannerSrc}}"></a>
+      </ng-container>
+    </ion-label>
+  </ion-item>
+</ion-card>

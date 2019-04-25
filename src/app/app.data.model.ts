@@ -12,7 +12,7 @@ export class UserProfile {
   avarageRate: Number;
   numRate: Number;
   isPremium: boolean;
-  status: boolean;
+  status: string;
   gender: string;
   language: string;
   interests: string[];
@@ -20,6 +20,12 @@ export class UserProfile {
   past_joined_trips: Trip[];
   future_joined_trips: Trip[];
   active_joined_trips: Trip[];
+}
+export class Language {
+  name: String;
+}
+export class Interest {
+  name: String;
 }
 
 export class Trip {
@@ -75,5 +81,4 @@ export class application_user {
     this.applicantName = applicantName;
     this.applicationId = applicationId;
   }
-
-} 
+}

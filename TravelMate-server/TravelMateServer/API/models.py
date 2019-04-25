@@ -38,8 +38,10 @@ class UserProfile(models.Model):
     birthdate = models.DateField(default="1999-12-01")
     city = models.CharField(max_length=80, null=True)
     nationality = models.CharField(max_length=40, blank=False, default='')
-    photo = models.CharField(max_length=150, blank=True)
-    discoverPhoto = models.CharField(max_length=150, blank=True)
+    photo = models.ImageField(
+        default='user/profile/default.jpg', upload_to='user/profile')
+    discoverPhoto = models.ImageField(
+        default='user/discover/d_default.jpg', upload_to='user/discover')
     avarageRate = models.IntegerField(blank=False, default=0)
     numRate = models.IntegerField(blank=False, default=0)
     isPremium = models.BooleanField(default=False)

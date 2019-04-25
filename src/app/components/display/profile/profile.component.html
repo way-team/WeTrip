@@ -8,111 +8,147 @@
 </ion-header>
 
 <div class="profile" *ngIf="user">
-  <ion-card no-margin>
-    <ion-card-content class="bg-profile">
-      <ng-container *ngIf="false">
-          <h2 color="light" margin-bottom> {{ 'PROFILE.ADMIN' | translate }} </h2>
-      </ng-container>
-      <ng-container *ngIf="user.isPremium">
-        <h1> 
-          {{ 'PROFILE.PREMIUM' | translate }} 
-          <ion-icon name="checkmark-circle"></ion-icon>
-        </h1>
-      </ng-container>
-      <ion-avatar class="avatar">
-      <img src="/assets/img/profile/{{user.photo}}.jpg" />
-      </ion-avatar>
-      <h1 class="fw500">{{ user.first_name }}</h1>
-      <h2 color="light" margin-bottom>{{user.description}}</h2>
-                <ion-icon *ngIf="user.avarageRate>=1" name="star" ></ion-icon>
-                <ion-icon *ngIf="user.avarageRate>=2" name="star" ></ion-icon>
-                <ion-icon  *ngIf="user.avarageRate>=3" name="star" ></ion-icon>
-                <ion-icon  *ngIf="user.avarageRate>=4"name="star" ></ion-icon>
-                <ion-icon *ngIf="user.avarageRate>=5" name="star" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<1" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<2" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<3" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<4" name="star-outline" ></ion-icon>
-                  <ion-icon *ngIf="user.avarageRate<5" name="star-outline" ></ion-icon>
-    </ion-card-content>
 
-    <ion-grid fixed no-padding>
-      <ion-row>
-        <ion-col size="12" padding>
-          <ion-list margin-bottom>
-            <ion-item>
-              <ion-label color="dark">{{ 'PROFILE.FULL_NAME' | translate }}</ion-label>
-              {{ user.first_name }} {{ user.last_name }}
-            </ion-item>
 
-            <ion-item>
-              <ion-label color="dark">{{ 'PROFILE.EMAIL' | translate }}</ion-label>
-              {{ user.email }}
-            </ion-item>
+    <ng-container *ngIf="user.status=='D'">
 
-            <ion-item>
-              <ion-label color="dark">{{ 'PROFILE.CITY' | translate }}</ion-label>
-              {{ user.city }}
-            </ion-item>
+      <ion-list-header color="dark">
+        <ion-label class="fw700">{{ 'PROFILE.DELETED' | translate }}</ion-label>
+      </ion-list-header>
+    
+      <ion-item color="primary" class="text-20">
+        <ion-label>{{ 'PROFILE.ELIMINATED' | translate }}</ion-label>
+      </ion-item>
+    </ng-container>
+    <ng-container *ngIf="user.status=='A'">
+    <ion-card no-margin>
+      <ion-card-content class="bg-profile">
+        <ng-container *ngIf="false">
+            <h2 color="light" margin-bottom> {{ 'PROFILE.ADMIN' | translate }} </h2>
+        </ng-container>
+        <ng-container *ngIf="user.isPremium">
+          <h1> 
+            {{ 'PROFILE.PREMIUM' | translate }} 
+            <ion-icon name="trophy"></ion-icon>
+          </h1>
+        </ng-container>
+        <ion-avatar class="avatar">
+          <img src="{{user.photo}}" />
+        </ion-avatar>
+        <h1 class="fw500">{{ user.first_name }}</h1>
+        <h2 color="light" margin-bottom>{{user.description}}</h2>
+        <ion-icon *ngIf="user.avarageRate>=1" name="star"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate>=2" name="star"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate>=3" name="star"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate>=4" name="star"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate>=5" name="star"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate<1" name="star-outline"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate<2" name="star-outline"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate<3" name="star-outline"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate<4" name="star-outline"></ion-icon>
+        <ion-icon *ngIf="user.avarageRate<5" name="star-outline"></ion-icon>
+      </ion-card-content>
 
-            <ion-item>
-              <ion-label color="dark">{{ 'PROFILE.STATE' | translate }}</ion-label>
-              Spain
-            </ion-item>
-          </ion-list>
-
-          <ion-list>
-            <ion-radio-group>
-              <ion-list-header color="light">
-                <ion-label class="fw700">{{ 'PROFILE.TRAVEL_TYPE' | translate }}</ion-label>
-              </ion-list-header>
-
-              <ion-item *ngFor="let i of user.interests">
-                <ion-label color="primary"> {{ i }} </ion-label>
+      <ion-grid fixed no-padding>
+        <ion-row>
+          <ion-col size="12" padding>
+            <ion-list margin-bottom>
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.FULL_NAME' | translate }}</ion-label>
+                {{ user.first_name }} {{ user.last_name }}
               </ion-item>
-            </ion-radio-group>
-          </ion-list>
 
-          <ion-list>
-            <ion-radio-group>
-              <ion-list-header color="light">
-                <ion-label class="fw700">{{ 'PROFILE.WANTS_TO_GO_TO' | translate }}</ion-label>
-              </ion-list-header>
-
-              <ion-item *ngFor="let i of user.created_trips">
-                <ion-label color="primary">
-                  {{ i.title }}
-                </ion-label>
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.EMAIL' | translate }}</ion-label>
+                {{ user.email }}
               </ion-item>
-            </ion-radio-group>
-          </ion-list>
 
-          <ion-list>
-            <ion-radio-group>
-              <ion-list-header color="light">
-                <ion-label class="fw700">{{ 'PROFILE.HAS_VISITED' | translate }}</ion-label>
-              </ion-list-header>
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.CITY' | translate }}</ion-label>
+                {{ user.city }}
+              </ion-item>
 
-              <ion-item *ngFor="let i of user.past_joined_trips">
-                <div *ngIf=""></div>
-                <ion-label color="primary">
-                  {{ i.title }}
-                </ion-label>
-                <ion-label>
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.STATE' | translate }}</ion-label>
+                Spain
+              </ion-item>
+            </ion-list>
+
+            <ion-list>
+              <ion-radio-group>
+                <ion-list-header color="light">
+                  <ion-label class="fw700">{{ 'PROFILE.TRAVEL_TYPE' | translate }}</ion-label>
+                </ion-list-header>
+
+                <ion-item *ngFor="let i of user.interests">
+                  <ion-label color="primary"> {{ i }} </ion-label>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
+
+            <ion-list>
+              <ion-radio-group>
+                <ion-list-header color="light">
+                  <ion-label class="fw700">{{ 'PROFILE.WANTS_TO_GO_TO' | translate }}</ion-label>
+                </ion-list-header>
+
+                <ion-item *ngFor="let i of user.created_trips">
+                  <ion-label color="primary">
+                    {{ i.title }}
+                  </ion-label>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
+
+            <ion-list>
+              <ion-radio-group>
+                <ion-list-header color="light">
+                  <ion-label class="fw700">{{ 'PROFILE.HAS_VISITED' | translate }}</ion-label>
+                </ion-list-header>
+                <ion-item *ngFor="let i of user.past_joined_trips">
+                  <div *ngIf=""></div>
+                  <ion-label color="primary">
+                    {{ i.title }}
+                  </ion-label>
+                  <ion-label>
                     {{ 'PROFILE.CREATOR' | translate }}
-                  <a class="creator" (click)="goTo('user-profile/', i.creator)">
-                    <ion-text color="tertiary"> {{ i.creator }} </ion-text>
-                  </a>
-                </ion-label>
-              </ion-item>
-            </ion-radio-group>
-          </ion-list>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+                    <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.creator)">
+                      <ion-text color="tertiary">
+                        {{ i.creator }}
+                      </ion-text>
+                    </a>
+                  </ion-label>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
 
-    <div *ngIf="!myProfile">
-      <ion-button size="large" expand="full" color="dark" (click)="sendData()" no-margin>{{ 'PROFILE.CONTACT' | translate }}</ion-button>
-    </div>
-  </ion-card>
+            <ion-list>
+                <ion-radio-group>
+                  <ion-list-header color="light">
+                    <ion-label class="fw700">{{ 'PROFILE.FUTURE_VISIT' | translate }}</ion-label>
+                  </ion-list-header>
+                  <ion-item *ngFor="let i of user.active_joined_trips">
+                    <div *ngIf=""></div>
+                    <ion-label color="primary">
+                      {{ i.title }}
+                    </ion-label>
+                    <ion-label>
+                        {{ 'PROFILE.CREATOR' | translate }}
+                      <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.creator)">
+                        <ion-text color="tertiary"> {{ i.creator }} </ion-text>
+                      </a>
+                    </ion-label>
+                  </ion-item>
+                </ion-radio-group>
+              </ion-list>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <div *ngIf="myProfile">
+          <div style="text-align:center;" (click)="delete()"><ion-button color="danger">{{ 'PROFILE.DELETE_BUTTON' | translate }}</ion-button></div>
+      </div>
+    </ion-card>
+  </ng-container>
 </div>

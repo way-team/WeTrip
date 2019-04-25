@@ -57,7 +57,7 @@ export class PremiumPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'Something went wrong.',
+            message: 'error',
             buttons: [
               {
                 text: 'Ok',
@@ -105,9 +105,18 @@ export class PremiumPage implements OnInit {
       document.body.appendChild(scriptElement)
   });}
 ngAfterViewInit(): void {
+let lang:string = this.translate.instant('PREMIUM.LANG');
     this.loadExternalScript("https://www.paypalobjects.com/api/checkout.js").then(() => {
       paypal.Button.render({
         env: 'sandbox',
+        locale: lang,
+style: {
+ size: 'large',
+ color: 'gold',
+ shape: 'pill',
+ label: 'checkout',
+ tagline: 'false'
+},
         client: {
           production: '',
           sandbox: 'AddLPh79rdzGB5QdmTWhN0coPnuTCg9_1hEkeyKv6rZtoK-m4MIaq3syIe5sCRmndpu9WAt-gpwLWBs9'
@@ -131,7 +140,7 @@ ngAfterViewInit(): void {
              this.success();
           })
         }
-      }, '#paypal-button');
+      }, '#buy-now');
     });
   }
 

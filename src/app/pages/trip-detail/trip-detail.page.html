@@ -62,7 +62,7 @@
 
       <ng-container *ngIf="usersAccepted.length != 0">
         <ion-item *ngFor="let i of usersAccepted">
-          <ion-label color="primary" (click)="goTo('user-profile/', i.applicantName)">
+          <ion-label color="primary"  style="cursor: pointer" (click)="goTo('user-profile/', i.applicantName)">
             {{ i.applicantName }} 
           </ion-label>
         </ion-item>
@@ -86,7 +86,7 @@
 
         <ng-container *ngIf="usersPending.length != 0">
           <ion-item *ngFor="let i of usersPending">
-            <ion-label color="primary" (click)="goTo('user-profile/', i.applicantName)">
+            <ion-label color="primary"  style="cursor: pointer" (click)="goTo('user-profile/', i.applicantName)">
               {{ i.applicantName }} 
             </ion-label>
             <ion-buttons slot="end">

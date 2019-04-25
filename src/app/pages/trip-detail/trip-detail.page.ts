@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
 import { AlertController, NavController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trip-detail',
@@ -26,6 +27,7 @@ export class TripdetailPage {
     private dm: DataManagement,
     private cookieService: CookieService,
     private alertController: AlertController,
+    private translate: TranslateService,
     private navCtrl: NavController
   ) {
     this.getItems();
@@ -65,9 +67,12 @@ export class TripdetailPage {
   }
 
   async presentAlert() {
+     let translation1:string = this.translate.instant('TRIPS.CONGRATULATION');
+     let translation2:string = this.translate.instant('TRIPS.APPLICATION_SEND');
+
     const alert = await this.alertController.create({
-      header: 'Congratulations',
-      message: 'Your application has been sent.',
+      header: translation1,
+      message: translation2,
       buttons: ['OK']
     });
 

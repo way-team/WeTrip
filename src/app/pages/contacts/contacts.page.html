@@ -26,8 +26,7 @@
                         <ion-item class="bg-primary" no-margin>
                             <ion-buttons slot="end">
 
-                                <ion-button shape="round" color="dark" slot="end"
-                                    (click)="chat(user.user.username)">
+                                <ion-button shape="round" color="dark" slot="end" (click)="chat(user.user.username)">
                                     <ion-icon name="send" class="larger" item-right></ion-icon>
 
                                 </ion-button>
@@ -37,7 +36,7 @@
 
                             <ion-avatar slot="start">
                                 <img [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward"
-                                    src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar">
+                                    src="{{user.photo}}" class="user-avatar">
 
                             </ion-avatar>
 
@@ -51,16 +50,16 @@
                                 <ion-button size="small" shape="round" color="warning"
                                     [routerLink]="'/rating/' + user.user.username" routerDirection="forward">
 
-                                          <ion-icon *ngIf="user.avarageRate>=1" name="star" color="dark"></ion-icon>
-                                          <ion-icon *ngIf="user.avarageRate>=2" name="star" color="dark"></ion-icon>
-                                          <ion-icon  *ngIf="user.avarageRate>=3" name="star" color="dark"></ion-icon>
-                                          <ion-icon  *ngIf="user.avarageRate>=4"name="star" color="dark"></ion-icon>
-                                          <ion-icon *ngIf="user.avarageRate>=5" name="star" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<1" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<2" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<3" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<4" name="star-outline" color="dark"></ion-icon>
-                                            <ion-icon *ngIf="user.avarageRate<5" name="star-outline" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate>=1" name="star" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate>=2" name="star" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate>=3" name="star" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate>=4" name="star" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate>=5" name="star" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate<1" name="star-outline" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate<2" name="star-outline" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate<3" name="star-outline" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate<4" name="star-outline" color="dark"></ion-icon>
+                                    <ion-icon *ngIf="user.avarageRate<5" name="star-outline" color="dark"></ion-icon>
                                 </ion-button>
                             </ion-label>
                         </ion-item>
@@ -90,7 +89,7 @@
                     <div class="listMeetYou" *ngFor="let user of meetYou">
                         <ion-item class="bg-primary" no-margin>
                             <ion-avatar slot="start">
-                                <img src="assets/img/profile/{{user.photo}}.jpg" class="user-avatar"
+                                <img src="{{user.photo}}" class="user-avatar"
                                     [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward">
                             </ion-avatar>
                             <ion-label>
@@ -106,11 +105,13 @@
                                 </ion-text>
                             </ion-label>
                             <ion-buttons slot="end">
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="accept(user.user.username)">
+                                <ion-button size="small" shape="round" color="dark" slot="end"
+                                    (click)="accept(user.user.username)">
                                     <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
 
                                 </ion-button>
-                                <ion-button size="small" shape="round" color="dark" slot="end" (click)="reject(user.user.username)">
+                                <ion-button size="small" shape="round" color="dark" slot="end"
+                                    (click)="reject(user.user.username)">
                                     <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
 
                                 </ion-button>

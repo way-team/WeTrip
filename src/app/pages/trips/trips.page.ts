@@ -3,6 +3,7 @@ import { NavController, AlertController } from '@ionic/angular';
 import { DataManagement } from '../../services/dataManagement';
 import { Trip } from '../../app.data.model';
 import { ConfigService } from 'src/config/configService';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-trips',
   templateUrl: './trips.page.html',
@@ -15,6 +16,7 @@ export class TripsPage implements OnInit {
     public navCtrl: NavController,
     private dm: DataManagement,
     private config: ConfigService,
+    private translate: TranslateService,
     private alertCtrl: AlertController
   ) {
     this.path = this.config.config().restUrlPrefixLocalhost;

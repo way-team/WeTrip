@@ -5,6 +5,7 @@ import { DataManagement } from '../../services/dataManagement';
 import { ConfigService } from 'src/config/configService';
 import { SearchFilterPage } from '../../pages/modal/search-filter/search-filter.page';
 import { ImagePage } from './../modal/image/image.page';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search',
@@ -15,11 +16,13 @@ export class SearchPage implements OnInit {
   searchKey = '';
   path = '';
   listSearch: Trip[] = [];
+
   constructor(
     public navCtrl: NavController,
     public alertCtrl: AlertController,
     private dm: DataManagement,
     private config: ConfigService,
+    private translate: TranslateService,
     public modalCtrl: ModalController
   ) {
     this.path = this.config.config().restUrlPrefixLocalhost;
@@ -63,6 +66,7 @@ export class SearchPage implements OnInit {
 
 
     public search() {
+    let translation:string = this.translate.instant('TRIPS.ERROR');
     this.dm
       .search(
         this.searchKey
@@ -74,7 +78,7 @@ export class SearchPage implements OnInit {
         this.alertCtrl
           .create({
             header: 'Error',
-            message: 'Something went wrong.',
+            message: translation,
             buttons: [
               {
                 text: 'Ok',
