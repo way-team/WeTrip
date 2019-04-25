@@ -26,11 +26,18 @@
 
   <ion-item class="bg-profile">
 
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=1" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=2" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=3" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=4" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=5" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <1" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <2" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <3" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <4" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <5" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+
+
     <ion-avatar slot="start">
       <img src="assets/img/trip/{{trip.image}}" class="user-avatar">
     </ion-avatar>

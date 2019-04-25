@@ -19,6 +19,7 @@ export class TripdetailPage {
   applicationsAccepted: [];
   applicationPending: [];
   isReady: Boolean;
+  rating: any;
 
   usersAccepted: application_user[] = [];
   usersPending: application_user[] = [];
@@ -46,6 +47,7 @@ export class TripdetailPage {
 
     Promise.all([prom1, prom2]).then(response => {
       this.trip = response[0]['trip'];
+      
       this.applicationsAccepted = response[0]['applicationsList'];
       this.applicationPending = response[0]['pendingsList'];
       this.userLogged = response[1];
@@ -55,7 +57,11 @@ export class TripdetailPage {
 
       this.getUserPending();
       this.getUserAccepted();
-      this.isReady = true;
+      
+      this.dm.getUserBy(this.trip.creator, this.cookieService.get('token')).then((res) => {
+        this.rating = res.avarageRate;
+        this.isReady = true;
+      }).catch((_) => {});
     }).catch((_) => {
 
     });
@@ -125,15 +131,6 @@ export class TripdetailPage {
     const accepted = this.usersAccepted.find(x => x.applicantName === this.userLogged.user.username) != undefined;
     const pending = this.usersPending.find(x => x.applicantName === this.userLogged.user.username) != undefined;
     pastTrip || accepted || pending ? show = false : show = true;
-
-    console.log(this.usersAccepted);
-
-    console.log("Past trip - " + pastTrip);
-    console.log("User accepted " + accepted);
-    console.log("User pending " + pending);
-    console.log("Result" + String(show));
-
-
     return show;
   }
 
