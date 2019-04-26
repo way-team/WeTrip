@@ -150,6 +150,22 @@ export class DataManagement {
       }
     });
   }
+    public listYouWantToMeet(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .listYouWantToMeet()
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
 
   public listDiscover(): Promise<any> {
     return new Promise((resolve, reject) => {

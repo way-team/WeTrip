@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController,AlertController } from '@ionic/angular';
 import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contacts',
@@ -12,12 +13,15 @@ import { CookieService } from 'ngx-cookie-service';
 export class ContactsPage implements OnInit {
   friends: UserProfile[] = [];
   meetYou: UserProfile[] = [];
+  youWantToMeet: UserProfile[] = [];
   logged: UserProfile;
 
   constructor(
     public navCtrl: NavController,
     public dM: DataManagement,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+     public alertCtrl: AlertController,
+       private translate: TranslateService
   ) {
     const token = this.cookieService.get('token');
     this.dM
@@ -30,6 +34,7 @@ export class ContactsPage implements OnInit {
       });
     this.listFriends();
     this.listMeetYou();
+
   }
 
   ngOnInit() {}
@@ -55,6 +60,14 @@ export class ContactsPage implements OnInit {
   private listMeetYou(): void {
     this.dM.listMeetYou().then((data: any) => {
       this.meetYou = data;
+    }).catch(error => {
+
+    });
+  }
+
+ private listYouWantToMeet(): void {
+    this.dM.listYouWantToMeet().then((data: any) => {
+      this.youWantToMeet = data;
     }).catch(error => {
 
     });

@@ -53,7 +53,7 @@ export class DiscoverPage {
     setTimeout(() => {
       console.log('Done');
       this.getData(this.discover.length, 9);
-      this.discover.push(newData);
+      this.discover.concat(this.newData);
       event.target.complete();
 
       // App logic to determine if all data is loaded
@@ -93,9 +93,7 @@ export class DiscoverPage {
       })
       .catch(error => {});
   }
-  ionViewWillEnter() {
-    this.menuCtrl.enable(true);
-  }
+
 
   settings() {
     this.navCtrl.navigateForward('settings');

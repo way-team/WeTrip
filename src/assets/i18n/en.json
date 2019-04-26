@@ -16,7 +16,8 @@
   "CONFIG": "Config",
   "CONTACTS": {
     "CONTACTS": "Contacts",
-    "THEY_WANT_TO_MEET_YOU": "They want to meet you"
+    "THEY_WANT_TO_MEET_YOU": "They want to meet you",
+    "YOU_WANT_TO_MEET": "you want to meet (pending acceptance)"
   },
   "CREATE_TRIP": {
     "CITY": "City",
