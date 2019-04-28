@@ -150,7 +150,7 @@ export class DataManagement {
       }
     });
   }
-    public listYouWantToMeet(): Promise<any> {
+  public listYouWantToMeet(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.hasConnection()) {
         return this.restService
@@ -187,7 +187,7 @@ export class DataManagement {
     return new Promise((resolve, reject) => {
       if (this.hasConnection()) {
         return this.restService
-          .getData(offset,limit)
+          .getData(offset, limit)
           .then((data: any) => {
             resolve(data);
           })
@@ -258,6 +258,17 @@ export class DataManagement {
   public rate(voted: string, rating: Number): Promise<any> {
     return this.restService
       .rate(voted, rating)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
+  public block(userToBlock: string): Promise<any> {
+    return this.restService
+      .block(userToBlock)
       .then(data => {
         return Promise.resolve(data);
       })
@@ -442,4 +453,3 @@ export class DataManagement {
       });
   }
 }
-

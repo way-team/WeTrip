@@ -151,11 +151,15 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
-    public getData(offset: Number, limit: Number): Promise<any> {
+  public getData(offset: Number, limit: Number): Promise<any> {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getDiscoverPeople2/?offset=' + offset+ '&limit=' + limit, fd, token)
+    return this.makePostRequest(
+      this.path + 'getDiscoverPeople2/?offset=' + offset + '&limit=' + limit,
+      fd,
+      token
+    )
       .then(res => {
         return Promise.resolve(res);
       })
@@ -178,7 +182,7 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
-   public listYouWantToMeet(): Promise<any> {
+  public listYouWantToMeet(): Promise<any> {
     const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
@@ -261,6 +265,22 @@ export class RestWS extends AbstractWS {
             console.log('Error: ' + error);
             return Promise.reject(error);
           });
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
+  public block(userToBlock: string): Promise<any> {
+    const fd = new FormData();
+    let token: string;
+    token = this.cookieService.get('token');
+    fd.append('token', token);
+    fd.append('sendername', userToBlock);
+    return this.makePostRequest(this.path + 'removeFriend/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
       })
       .catch(error => {
         console.log('Error: ' + error);
