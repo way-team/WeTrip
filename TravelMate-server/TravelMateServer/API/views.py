@@ -384,12 +384,7 @@ class RemoveFriend(APIView):
         sender = User.objects.get(username=sendername).userprofile
 
         try:
-            invitation = Invitation.objects.filter(
-                sender=sender, status="A").get(receiver=user)
-            if invitation is None:
-                invitation = Invitation.objects.filter(
-                    sender=user, status="A").get(receiver=sender)
-
+            invitation = Invitation.objects.get(Q(sender=sender, receiver=user, status="A") | Q(sender=user, receiver=sender, status="A"))
         except Invitation.DoesNotExist:
             invitation = None
 
