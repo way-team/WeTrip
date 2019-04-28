@@ -22,6 +22,15 @@ def get_user_by_token(request):
     tk = get_object_or_404(Token, key=key)
     user = tk.user
     user_profile = UserProfile.objects.get(user=user)
+    
+    # Sets user to no Premium if it's been 1 year since the user paid
+    if user_profile.isPremium:
+        today = datetime.today().date()
+        datePremium = user_profile.datePremium
+        diff = today - datePremium
+        if diff.days >= 365:
+            user_profile.isPremium = False
+            user_profile.save()
 
     return user_profile
 
