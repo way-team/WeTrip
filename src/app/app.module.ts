@@ -27,7 +27,7 @@ import { ProfileComponent } from './components/display/profile/profile.component
 import { CookieLawModule } from 'angular2-cookie-law';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { AdminGuard } from './guards/admin/admin.guard';
-import { BannerModule } from './components/banner/banner.module';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, '../assets/i18n/', '.json');
@@ -36,6 +36,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 @NgModule({
   declarations: [AppComponent, NotificationsComponent],
   imports: [
+    IonicSelectableModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
