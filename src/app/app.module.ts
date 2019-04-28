@@ -27,9 +27,10 @@ import { ProfileComponent } from './components/display/profile/profile.component
 import { CookieLawModule } from 'angular2-cookie-law';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { AdminGuard } from './guards/admin/admin.guard';
+import { BannerModule } from './components/banner/banner.module';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
-  return new TranslateHttpLoader(httpClient, "../assets/i18n/", ".json");
+  return new TranslateHttpLoader(httpClient, '../assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -45,12 +46,12 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CookieLawModule, // import Angular's CookieLaw modules
     HttpClientModule,
     TranslateModule.forRoot({
-          loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient]
-          }
-      })
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   entryComponents: [NotificationsComponent],
   providers: [
