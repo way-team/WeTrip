@@ -266,8 +266,8 @@
     "USERNAME": "Username"
   },
   "SEARCH": {
-    "MY_TRIPS": "My trips",
-    "SEARCH": "Search",
+    "MY_TRIPS": "Access to My created trips",
+    "SEARCH": "Search for a trip",
     "WITHOUT_TRIPS": "There are no trips"
   },
   "SEARCH_FILTER": {
@@ -298,7 +298,7 @@
     "CONGRATULATION": "Congratulations!",
     "CREATE_NEW_TRIP": "Create a new trip",
     "ERROR": "Something went wrong. Contact travelmate way.team.soft@gmail.com",
-    "TRIPS": "Trips",
+    "TRIPS": "My created trips",
     "WITHOUT_TRIPS": "You don't have any trip yet"
   },
   "TRIP_DETAILS": {
