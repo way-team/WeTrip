@@ -43,6 +43,7 @@ urlpatterns = [
     path('sendInvitation/', views.SendInvitation.as_view()),
     path('acceptFriend/', views.AcceptFriend.as_view()),
     path('rejectFriend/', views.RejectFriend.as_view()),
+    path('removeFriend/', views.RemoveFriend.as_view()),
     path('getDiscoverPeople/', views.DiscoverPeopleView.as_view()),
     url('^getTrip/(?P<trip_id>.+)/$', views.GetTripView.as_view()),
     path('editTrip/', views.EditTripView.as_view()),

@@ -302,7 +302,7 @@ class SendInvitation(APIView):
 
 class AcceptFriend(APIView):
     """
-    Method to accept or decline an invitation to be a friend of the logged user
+    Method to accept an invitation to be a friend of the logged user
     """
 
     permission_classes = (IsAuthenticated, )
@@ -335,7 +335,7 @@ class AcceptFriend(APIView):
 
 class RejectFriend(APIView):
     """
-    Method to accept or decline an invitation to be a friend of the logged user
+    Method to decline an invitation to be a friend of the logged user
     """
 
     permission_classes = (IsAuthenticated, )
@@ -365,6 +365,41 @@ class RejectFriend(APIView):
 
         return Response(InvitationSerializer(invitation, many=False).data)
 
+
+class RemoveFriend(APIView):
+    """
+    Method to remove a friend of the logged user
+    """
+
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        sendername = request.data.get("sendername", "")
+        sender = User.objects.get(username=sendername).userprofile
+
+        try:
+            invitation = Invitation.objects.filter(
+                sender=sender, status="A").get(receiver=user)
+            if invitation is None:
+                invitation = Invitation.objects.filter(
+                    sender=user, status="A").get(receiver=sender)
+
+        except Invitation.DoesNotExist:
+            invitation = None
+
+        if invitation is not None:
+            invitation.status = "R"
+            invitation.save()
+        else:
+            raise ValueError("No relation between these two users")
+
+        return Response(InvitationSerializer(invitation, many=False).data)
 
 class DiscoverPeopleView(APIView):
     """
