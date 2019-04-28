@@ -16,29 +16,27 @@
 
 
 
-  <ion-grid >
-      <ion-row>
-          <ion-col col-6 col-md-4 col-xl-3 *ngFor="let user of discover">
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6 col-md-4 col-xl-3 *ngFor="let user of discover">
 
-              <div class="image-container" [style.background-image]="'url(' + user.discoverPhoto + ')'" style="cursor: pointer" [routerLink]="'/user-profile/'+ user.user.username"
-              routerDirection="forward">
-      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="sendData(user.user.username)">
-      <ion-icon name="person-add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-                  <ion-button size="small"  color="light"> {{user.first_name}} {{user.last_name}}</ion-button>
+        <div class="image-container" [style.background-image]="'url(' + user.discoverPhoto + ')'"
+          style="cursor: pointer" [routerLink]="'/user-profile/'+ user.user.username" routerDirection="forward">
+          <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+            <ion-fab-button (click)="sendData(user.user.username)">
+              <ion-icon name="person-add"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+          <ion-button size="small" color="light"> {{user.first_name}} {{user.last_name}}</ion-button>
 
-              </div>
+        </div>
 
-          </ion-col>
-  </ion-row>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
-    <ion-infinite-scroll-content
-      loadingSpinner="bubbles"
-      loadingText="Loading more data...">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 

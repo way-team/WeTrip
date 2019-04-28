@@ -5,6 +5,7 @@
         </ion-buttons>
         <ion-title color="light">{{ 'TRIPS.TRIPS' | translate }}</ion-title>
     </ion-toolbar>
+    <app-banner></app-banner>
 
     <ion-button color="lightcyan" expand="full" (click)="goToCreate()" no-margin>
         <ion-text aling="left">
@@ -24,7 +25,7 @@
                     <ion-card>
                         <ion-card-content class="bg-light">
 
-                            <ion-item  style="cursor: pointer" (click)="goTo('trip-detail/', trip)">
+                            <ion-item style="cursor: pointer" (click)="goTo('trip-detail/', trip)">
                                 <ion-thumbnail class="ion-avatar" slot="start">
                                     <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}"
                                         class="user-avatar">
