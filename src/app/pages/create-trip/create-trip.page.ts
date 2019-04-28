@@ -126,7 +126,7 @@ export class CreateTripPage implements OnInit {
         this.start_date.split('T')[0],
         this.end_date.split('T')[0],
         this.trip_type,
-        this.city,
+        this.city.id,
         this.userImage
       )
       .then(data => {

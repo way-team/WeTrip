@@ -40,6 +40,7 @@ export class Trip {
   status: Boolean;
   user_id: Number;
   creator: string;
+  cities: string[];
 }
 
 export class City {

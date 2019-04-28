@@ -306,6 +306,7 @@
     "JOIN": "Join",
     "START_DATE": "Start date",
     "TO": "to",
-    "TRIP_DETAILS": "Trip details"
+    "TRIP_DETAILS": "Trip details",
+    "CITIES": "Cities"
   }
 }

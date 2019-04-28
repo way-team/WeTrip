@@ -306,6 +306,7 @@
     "JOIN": "Unirse",
     "START_DATE": "Fecha de comienzo",
     "TO": "a",
-    "TRIP_DETAILS": "Detalles del viaje"
+    "TRIP_DETAILS": "Detalles del viaje",
+    "CITIES": "Ciudades"
   }
 }

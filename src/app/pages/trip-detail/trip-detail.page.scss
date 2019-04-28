@@ -2,7 +2,8 @@
     ion-content {
         --background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light))
     }
-      ion-item {
+
+    ion-item {
         border-radius: 0;
         border-bottom: 1px dotted var(--ion-color-medium);
     }
@@ -17,4 +18,14 @@
 ion-avatar {
     width: 68px;
     height: 68px;
+}
+
+.card-cities {
+    margin-left: 0%;
+}
+
+.image-container {
+    background-size: cover;
+    min-height: 300px;
+    min-width: 300px;
 }
