@@ -12,7 +12,7 @@ export class UserProfile {
   avarageRate: Number;
   numRate: Number;
   isPremium: boolean;
-  status: boolean;
+  status: string;
   gender: string;
   language: string;
   interests: string[];
@@ -40,6 +40,7 @@ export class Trip {
   status: Boolean;
   user_id: Number;
   creator: string;
+  cities: string[];
 }
 
 export class City {

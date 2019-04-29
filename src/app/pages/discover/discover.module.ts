@@ -14,6 +14,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 // Configuración de traducción
 import { HttpLoaderFactory } from './../../app.module';
 import { BannerComponent } from 'src/app/components/banner/banner.component';
+import { BannerModule } from 'src/app/components/banner/banner.module';
+
 const routes: Routes = [
   {
     path: '',
@@ -23,6 +25,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    BannerModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -30,6 +33,6 @@ const routes: Routes = [
     TranslateModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [DiscoverPage, PopmenuComponent, BannerComponent]
+  declarations: [DiscoverPage, PopmenuComponent]
 })
 export class DiscoverPageModule {}

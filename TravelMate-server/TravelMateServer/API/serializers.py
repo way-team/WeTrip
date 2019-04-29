@@ -35,13 +35,15 @@ class TripSerializer(serializers.ModelSerializer):
     userImage = serializers.SerializerMethodField()
     applications_count = serializers.SerializerMethodField()
     cities_count = serializers.SerializerMethodField()
+    cities = serializers.SlugRelatedField(
+        many=True, queryset=City.objects.all(), slug_field='name')
 
     class Meta:
         model = Trip
         fields = [
             'id', 'creator', 'title', 'description', 'startDate', 'endDate',
             'tripType', 'image', 'userImage', 'status', 'applications_count',
-            'cities_count'
+            'cities_count', 'cities'
         ]
 
     def get_creator(self, obj):
@@ -59,11 +61,11 @@ class TripSerializer(serializers.ModelSerializer):
         return obj.cities.count()
 
 
-
 class FullTripSerializer(serializers.Serializer):
     trip = TripSerializer(many=False)
     applicationsList = ApplicationSerializer(many=True)
     pendingsList = ApplicationSerializer(many=True)
+    rejectedList = ApplicationSerializer(many=True)
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -73,6 +75,7 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['country', 'trips', 'name', 'id']
+
 
 class CityReducedSerializer(serializers.ModelSerializer):
     country = CountrySerializer()
@@ -168,12 +171,12 @@ class InterestSerializer(serializers.ModelSerializer):
         model = Interest
         fields = ['name', 'users']
 
+
 class InterestNameSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         model = Interest
         fields = ['name']
+
 
 class InterestReducedSerializer(serializers.ModelSerializer):
     users_count = serializers.SerializerMethodField()
@@ -184,6 +187,7 @@ class InterestReducedSerializer(serializers.ModelSerializer):
 
     def get_users_count(self, obj):
         return obj.users.count()
+
 
 class InvitationSerializer(serializers.ModelSerializer):
     sender = UserProfileSerializer(many=False)

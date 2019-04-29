@@ -101,11 +101,10 @@
               <ion-icon name="map" item-start></ion-icon>
               {{ 'CREATE_TRIP.CITY' | translate}}
             </ion-label>
-            <ion-select [(ngModel)]="city" formControlName="city">
-              <ion-select-option value="city.id" *ngFor="let city of cities" value="{{city.id}}">{{ city.name }}
-                ({{ city.country.name }})
-              </ion-select-option>
-            </ion-select>
+            <ionic-selectable formControlName="city" [(ngModel)]="city" [items]="cities" itemValueField="id"
+              itemTextField="name" [canSearch]="true">
+            </ionic-selectable>
+
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('city').touched && onCreateForm.get('city').hasError('required')">

@@ -16,12 +16,19 @@
   "CONFIG": "Config",
   "CONTACTS": {
     "CONTACTS": "Contacts",
-    "THEY_WANT_TO_MEET_YOU": "They want to meet you"
+    "THEY_WANT_TO_MEET_YOU": "They want to meet you",
+    "YOU_WANT_TO_MEET": "you want to meet (pending acceptance)",
+    "ALERT_MESSAGE_HEADER": "Block user",
+    "ALERT_MESSAGE_CONFIRM": "Confirm",
+    "ALERT_MESSAGE_CANCEL": "Cancel",
+    "ALERT_MESSAGE_SUCCESS": "User blocked successfully!",
+    "ALERT_MESSAGE_MESSAGE": "Are you sure of blocking this user? You won't see this user anymore so please, remember to rate him to preserve Travelmate's community safety"
   },
   "CREATE_TRIP": {
     "CITY": "City",
     "CREATE_NEW_TRIP": "Create a new trip",
     "DESCRIPTION": "Description",
+    "EDIT": "Edit",
     "END_DATE": "End date",
     "INTRUDUCE_DETAILS": "Introduce details",
     "PRIVACY_POLICIES": "Privacy policies",
@@ -36,8 +43,7 @@
     "TYPE": "Type",
     "UPLOAD_AN_IMAGE": "Upload an image",
     "WARNING_DATE": "End date can not been set before the start date",
-    "WARNING_DATE_MIN": "Can not set a past date",
-    "EDIT": "Edit"
+    "WARNING_DATE_MIN": "Can not set a past date"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Users: active VS. inactive",
@@ -97,11 +103,12 @@
     "VISITED_CITIES": "Visited cities"
   },
   "DISCOVER": {
+    "ALERT_MESSAGE": "Pending acceptance",
+    "ALERT_TITLE": "Friendship invitation send",
     "CONTACT": "Contact",
     "DISCOVER": "Discover",
     "WAIT": "Please wait...",
-    "ALERT_TITLE": "Friendship invitation send",
-    "ALERT_MESSAGE": "Pending acceptance"
+    "LOADING": "Loading more data..."
   },
   "GDPR": {
     "GO_OUT": "Go out",
@@ -131,7 +138,6 @@
     "TEXT_3": "The data we collect",
     "TEXT_30": "You have the right to have your personal information erased,",
     "TEXT_31": "provided it is no longer required for the handling of any unresolved matter or legal proceeding.",
-    "TEXT_40": "To do this, you must inform us to the email account way.team.soft@gmail.com.",
     "TEXT_32": "You have the right to restrict the use of your information under certain circumstances.",
     "TEXT_33": "You also have the right to object against the use of your personal information,",
     "TEXT_34": "for example by withdrawing consent to be contacted for direct marketing purposes.",
@@ -141,6 +147,7 @@
     "TEXT_38": "In the unlikely event that there is a personal data breach that represents a risk to individuals or their businesses,",
     "TEXT_39": "we will inform the Information Commissioners Office (ICO) within 72 hours of becoming aware of it.",
     "TEXT_4": "Any issue we manage on your behalf typically makes it necessary to provide us with information.",
+    "TEXT_40": "To do this, you must inform us to the email account way.team.soft@gmail.com.",
     "TEXT_5": "Depending upon the nature of the issue, the specific information may vary.",
     "TEXT_6": "However, we will only request information that is relevant and required for managing the issue in question.",
     "TEXT_7": "If the matter includes the gathering and assessing of evidence,",
@@ -170,14 +177,14 @@
     "ADMIN_CONTROL_PANEL": "Admin Control Panel",
     "APP_SETTINGS": "App settings",
     "CONTACTS": "Contacts",
+    "COOKIES": " By continuing to browse the site, you're agreeing to our use of cookies. Learn more in our ",
     "DISCOVER": "Discover",
     "LOGOUT": "Logout",
     "MENU": "Menu",
     "PREMIUM": "Premium",
+    "PRIVACY_POLICY": "privacy policy",
     "PROFILE": "Profile",
-    "TRIPS": "Trips",
-    "COOKIES": " By continuing to browse the site, you're agreeing to our use of cookies. Learn more in our ",
-    "PRIVACY_POLICY": "privacy policy"
+    "TRIPS": "Trips"
   },
   "NOTIFICATIONS": {
     "NOTIFICATIONS": "Notifications",
@@ -186,17 +193,26 @@
   "PREMIUM": {
     "IS_PREMIUM": "You are Premium",
     "JOIN": "Our Premium club",
+    "LANG": "en_US",
     "NEW_PREMIUM": "Congratulations! You are a member of our Premium club",
     "PREMIUM": "Premium",
     "TEXT_1": "With the premium version, you will enjoy our app without ads and your trips will have preferential location.",
-    "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease.",
-    "LANG": "en_US"
+    "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease."
   },
   "PROFILE": {
     "ADMIN": "Admin",
+    "ALERT": "ALERT",
     "CITY": "City",
     "CONTACT": "Contact",
     "CREATOR": "Creator",
+    "DELETED": "User deleted",
+    "DELETE_BUTTON": "Delete account",
+    "DELETE_ERROR_1": "Sorry, current operation failed.",
+    "DELETE_ERROR_2": "If you can not delete your data, contact an administrator.",
+    "DELETE_USER_1": "You are close to delete all your application data.",
+    "DELETE_USER_2": "This operation can not be undone and you will not be able to access the application with this account later.",
+    "DELETE_USER_3": " Do you wish to continue?",
+    "ELIMINATED": "This user has decided to take another trail.",
     "EMAIL": "Email",
     "FULL_NAME": "Full name",
     "FUTURE_VISIT": "Future trips",
@@ -205,10 +221,12 @@
     "NO_USER_PENDING": "No users pending to accept",
     "PREMIUM": "Premium user",
     "STATE": "State",
+    "SORRY": "Sorry",
     "TRAVEL_TYPE": "Travel type",
     "USERS_ACCEPTED": "Attendants",
     "USERS_TO_ACCEPT": "Users to accept",
-    "WANTS_TO_GO_TO": "Wants to go to"
+    "WANTS_TO_GO_TO": "Wants to go to",
+    "YES": "YES"
   },
   "RATING": {
     "RATE": "Rate",
@@ -246,11 +264,10 @@
     "SUCCESS": "Sign up done successfully!",
     "THIS_FIELD_IS_REQUIRED": "This field is required",
     "USERNAME": "Username"
-
   },
   "SEARCH": {
-    "MY_TRIPS": "My trips",
-    "SEARCH": "Search",
+    "MY_TRIPS": "Access to My created trips",
+    "SEARCH": "Search for a trip",
     "WITHOUT_TRIPS": "There are no trips"
   },
   "SEARCH_FILTER": {
@@ -281,7 +298,7 @@
     "CONGRATULATION": "Congratulations!",
     "CREATE_NEW_TRIP": "Create a new trip",
     "ERROR": "Something went wrong. Contact travelmate way.team.soft@gmail.com",
-    "TRIPS": "Trips",
+    "TRIPS": "My created trips",
     "WITHOUT_TRIPS": "You don't have any trip yet"
   },
   "TRIP_DETAILS": {
@@ -289,6 +306,7 @@
     "JOIN": "Join",
     "START_DATE": "Start date",
     "TO": "to",
-    "TRIP_DETAILS": "Trip details"
+    "TRIP_DETAILS": "Trip details",
+    "CITIES": "Cities"
   }
 }

@@ -16,6 +16,7 @@
 </ion-header>
 
 <ion-content>
+    <app-banner></app-banner>
 
     <ion-card class="bg-white" no-margin>
 
@@ -25,7 +26,9 @@
                     <div class="listFriends" *ngFor="let user of friends">
                         <ion-item class="bg-primary" no-margin>
                             <ion-buttons slot="end">
-
+                                <ion-button shape="round" color="dark" slot="end" (click)="block(user.user.username)">
+                                    <ion-icon name="close-circle" class="larger" item-right></ion-icon>
+                                </ion-button>
                                 <ion-button shape="round" color="dark" slot="end" (click)="chat(user.user.username)">
                                     <ion-icon name="send" class="larger" item-right></ion-icon>
 
@@ -126,4 +129,42 @@
 
         </ion-card-content>
     </ion-card>
+    <ion-card color="dark" no-margin>
+        <ion-card-content>
+            {{ 'CONTACTS.YOU_WANT_TO_MEET' | translate}}
+            <ion-icon name="arrow-dropdown"></ion-icon>
+        </ion-card-content>
+
+    </ion-card>
+    <ion-card class="bg-white" no-margin>
+        <ion-card-content>
+            <ion-card class="bg-primary" no-margin>
+                <ion-card-content>
+                    <div class="listMeetYou" *ngFor="let user of youWantToMeet">
+                        <ion-item class="bg-primary" no-margin>
+                            <ion-avatar slot="start">
+                                <img src="{{user.photo}}" class="user-avatar"
+                                    [routerLink]="'/user-profile/' + user.user.username" routerDirection="forward">
+                            </ion-avatar>
+                            <ion-label>
+                                <ion-text color="dark">
+                                    <h2>
+                                        <strong>{{user.first_name}} {{user.last_name}}</strong>
+                                    </h2>
+                                </ion-text>
+                                <ion-text color="tertiary">
+                                    <h3>
+                                        {{user.description}}
+                                    </h3>
+                                </ion-text>
+                            </ion-label>
+
+                        </ion-item>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+
+        </ion-card-content>
+    </ion-card>
+
 </ion-content>

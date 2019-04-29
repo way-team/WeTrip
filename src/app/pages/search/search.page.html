@@ -5,29 +5,36 @@
     </ion-buttons>
     <ion-title color="light">{{ 'SEARCH.SEARCH' | translate}}</ion-title>
   </ion-toolbar>
-  <ion-toolbar color="dark">
-    <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
-    <ion-buttons slot="end">
-      <ion-button size="small" shape="round" color="medium" (click)="search()">
-        <ion-icon name="search"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-  <ion-button color="lightcyan" expand="full" (click)="goToMyTrips()" no-margin>
-    <ion-text aling="left">
-      {{ 'SEARCH.MY_TRIPS' | translate}}
-    </ion-text>
-  </ion-button>
+  <app-banner></app-banner>
+
+  <ion-card class="card-buttons">
+    <ion-toolbar color="dark">
+      <ion-searchbar [(ngModel)]="searchKey"></ion-searchbar>
+      <ion-buttons slot="end">
+        <ion-button size="small" shape="round" color="medium" (click)="search()">
+          <ion-icon name="search"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-button class="button-created" expand="full" (click)="goToMyTrips()" no-margin>
+      <ion-icon slot="end" name="exit"></ion-icon>
+      <ion-text aling="left">
+        {{ 'SEARCH.MY_TRIPS' | translate}}
+      </ion-text>
+    </ion-button>
+  </ion-card>
+
 </ion-header>
 
 
 <ion-content>
+
   <ng-container *ngIf="listSearch">
-    <ion-card>
+    <ion-card class="card-list">
       <ion-card-content class="bg-white">
 
         <div class="listSearch" *ngFor="let trip of listSearch">
-          <ion-card (click)="goTo('trip-detail/', trip.id)">
+          <ion-card class="card-item" style="cursor: pointer" (click)="goTo('trip-detail/', trip.id)">
             <ion-card-content class="bg-light">
 
               <ion-item>

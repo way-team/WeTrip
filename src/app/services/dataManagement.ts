@@ -150,6 +150,22 @@ export class DataManagement {
       }
     });
   }
+  public listYouWantToMeet(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .listYouWantToMeet()
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
 
   public listDiscover(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -167,7 +183,22 @@ export class DataManagement {
       }
     });
   }
-
+  public getData(offset: Number, limit: Number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .getData(offset, limit)
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
   public createTrip(
     title: string,
     description: string,
@@ -227,6 +258,17 @@ export class DataManagement {
   public rate(voted: string, rating: Number): Promise<any> {
     return this.restService
       .rate(voted, rating)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
+  public block(userToBlock: string): Promise<any> {
+    return this.restService
+      .block(userToBlock)
       .then(data => {
         return Promise.resolve(data);
       })
@@ -398,5 +440,16 @@ export class DataManagement {
         reject('error');
       }
     });
+  }
+
+  public deleteUser(): Promise<any> {
+    return this.restService
+      .deleteUser()
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
   }
 }
