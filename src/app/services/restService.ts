@@ -588,4 +588,8 @@ export class RestWS extends AbstractWS {
         return Promise.reject(err);
       });
   }
+
+  public turnOnDjangoServer() {
+    this.makePostRequest(this.path + 'backend-wakeup/', null);
+  }
 }
