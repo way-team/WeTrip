@@ -452,4 +452,8 @@ export class DataManagement {
         return Promise.reject(error);
       });
   }
+
+  public turnOnDjangoServer() {
+    this.restService.turnOnDjangoServer();
+  }
 }
