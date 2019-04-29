@@ -74,7 +74,6 @@
       "check-else",
       "check-whitespace"
     ],
-    "prefer-const": true,
     "quotemark": [
       false,
       "single"
