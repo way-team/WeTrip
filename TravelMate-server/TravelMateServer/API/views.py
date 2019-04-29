@@ -87,7 +87,7 @@ class UserPastTrips(APIView):
 
         trips = myTrips.sort(key=lambda x: x.startDate, reverse=True)
 
-        return Response(TripSerializer(trips, many=True).data)
+        return Response(TripSerializer(myTrips, many=True).data)
 
 class UserFutureTrips(APIView):
 
@@ -113,7 +113,7 @@ class UserFutureTrips(APIView):
 
         trips = myTrips.sort(key=lambda x: x.startDate, reverse=True)
 
-        return Response(TripSerializer(trips, many=True).data)
+        return Response(TripSerializer(myTrips, many=True).data)
 
 
 
