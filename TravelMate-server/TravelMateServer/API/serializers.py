@@ -103,8 +103,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     future_joined_trips = serializers.SerializerMethodField()
 
-    active_joined_trips = serializers.SerializerMethodField()
-
     class Meta:
         model = UserProfile
         fields = [
@@ -112,45 +110,60 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'birthdate', 'city', 'nationality', 'photo', 'discoverPhoto',
             'avarageRate', 'numRate', 'isPremium', 'status', 'gender',
             'languages', 'interests', 'created_trips', 'past_joined_trips',
-            'future_joined_trips', 'active_joined_trips'
+            'future_joined_trips', 
         ]
 
     def get_created_trips(self, obj):
         trip_queryset = obj.trip_set.all()
         return TripSerializer(trip_queryset, many=True).data
 
+
     def get_past_joined_trips(self, obj):
-        now = datetime.datetime.now()
+        today = datetime.datetime.now().date()
 
-        trip_queryset = Trip.objects.filter(
-            applications__applicant=obj,
-            applications__status="A",
-            endDate__lte=now,
-            startDate__lte=now)
+        applicant = obj
+        myApplications = Application.objects.filter(applicant = applicant, status = 'A')
+        myTrips = []
+        for app in myApplications:
+            if app.trip.startDate < today and app.trip.status == True and app.trip.tripType == "PUBLIC":
+                myTrips.append(app.trip)
 
-        return TripSerializer(trip_queryset, many=True).data
+        createdTrips = Trip.objects.filter(user=applicant, startDate__lt = today, status = True, tripType = 'PUBLIC')
+
+        for trip in createdTrips:
+            myTrips.append(trip)
+
+        myTrips.sort(key=lambda x: x.startDate, reverse=True)
+
+        return TripSerializer(myTrips, many=True).data
+
 
     def get_future_joined_trips(self, obj):
-        now = datetime.datetime.now()
+        today = datetime.datetime.now().date()
 
-        trip_queryset = Trip.objects.filter(
-            applications__applicant=obj,
-            applications__status="A",
-            endDate__gte=now,
-            startDate__gte=now)
+        applicant = obj
+        myApplications = Application.objects.filter(applicant = applicant, status = 'A')
+        myTrips = []
+        for app in myApplications:
+            if app.trip.startDate > today and app.trip.status == True and app.trip.tripType == "PUBLIC":
+                myTrips.append(app.trip)
 
-        return TripSerializer(trip_queryset, many=True).data
+        createdTrips = Trip.objects.filter(user=applicant, startDate__gte = today, status = True, tripType = 'PUBLIC')
 
-    def get_active_joined_trips(self, obj):
-        now = datetime.datetime.now()
+        for trip in createdTrips:
+            myTrips.append(trip)
 
-        trip_queryset = Trip.objects.filter(
-            applications__applicant=obj,
-            applications__status="A",
-            endDate__lte=now,
-            startDate__gte=now)
+        myTrips.sort(key=lambda x: x.startDate, reverse=True)
 
-        return TripSerializer(trip_queryset, many=True).data
+        return TripSerializer(myTrips, many=True).data
+   
+
+
+
+class FullUserProfileSerializer(serializers.Serializer):
+    user = UserProfileSerializer(many = False)
+    pastTrips = TripSerializer(many = True)
+    futureTrips = TripSerializer(many = True)
 
 
 class MessageSerializer(serializers.ModelSerializer):
