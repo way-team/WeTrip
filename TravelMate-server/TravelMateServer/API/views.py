@@ -662,11 +662,13 @@ class GetTripView(APIView):
             trip = Trip.objects.get(pk=trip_id)
             applications = Application.objects.filter(trip=trip, status="A")
             pendings = Application.objects.filter(trip=trip, status="P")
+            rejected = Application.objects.filter(trip=trip, status="R")
 
             full_trip = FullTrip(
                 trip=trip,
                 applicationsList=applications,
                 pendingsList=pendings,
+                rejectedList=rejected,
             )
             return Response(FullTripSerializer(full_trip, many=False).data)
         except Trip.DoesNotExist:

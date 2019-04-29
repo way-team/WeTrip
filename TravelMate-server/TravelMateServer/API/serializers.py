@@ -65,6 +65,7 @@ class FullTripSerializer(serializers.Serializer):
     trip = TripSerializer(many=False)
     applicationsList = ApplicationSerializer(many=True)
     pendingsList = ApplicationSerializer(many=True)
+    rejectedList = ApplicationSerializer(many=True)
 
 
 class CitySerializer(serializers.ModelSerializer):
