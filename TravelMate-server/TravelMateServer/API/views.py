@@ -35,8 +35,9 @@ def get_user_by_token(request):
     return user_profile
 
 
+
 class GetUserView(APIView):
-    def post(self, request):
+    def get(self, request):
         user_profile = get_user_by_token(request)
 
         return Response(UserProfileSerializer(user_profile, many=False).data)
@@ -61,60 +62,6 @@ def refreshUserAverageRating(votedUserProfile):
     votedUserProfile.avarageRate = avgUserRating
     votedUserProfile.numRate = numRatings
     votedUserProfile.save()
-
-
-class UserPastTrips(APIView):
-
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
-
-    def get(self, request):
-
-        today = datetime.today().date()
-
-        applicantname = request.data.get("username", "")
-        applicant = User.objects.get(username=applicantname).userprofile
-        myApplications = Application.objects.filter(applicant = applicant).exclude(Q(status='R') & Q(status='P'))
-        myTrips = []
-        for app in myApplications:
-            if app.trip.startDate < today and app.trip.status == True and app.trip.tripType == "PUBLIC":
-                myTrips.append(app.trip)
-
-        createdTrips = Trip.objects.filter(Q(user=applicant) & Q(startDate__lt = today) & Q(status = True) & Q(tripType = 'PUBLIC'))
-
-        for trip in createdTrips:
-            myTrips.append(trip)
-
-        trips = myTrips.sort(key=lambda x: x.startDate, reverse=True)
-
-        return Response(TripSerializer(myTrips, many=True).data)
-
-class UserFutureTrips(APIView):
-
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
-
-    def get(self, request):
-
-        today = datetime.today().date()
-
-        applicantname = request.data.get("username", "")
-        applicant = User.objects.get(username=applicantname).userprofile
-        myApplications = Application.objects.filter(applicant = applicant).exclude(Q(status='R') & Q(status='P'))
-        myTrips = []
-        for app in myApplications:
-            if app.trip.startDate > today and app.trip.status == True and app.trip.tripType == "PUBLIC":
-                myTrips.append(app.trip)
-
-        createdTrips = Trip.objects.filter(Q(user=applicant) & Q(startDate__gte = today) & Q(status = True) & Q(tripType = 'PUBLIC'))
-
-        for trip in createdTrips:
-            myTrips.append(trip)
-
-        trips = myTrips.sort(key=lambda x: x.startDate, reverse=True)
-
-        return Response(TripSerializer(myTrips, many=True).data)
-
 
 
 class RateUser(APIView):
@@ -644,7 +591,7 @@ class CreateTrip(APIView):
             return Response(TripSerializer(trip, many=False).data)
 
 
-FullTrip = namedtuple('FullTrip', ('trip', 'applicationsList', 'pendingsList'))
+FullTrip = namedtuple('FullTrip', ('trip', 'applicationsList', 'pendingsList', 'rejectedList'))
 
 
 class GetTripView(APIView):
