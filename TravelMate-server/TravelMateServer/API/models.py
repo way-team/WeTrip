@@ -61,6 +61,16 @@ class UserProfile(models.Model):
     )
     gender = models.CharField(max_length=1, choices=GENDER_OPTIONS, null=True)
 
+    profesion = models.CharField(max_length=80, default='')
+
+    
+    CIVIL_STATUS = (
+        ('M', 'Married'),
+        ('S', 'Single'),
+        ('R', 'Widower'),
+        ('W', 'Widow'),
+    )
+    civilStatus = models.CharField(max_length=1, choices=CIVIL_STATUS, null=True)
     def __str__(self):
         return self.user.username
 
