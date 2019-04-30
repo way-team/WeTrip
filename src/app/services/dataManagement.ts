@@ -240,7 +240,8 @@ export class DataManagement {
     end_date: String,
     trip_type: string,
     city: Number,
-    userImage
+    userImage,
+    price: Number
   ): Promise<any> {
     return this.restService
       .editTrip(
@@ -251,7 +252,8 @@ export class DataManagement {
         end_date,
         trip_type,
         city,
-        userImage
+        userImage,
+        price
       )
       .then(data => {
         return Promise.resolve(data);

@@ -60,6 +60,7 @@ export class CreateTripPage implements OnInit {
       this.dm
         .getTripById(this.id)
         .then(response => {
+          this.price = response['trip'].price;
           this.title = response['trip'].title;
           this.description = response['trip'].description;
           this.start_date = response['trip'].startDate;
@@ -67,8 +68,8 @@ export class CreateTripPage implements OnInit {
           this.trip_type = response['trip'].tripType;
           this.city = new City();
           this.city.name = response['trip'].cities[0];
-          this.city.id = this.cities.find(x => x.name == this.city.name)[0].id;
-          this.userImage = response['trip'].userImage;
+          this.city.id = this.cities.find(x => x.name == this.city.name).id;
+
           loadingCtrl.dismiss();
         })
         .catch(_ => {});
@@ -132,7 +133,8 @@ export class CreateTripPage implements OnInit {
         this.end_date.split('T')[0],
         this.trip_type,
         this.city.id,
-        this.userImage
+        this.userImage,
+        this.price
       )
       .then(data => {
         this.navCtrl.navigateForward('/trips');
