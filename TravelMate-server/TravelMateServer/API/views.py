@@ -522,11 +522,6 @@ class AvailableTripsList(generics.ListAPIView):
                 tripType='PUBLIC')).exclude(
                     user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
-        return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
-            Q(status=True) & Q(startDate__gte=today) & Q(
-                tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=rejectedAppTripsIds).order_by('-isPremiumUser')
-
 
 class AvailableTripsSearch(generics.ListAPIView):
     ''' Search trips available (Application not rejected) '''
