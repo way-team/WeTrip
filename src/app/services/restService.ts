@@ -340,8 +340,7 @@ export class RestWS extends AbstractWS {
           fd.append('file', userImage, userImage.name);
         }
 
-        user = res;
-        fd.append('user_id', String(user.id));
+        fd.append('user_id', String(res.user.id));
 
         return this.makePostRequest(this.path + 'createTrip/', fd, token)
           .then(res2 => {
