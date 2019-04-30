@@ -22,7 +22,7 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'CREATE_TRIP.TITLE' | translate}}
             </ion-label>
-            <ion-input [(ngModel)]="title" maxlength="100" type="text" formControlName="title"></ion-input>
+            <ion-input [(ngModel)]="title" maxlength="20" type="text" formControlName="title"></ion-input>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('title').touched && onCreateForm.get('title').hasError('required')">

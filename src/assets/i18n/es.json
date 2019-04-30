@@ -215,7 +215,7 @@
     "ELIMINATED": "Este usuario ha decidido tomar otro sendero.",
     "EMAIL": "Correo electrónico",
     "FULL_NAME": "Nombre completo",
-    "FUTURE_VISIT": "Viajes futuros",
+    "FUTURE_VISIT": "Viajes en los que me he apuntado",
     "HAS_VISITED": "Ha visitado",
     "NO_USER_ACCEPTED": "No hay asistentes",
     "NO_USER_PENDING": "No hay usuarios pendientes de aceptar",
@@ -225,7 +225,7 @@
     "TRAVEL_TYPE": "Tipo de viaje",
     "USERS_ACCEPTED": "Usuarios que asistirán a tu viaje",
     "USERS_TO_ACCEPT": "Usuarios por aceptar",
-    "WANTS_TO_GO_TO": "Quiere ir a",
+    "CREATE": "Mis viajes",
     "YES": "SI"
   },
   "RATING": {

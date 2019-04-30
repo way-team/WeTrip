@@ -10,25 +10,25 @@
 <div class="profile" *ngIf="user">
 
 
-    <ng-container *ngIf="user.status=='D'">
+  <ng-container *ngIf="user.status=='D'">
 
-      <ion-list-header color="dark">
-        <ion-label class="fw700">{{ 'PROFILE.DELETED' | translate }}</ion-label>
-      </ion-list-header>
-    
-      <ion-item color="primary" class="text-20">
-        <ion-label>{{ 'PROFILE.ELIMINATED' | translate }}</ion-label>
-      </ion-item>
-    </ng-container>
-    <ng-container *ngIf="user.status=='A'">
+    <ion-list-header color="dark">
+      <ion-label class="fw700">{{ 'PROFILE.DELETED' | translate }}</ion-label>
+    </ion-list-header>
+
+    <ion-item color="primary" class="text-20">
+      <ion-label>{{ 'PROFILE.ELIMINATED' | translate }}</ion-label>
+    </ion-item>
+  </ng-container>
+  <ng-container *ngIf="user.status=='A'">
     <ion-card no-margin>
       <ion-card-content class="bg-profile">
         <ng-container *ngIf="false">
-            <h2 color="light" margin-bottom> {{ 'PROFILE.ADMIN' | translate }} </h2>
+          <h2 color="light" margin-bottom> {{ 'PROFILE.ADMIN' | translate }} </h2>
         </ng-container>
         <ng-container *ngIf="user.isPremium">
-          <h1> 
-            {{ 'PROFILE.PREMIUM' | translate }} 
+          <h1>
+            {{ 'PROFILE.PREMIUM' | translate }}
             <ion-icon name="trophy"></ion-icon>
           </h1>
         </ng-container>
@@ -89,7 +89,7 @@
             <ion-list>
               <ion-radio-group>
                 <ion-list-header color="light">
-                  <ion-label class="fw700">{{ 'PROFILE.WANTS_TO_GO_TO' | translate }}</ion-label>
+                  <ion-label class="fw700">{{ 'PROFILE.CREATE' | translate }}</ion-label>
                 </ion-list-header>
 
                 <ion-item *ngFor="let i of user.created_trips">
@@ -123,31 +123,33 @@
             </ion-list>
 
             <ion-list>
-                <ion-radio-group>
-                  <ion-list-header color="light">
-                    <ion-label class="fw700">{{ 'PROFILE.FUTURE_VISIT' | translate }}</ion-label>
-                  </ion-list-header>
-                  <ion-item *ngFor="let i of user.active_joined_trips">
-                    <div *ngIf=""></div>
-                    <ion-label color="primary">
-                      {{ i.title }}
-                    </ion-label>
-                    <ion-label>
-                        {{ 'PROFILE.CREATOR' | translate }}
-                      <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.creator)">
-                        <ion-text color="tertiary"> {{ i.creator }} </ion-text>
-                      </a>
-                    </ion-label>
-                  </ion-item>
-                </ion-radio-group>
-              </ion-list>
+              <ion-radio-group>
+                <ion-list-header color="light">
+                  <ion-label class="fw700">{{ 'PROFILE.FUTURE_VISIT' | translate }}</ion-label>
+                </ion-list-header>
+                <ion-item *ngFor="let i of user.future_joined_trips">
+                  <div *ngIf=""></div>
+                  <ion-label color="primary">
+                    {{ i.title }}
+                  </ion-label>
+                  <ion-label>
+                    {{ 'PROFILE.CREATOR' | translate }}
+                    <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.creator)">
+                      <ion-text color="tertiary"> {{ i.creator }} </ion-text>
+                    </a>
+                  </ion-label>
+                </ion-item>
+              </ion-radio-group>
+            </ion-list>
 
           </ion-col>
         </ion-row>
       </ion-grid>
 
       <div *ngIf="myProfile">
-          <div style="text-align:center;" (click)="delete()"><ion-button color="danger">{{ 'PROFILE.DELETE_BUTTON' | translate }}</ion-button></div>
+        <div style="text-align:center;" (click)="delete()">
+          <ion-button color="danger">{{ 'PROFILE.DELETE_BUTTON' | translate }}</ion-button>
+        </div>
       </div>
     </ion-card>
   </ng-container>
