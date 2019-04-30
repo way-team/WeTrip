@@ -409,10 +409,9 @@ class DiscoverPeopleView(APIView):
         POST method
         """
         user = get_user_by_token(request)
-
         friends, pending, rejected = get_friends(user, True)
-        limit = request.data.get("limit","")
-        offset = request.data.get("offset","")
+        limit = int(request.data.get("limit",""))
+        offset = int(request.data.get("offset",""))
         discover_people = []
         interests = user.interests.all()
 
@@ -452,8 +451,8 @@ class DiscoverPeopleView(APIView):
             discover_people.discard(person)
 
         discover_people.discard(user)
-
-        return Response(UserProfileSerializer(discover_people[offset:offset+limit], many=True).data)
+        discover_people = list(discover_people)
+        return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
 
 class MyTripsList(generics.ListAPIView):
@@ -547,6 +546,7 @@ class CreateTrip(APIView):
         user = User.objects.get(username=username).userprofile
         title = request.data.get('title', '')
         description = request.data.get('description', '')
+        price = request.data.get('price', '')
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
@@ -564,6 +564,7 @@ class CreateTrip(APIView):
                 user=user,
                 title=title,
                 description=description,
+                price=price,
                 startDate=startDate,
                 endDate=endDate,
                 tripType=tripType,
@@ -577,6 +578,7 @@ class CreateTrip(APIView):
                 user=user,
                 title=title,
                 description=description,
+                price=price,
                 startDate=startDate,
                 endDate=endDate,
                 tripType=tripType,
@@ -645,7 +647,8 @@ class EditTripView(APIView):
         if request.data["startDate"] > request.data["endDate"]:
             raise ValueError("The start date must be before that the end date")
 
-        # if request.data[""]
+        if request.data["tripType"] == "PUBLIC":
+            raise ValueError("This trip is public, so it can't be edited ")
 
         serializer = TripSerializer(trip, data=data)
         if serializer.is_valid():
@@ -940,6 +943,8 @@ class RegisterUser(APIView):
         gender = request.data.get('gender', '')
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
+        profesion = request.data.get('profesion', '')
+        civilStatus = request.data.get('civilStatus', '')
         status = 'A'
         import json
         languages = json.loads(request.data.get('languages'))
@@ -962,6 +967,8 @@ class RegisterUser(APIView):
                 nationality=nationality,
                 city=city,
                 status=status,
+                profesion=profesion,
+                civilStatus=civilStatus,
                 photo=photo,
                 discoverPhoto=discoverPhoto)
 
@@ -988,6 +995,8 @@ class RegisterUser(APIView):
                     nationality=nationality,
                     city=city,
                     status=status,
+                    profesion=profesion,
+                    civilStatus=civilStatus,
                     photo=photo)
 
                 userProfile.save()
@@ -1013,6 +1022,8 @@ class RegisterUser(APIView):
                         nationality=nationality,
                         city=city,
                         status=status,
+                        profesion=profesion,
+                        civilStatus=civilStatus,
                         discoverPhoto=discoverPhoto)
 
                     userProfile.save()
@@ -1033,7 +1044,9 @@ class RegisterUser(APIView):
                         gender=gender,
                         nationality=nationality,
                         city=city,
-                        status=status)
+                        status=status,
+                        profesion=profesion,
+                        civilStatus=civilStatus)
                     userProfile.save()
                     for i in languages:
                         lang = Language.objects.get(name=i)
