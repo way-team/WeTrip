@@ -13,6 +13,8 @@ export class UserProfile {
   numRate: Number;
   isPremium: boolean;
   status: string;
+  profesion: string;
+  civilStatus: string;
   gender: string;
   language: string;
   interests: string[];

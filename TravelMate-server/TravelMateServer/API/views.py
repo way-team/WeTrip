@@ -467,6 +467,8 @@ class MyTripsList(generics.ListAPIView):
 
 
 class AvailableTripsList(generics.ListAPIView):
+    ''' Gets trips available (Application not rejected) '''
+    
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
@@ -475,17 +477,19 @@ class AvailableTripsList(generics.ListAPIView):
     def get_queryset(self):
         today = datetime.today()
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id).exclude(status='R')
-        myTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myApplications = Application.objects.filter(applicant_id = self.request.user.id, status='R')
+        rejectedAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=rejectedAppTripsIds).order_by('-isPremiumUser')
 
 
 class AvailableTripsSearch(generics.ListAPIView):
+    ''' Search trips available (Application not rejected) '''
+
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
@@ -494,14 +498,14 @@ class AvailableTripsSearch(generics.ListAPIView):
     def get_queryset(self):
         today = datetime.today()
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id).exclude(status='R')
-        myTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myApplications = Application.objects.filter(applicant_id = self.request.user.id, status='R')
+        rejectedAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=rejectedAppTripsIds).order_by('-isPremiumUser')
 
     queryset = get_queryset
     serializer_class = TripSerializer
@@ -1059,3 +1063,7 @@ class RegisterUser(APIView):
         finally:
             return Response(
                 UserProfileSerializer(userProfile, many=False).data)
+
+
+def backendWakeUp(request):
+    return JsonResponse({'message':'Waking up backend'}, status=200)

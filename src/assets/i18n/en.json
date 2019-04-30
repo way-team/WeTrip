@@ -215,7 +215,7 @@
     "ELIMINATED": "This user has decided to take another trail.",
     "EMAIL": "Email",
     "FULL_NAME": "Full name",
-    "FUTURE_VISIT": "Future trips",
+    "FUTURE_VISIT": "Trips where I am applied",
     "HAS_VISITED": "Has visited",
     "NO_USER_ACCEPTED": "No attendants",
     "NO_USER_PENDING": "No users pending to accept",
@@ -225,8 +225,16 @@
     "TRAVEL_TYPE": "Travel type",
     "USERS_ACCEPTED": "Attendants",
     "USERS_TO_ACCEPT": "Users to accept",
-    "WANTS_TO_GO_TO": "Wants to go to",
-    "YES": "YES"
+    "CREATE": "My trips",
+    "YES": "YES",
+    "PROFESSION": "Profession",
+    "CIVILSTATUS": "Civil Status",
+    "AGE": "Age",
+    "SINGLE": "Single",
+    "WIDOW": "Widow",
+    "MARRIED": "Married",
+    "WIDOWER": "Widower",
+    "DIVORCED": "Divorced"
   },
   "RATING": {
     "RATE": "Rate",
