@@ -48,13 +48,14 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getData(6,1);
+    this.getData(9,1);
 
   }
+
  loadData(event) {
     setTimeout(() => {
       console.log('Done');
-      this.getData(6 + this.discover.length, 1);
+      this.getData(9 + this.discover.length, 1);
       this.discover.concat(this.newData);
       event.target.complete();
 
