@@ -41,7 +41,7 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = [
-            'id', 'creator', 'title', 'description', 'startDate', 'endDate',
+            'id', 'creator', 'title', 'description','price', 'startDate', 'endDate',
             'tripType', 'image', 'userImage', 'status', 'applications_count',
             'cities_count', 'cities'
         ]
@@ -108,7 +108,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             'user', 'email', 'first_name', 'last_name', 'description',
             'birthdate', 'city', 'nationality', 'photo', 'discoverPhoto',
-            'avarageRate', 'numRate', 'isPremium', 'status', 'gender',
+            'avarageRate', 'numRate', 'isPremium', 'status','profesion','civilStatus', 'gender',
             'languages', 'interests', 'created_trips', 'past_joined_trips',
             'future_joined_trips', 
         ]
