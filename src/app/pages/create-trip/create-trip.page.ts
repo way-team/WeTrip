@@ -23,6 +23,7 @@ export class CreateTripPage implements OnInit {
   start_date: string;
   end_date: string;
   trip_type: string = 'PUBLIC';
+  price: Number;
   city: City;
   image: File = null;
   error: string;
@@ -78,6 +79,7 @@ export class CreateTripPage implements OnInit {
     this.onCreateForm = this.formBuilder.group({
       title: [null, Validators.compose([Validators.required])],
       start_date: [null, Validators.compose([Validators.required])],
+      price: [null, Validators.compose([Validators.required])],
       end_date: [null, Validators.compose([Validators.required])],
       city: [null, Validators.compose([Validators.required])],
       userImage: [null, null]
@@ -94,7 +96,8 @@ export class CreateTripPage implements OnInit {
         this.end_date.split('T')[0],
         this.trip_type,
         this.city.id,
-        this.userImage
+        this.userImage,
+        this.price
       )
       .then(data => {
         this.navCtrl.navigateForward('/trips');

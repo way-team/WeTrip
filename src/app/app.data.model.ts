@@ -34,6 +34,7 @@ export class Interest {
 export class Trip {
   id: Number;
   title: String;
+  price: Number;
   description: String;
   startDate: Date;
   endDate: Date;

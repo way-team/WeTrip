@@ -585,7 +585,7 @@ class CreateTrip(APIView):
         user = User.objects.get(username=username).userprofile
         title = request.data.get('title', '')
         description = request.data.get('description', '')
-        price = request.data.get('price', '')
+        price = request.data.get('price', '0')
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')

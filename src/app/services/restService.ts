@@ -322,7 +322,8 @@ export class RestWS extends AbstractWS {
     end_date: String,
     trip_type: string,
     city: Number,
-    userImage
+    userImage,
+    price
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -331,6 +332,7 @@ export class RestWS extends AbstractWS {
     return this.getUserLogged(token)
       .then(res => {
         fd.append('title', title);
+        fd.append('price', price);
         fd.append('description', description);
         fd.append('start_date', String(start_date));
         fd.append('end_date', String(end_date));
