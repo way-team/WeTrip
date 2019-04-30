@@ -1059,3 +1059,7 @@ class RegisterUser(APIView):
         finally:
             return Response(
                 UserProfileSerializer(userProfile, many=False).data)
+
+
+def backendWakeUp(request):
+    return JsonResponse({'message':'Waking up backend'}, status=200)
