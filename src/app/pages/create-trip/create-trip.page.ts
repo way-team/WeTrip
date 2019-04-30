@@ -44,36 +44,6 @@ export class CreateTripPage implements OnInit {
     private loadingCtrl: LoadingController
   ) {
     this.listCities();
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (this.id) {
-      const translation2: string = this.translate.instant('LOGIN.WAIT');
-      this.loadingCtrl
-        .create({
-          message: translation2,
-          showBackdrop: true,
-          duration: 1000
-        })
-        .then(loadingEl => {
-          loadingEl.present();
-        });
-
-      this.dm
-        .getTripById(this.id)
-        .then(response => {
-          this.price = response['trip'].price;
-          this.title = response['trip'].title;
-          this.description = response['trip'].description;
-          this.start_date = response['trip'].startDate;
-          this.end_date = response['trip'].endDate;
-          this.trip_type = response['trip'].tripType;
-          this.city = new City();
-          this.city.name = response['trip'].cities[0];
-          this.city.id = this.cities.find(x => x.name == this.city.name).id;
-
-          loadingCtrl.dismiss();
-        })
-        .catch(_ => {});
-    }
   }
 
   ngOnInit() {
@@ -122,7 +92,7 @@ export class CreateTripPage implements OnInit {
   }
 
   public editTrip() {
-    console.log(typeof this.userImage);
+    console.log(this.city);
     const translation: string = this.translate.instant('TRIPS.ERROR');
     this.dm
       .editTrip(
@@ -162,6 +132,36 @@ export class CreateTripPage implements OnInit {
       .listCities()
       .then(data => {
         this.cities = data;
+        this.id = this.activatedRoute.snapshot.paramMap.get('id');
+        if (this.id) {
+          const translation2: string = this.translate.instant('LOGIN.WAIT');
+          this.loadingCtrl
+            .create({
+              message: translation2,
+              showBackdrop: true,
+              duration: 1000
+            })
+            .then(loadingEl => {
+              loadingEl.present();
+            });
+
+          this.dm
+            .getTripById(this.id)
+            .then(response => {
+              this.price = response['trip'].price;
+              this.title = response['trip'].title;
+              this.description = response['trip'].description;
+              this.start_date = response['trip'].startDate;
+              this.end_date = response['trip'].endDate;
+              this.trip_type = response['trip'].tripType;
+              this.city = new City();
+              this.city.name = response['trip'].cities[0];
+              this.city.id = this.cities.find(x => x.name == this.city.name).id;
+
+              this.loadingCtrl.dismiss();
+            })
+            .catch(_ => {});
+        }
       })
       .catch(error => {
         console.log(error);

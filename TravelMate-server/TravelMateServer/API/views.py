@@ -699,7 +699,7 @@ class EditTripView(APIView):
             serializer.save()
             try:
                 new_city = City.objects.get(pk=request.data["city"])
-                trip.city = new_city
+                new_city.trips.add(trip)
             except City.DoesNotExist:
                 raise ValueError("The city does not exist")
             return JsonResponse(serializer.data, status=201)
