@@ -648,7 +648,8 @@ class EditTripView(APIView):
         if request.data["startDate"] > request.data["endDate"]:
             raise ValueError("The start date must be before that the end date")
 
-        # if request.data[""]
+        if request.data["tripType"] == "PUBLIC":
+            raise ValueError("This trip is public, so it can't be edited ")
 
         serializer = TripSerializer(trip, data=data)
         if serializer.is_valid():
