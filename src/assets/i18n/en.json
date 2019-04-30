@@ -234,7 +234,12 @@
     "WIDOW": "Widow",
     "MARRIED": "Married",
     "WIDOWER": "Widower",
-    "DIVORCED": "Divorced"
+    "DIVORCED": "Divorced",
+    "GENDER": "Gender",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "NON-BINARY": "Non-Binary",
+    "LANGUAGES": "Languages"
   },
   "RATING": {
     "RATE": "Rate",
