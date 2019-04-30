@@ -984,6 +984,14 @@ class RegisterUser(APIView):
         lastName = request.data.get('last_name', '')
         description = request.data.get('description', '')
         birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
+
         gender = request.data.get('gender', '')
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
