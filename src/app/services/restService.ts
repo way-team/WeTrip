@@ -388,7 +388,7 @@ export class RestWS extends AbstractWS {
 
     return this.makePostRequest(this.path + 'editTrip/', fd, token)
       .then(res2 => {
-        console.log('Se ha creado exitosamente');
+        console.log('Se ha editado exitosamente');
         return Promise.resolve(res2);
       })
       .catch(error => {

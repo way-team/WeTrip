@@ -678,7 +678,10 @@ class EditTripView(APIView):
         POST method
         """
         data = request.data
+
         trip = Trip.objects.get(pk=request.data["tripId"])
+        if data.get('file'):
+            trip.userImage = data.get('file')
 
         stored_creator = trip.user
         user = get_user_by_token(request)
@@ -686,7 +689,7 @@ class EditTripView(APIView):
             raise ValueError("You are not the creator of this trip")
 
         if request.data["startDate"] > request.data["endDate"]:
-            raise ValueError("The start date must be before that the end date")
+            raise ValueError("The start date must be before the end date")
 
         if request.data["tripType"] == "PUBLIC":
             raise ValueError("This trip is public, so it can't be edited ")
