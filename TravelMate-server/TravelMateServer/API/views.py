@@ -511,15 +511,16 @@ class AvailableTripsList(generics.ListAPIView):
 
     def get_queryset(self):
         today = datetime.today()
+        user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id, status='R')
-        rejectedAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=rejectedAppTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
 
 class AvailableTripsSearch(generics.ListAPIView):
@@ -532,15 +533,16 @@ class AvailableTripsSearch(generics.ListAPIView):
 
     def get_queryset(self):
         today = datetime.today()
+        user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id, status='R')
-        rejectedAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=rejectedAppTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
     queryset = get_queryset
     serializer_class = TripSerializer
@@ -585,7 +587,7 @@ class CreateTrip(APIView):
         user = User.objects.get(username=username).userprofile
         title = request.data.get('title', '')
         description = request.data.get('description', '')
-        price = request.data.get('price', '')
+        price = request.data.get('price', '0')
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
@@ -676,7 +678,10 @@ class EditTripView(APIView):
         POST method
         """
         data = request.data
+
         trip = Trip.objects.get(pk=request.data["tripId"])
+        if data.get('file'):
+            trip.userImage = data.get('file')
 
         stored_creator = trip.user
         user = get_user_by_token(request)
@@ -684,7 +689,7 @@ class EditTripView(APIView):
             raise ValueError("You are not the creator of this trip")
 
         if request.data["startDate"] > request.data["endDate"]:
-            raise ValueError("The start date must be before that the end date")
+            raise ValueError("The start date must be before the end date")
 
         if request.data["tripType"] == "PUBLIC":
             raise ValueError("This trip is public, so it can't be edited ")
@@ -694,7 +699,7 @@ class EditTripView(APIView):
             serializer.save()
             try:
                 new_city = City.objects.get(pk=request.data["city"])
-                trip.city = new_city
+                new_city.trips.add(trip)
             except City.DoesNotExist:
                 raise ValueError("The city does not exist")
             return JsonResponse(serializer.data, status=201)
@@ -979,6 +984,14 @@ class RegisterUser(APIView):
         lastName = request.data.get('last_name', '')
         description = request.data.get('description', '')
         birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
+
         gender = request.data.get('gender', '')
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
