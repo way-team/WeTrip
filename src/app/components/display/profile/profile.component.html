@@ -57,6 +57,17 @@
                 <ion-label color="dark">{{ 'PROFILE.FULL_NAME' | translate }}</ion-label>
                 {{ user.first_name }} {{ user.last_name }}
               </ion-item>
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.GENDER' | translate }}</ion-label>
+                <ion-text *ngIf="user.gender == 'M'">{{ 'PROFILE.MALE' | translate }}</ion-text>
+                <ion-text *ngIf="user.gender == 'F'">{{ 'PROFILE.GEMALE' | translate }}</ion-text>
+                <ion-text *ngIf="user.gender == 'N'">{{ 'PROFILE.NON-BINARY' | translate }}</ion-text>
+              </ion-item>
+
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.AGE' | translate }}</ion-label>
+                {{ user.age }}
+              </ion-item>
 
               <ion-item>
                 <ion-label color="dark">{{ 'PROFILE.EMAIL' | translate }}</ion-label>
@@ -70,7 +81,7 @@
 
               <ion-item>
                 <ion-label color="dark">{{ 'PROFILE.STATE' | translate }}</ion-label>
-                Spain
+                {{user.nationality}}
               </ion-item>
 
               <ion-item>
@@ -85,6 +96,15 @@
                 <ion-text *ngIf="user.civilStatus == 'R'">{{ 'PROFILE.WIDOWER' | translate }}</ion-text>
                 <ion-text *ngIf="user.civilStatus == 'W'">{{ 'PROFILE.WIDOW' | translate }}</ion-text>
                 <ion-text *ngIf="user.civilStatus == 'D'">{{ 'PROFILE.DIVORCED' | translate }}</ion-text>
+              </ion-item>
+
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.LANGUAGES' | translate }}</ion-label>
+                <ion-list>
+                  <ion-item *ngFor="let language of user.languages">
+                    {{language}}
+                  </ion-item>
+                </ion-list>
               </ion-item>
             </ion-list>
 
@@ -119,7 +139,7 @@
                 <ion-list-header color="light">
                   <ion-label class="fw700">{{ 'PROFILE.HAS_VISITED' | translate }}</ion-label>
                 </ion-list-header>
-                <ion-item *ngFor="let i of user.past_joined_trips">
+                <ion-item *ngFor="let i of past_joined_trips">
                   <div *ngIf=""></div>
                   <ion-label color="primary">
                     {{ i.title }}

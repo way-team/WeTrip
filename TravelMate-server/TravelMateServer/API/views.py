@@ -1096,8 +1096,7 @@ class RegisterUser(APIView):
             
 
         finally:
-            return Response(
-                UserProfileSerializer(userProfile, many=False).data)
+            return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
 
 
 def backendWakeUp(request):

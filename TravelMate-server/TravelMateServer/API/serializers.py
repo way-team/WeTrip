@@ -41,9 +41,9 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = [
-            'id', 'creator', 'title', 'description','price', 'startDate', 'endDate',
-            'tripType', 'image', 'userImage', 'status', 'applications_count',
-            'cities_count', 'cities'
+            'id', 'creator', 'title', 'description', 'price', 'startDate',
+            'endDate', 'tripType', 'image', 'userImage', 'status',
+            'applications_count', 'cities_count', 'cities'
         ]
 
     def get_creator(self, obj):
@@ -106,29 +106,51 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = [
-            'user', 'email', 'first_name', 'last_name', 'description',
-            'birthdate', 'city', 'nationality', 'photo', 'discoverPhoto',
-            'avarageRate', 'numRate', 'isPremium', 'status','profesion','civilStatus', 'gender',
-            'languages', 'interests', 'created_trips', 'past_joined_trips',
-            'future_joined_trips', 
+            'user',
+            'age',
+            'email',
+            'first_name',
+            'last_name',
+            'description',
+            'birthdate',
+            'city',
+            'nationality',
+            'photo',
+            'discoverPhoto',
+            'avarageRate',
+            'numRate',
+            'isPremium',
+            'status',
+            'profesion',
+            'civilStatus',
+            'gender',
+            'languages',
+            'interests',
+            'created_trips',
+            'past_joined_trips',
+            'future_joined_trips',
         ]
 
     def get_created_trips(self, obj):
         trip_queryset = obj.trip_set.all()
         return TripSerializer(trip_queryset, many=True).data
 
-
     def get_past_joined_trips(self, obj):
         today = datetime.datetime.now().date()
 
         applicant = obj
-        myApplications = Application.objects.filter(applicant = applicant, status = 'A')
+        myApplications = Application.objects.filter(
+            applicant=applicant, status='A')
         myTrips = []
         for app in myApplications:
             if app.trip.startDate < today and app.trip.status == True and app.trip.tripType == "PUBLIC":
                 myTrips.append(app.trip)
 
-        createdTrips = Trip.objects.filter(user=applicant, startDate__lt = today, status = True, tripType = 'PUBLIC')
+        createdTrips = Trip.objects.filter(
+            user=applicant,
+            startDate__lt=today,
+            status=True,
+            tripType='PUBLIC')
 
         for trip in createdTrips:
             myTrips.append(trip)
@@ -136,19 +158,23 @@ class UserProfileSerializer(serializers.ModelSerializer):
         myTrips.sort(key=lambda x: x.startDate, reverse=True)
 
         return TripSerializer(myTrips, many=True).data
-
 
     def get_future_joined_trips(self, obj):
         today = datetime.datetime.now().date()
 
         applicant = obj
-        myApplications = Application.objects.filter(applicant = applicant, status = 'A')
+        myApplications = Application.objects.filter(
+            applicant=applicant, status='A')
         myTrips = []
         for app in myApplications:
             if app.trip.startDate > today and app.trip.status == True and app.trip.tripType == "PUBLIC":
                 myTrips.append(app.trip)
 
-        createdTrips = Trip.objects.filter(user=applicant, startDate__gte = today, status = True, tripType = 'PUBLIC')
+        createdTrips = Trip.objects.filter(
+            user=applicant,
+            startDate__gte=today,
+            status=True,
+            tripType='PUBLIC')
 
         for trip in createdTrips:
             myTrips.append(trip)
@@ -156,14 +182,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         myTrips.sort(key=lambda x: x.startDate, reverse=True)
 
         return TripSerializer(myTrips, many=True).data
-   
-
 
 
 class FullUserProfileSerializer(serializers.Serializer):
-    user = UserProfileSerializer(many = False)
-    pastTrips = TripSerializer(many = True)
-    futureTrips = TripSerializer(many = True)
+    user = UserProfileSerializer(many=False)
+    pastTrips = TripSerializer(many=True)
+    futureTrips = TripSerializer(many=True)
 
 
 class MessageSerializer(serializers.ModelSerializer):

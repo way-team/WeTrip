@@ -64,7 +64,9 @@ export class CreateTripPage implements OnInit {
           this.start_date = response['trip'].startDate;
           this.end_date = response['trip'].endDate;
           this.trip_type = response['trip'].tripType;
-          this.city = response['trip'].city;
+          this.city = new City();
+          this.city.name = response['trip'].cities[0];
+          this.city.id = this.cities.find(x => x.name == this.city.name)[0].id;
           this.userImage = response['trip'].userImage;
           loadingCtrl.dismiss();
         })

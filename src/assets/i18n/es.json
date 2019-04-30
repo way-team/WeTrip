@@ -27,6 +27,7 @@
   "CREATE_TRIP": {
     "CITY": "Ciudad",
     "CREATE_NEW_TRIP": "Crear un viaje nuevo",
+    "EDIT_TRIP": "Editar viaje",
     "DESCRIPTION": "Descripción",
     "EDIT": "Editar",
     "END_DATE": "Fecha de finalización",
@@ -234,7 +235,12 @@
     "MARRIED": "Casado",
     "WIDOW": "Viudo",
     "WIDOWER": "Viuda",
-    "DIVORCED": "Divorciado"
+    "DIVORCED": "Divorciado",
+    "GENDER": "Género",
+    "MALE": "Hombre",
+    "FEMALE": "Mujer",
+    "NON-BINARY": "No-Binario",
+    "LANGUAGES": "Idiomas"
   },
   "RATING": {
     "RATE": "valora",
@@ -271,7 +277,14 @@
     "SIGN_UP": "Regístrate",
     "SUCCESS": "Registro realizado correctamente",
     "THIS_FIELD_IS_REQUIRED": "Este campo es obligatorio",
-    "USERNAME": "Usuario"
+    "USERNAME": "Usuario",
+    "PROFESION": "Profesión",
+    "CIVILSTATUS": "Estado Civil",
+    "SINGLE": "Soltero",
+    "MARRIED": "Casado",
+    "WIDOW": "Viudo",
+    "WIDOWER": "Viuda",
+    "DIVORCED": "Divorciado",
   },
   "SEARCH": {
     "MY_TRIPS": "Acceder a Mis viajes creados",
