@@ -276,7 +276,14 @@
     "SIGN_UP": "Regístrate",
     "SUCCESS": "Registro realizado correctamente",
     "THIS_FIELD_IS_REQUIRED": "Este campo es obligatorio",
-    "USERNAME": "Usuario"
+    "USERNAME": "Usuario",
+    "PROFESION": "Profesión",
+    "CIVILSTATUS": "Estado Civil",
+    "SINGLE": "Soltero",
+    "MARRIED": "Casado",
+    "WIDOW": "Viudo",
+    "WIDOWER": "Viuda",
+    "DIVORCED": "Divorciado",
   },
   "SEARCH": {
     "MY_TRIPS": "Acceder a Mis viajes creados",

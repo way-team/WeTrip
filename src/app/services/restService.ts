@@ -43,6 +43,8 @@ export class RestWS extends AbstractWS {
     last_name: string,
     description: string,
     birthdate: string,
+    profesion: string,
+    civilStatus: string,
     gender: string,
     nationality: string,
     city: string,
@@ -59,6 +61,8 @@ export class RestWS extends AbstractWS {
     fd.append('last_name', last_name);
     fd.append('description', description);
     fd.append('birthdate', String(birthdate));
+    fd.append('profesion', profesion);
+    fd.append('civilStatus', civilStatus);
     fd.append('nationality', nationality);
     fd.append('city', city);
     fd.append('gender', gender);
@@ -157,11 +161,7 @@ export class RestWS extends AbstractWS {
     fd.append('token', token);
     fd.append('offset', offset);
     fd.append('limit', limit);
-    return this.makePostRequest(
-      this.path + 'getDiscoverPeople/',
-      fd,
-      token
-    )
+    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })

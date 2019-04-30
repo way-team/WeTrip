@@ -276,7 +276,14 @@
     "SIGN_UP": "Sign up",
     "SUCCESS": "Sign up done successfully!",
     "THIS_FIELD_IS_REQUIRED": "This field is required",
-    "USERNAME": "Username"
+    "USERNAME": "Username",
+    "PROFESION": "Profession",
+    "CIVILSTATUS": "Civil Status",
+    "SINGLE": "Single",
+    "WIDOW": "Widow",
+    "MARRIED": "Married",
+    "WIDOWER": "Widower",
+    "DIVORCED": "Divorced"
   },
   "SEARCH": {
     "MY_TRIPS": "Access to My created trips",

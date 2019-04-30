@@ -33,6 +33,8 @@ export class RegisterPage implements OnInit {
   gender: string;
   nationality: string;
   city: string;
+  profesion: string;
+  civilStatus: string;
   languages;
   languagesOptions: Language[];
   interests;
@@ -89,6 +91,8 @@ export class RegisterPage implements OnInit {
       ],
       first_name: [null, Validators.compose([Validators.required])],
       last_name: [null, Validators.compose([Validators.required])],
+      profesion: [null, null],
+      civilStatus: [null, Validators.compose([Validators.required])],
       description: [null, Validators.compose([Validators.required])],
       birthdate: [null, Validators.compose([Validators.required])],
       gender: [null, Validators.compose([Validators.required])],
@@ -125,6 +129,8 @@ export class RegisterPage implements OnInit {
         this.last_name,
         this.description,
         this.birthdate.split('T')[0],
+        this.profesion,
+        this.civilStatus,
         this.gender,
         this.nationality,
         this.city,
@@ -231,11 +237,14 @@ export class RegisterPage implements OnInit {
     const today_month = today.getMonth() + 1;
     const today_day = today.getDate();
 
-    let edad = (today_year + 1900) - birthdate.getFullYear();
+    let edad = today_year + 1900 - birthdate.getFullYear();
     if (today_month < birthdate.getMonth()) {
       edad--;
     }
-    if ((birthdate.getMonth() == today_month) && (today_day < birthdate.getDate())) {
+    if (
+      birthdate.getMonth() == today_month &&
+      today_day < birthdate.getDate()
+    ) {
       edad--;
     }
     if (edad > 1900) {
@@ -250,14 +259,17 @@ export class RegisterPage implements OnInit {
     } else if (today_month > birthdate.getMonth()) {
       meses = today_month - birthdate.getMonth();
     }
-    
+
     if (today_month < birthdate.getMonth() && birthdate.getDate() < today_day) {
       meses = 12 - (birthdate.getMonth() - today_month);
     } else if (today_month < birthdate.getMonth()) {
       meses = 12 - (birthdate.getMonth() - today_month + 1);
     }
-    
-    if (today_month == birthdate.getMonth() && birthdate.getDate() > today_day) {
+
+    if (
+      today_month == birthdate.getMonth() &&
+      birthdate.getDate() > today_day
+    ) {
       meses = 11;
     }
     // calculamos los dias
@@ -265,12 +277,12 @@ export class RegisterPage implements OnInit {
     if (today_day > birthdate.getDate()) {
       dias = today_day - birthdate.getDate();
     }
-    
+
     if (today_day < birthdate.getDate()) {
       let ultimoDiaMes = new Date(today_year, today_month - 1, 0);
       dias = ultimoDiaMes.getDate() - (birthdate.getDate() - today_day);
     }
-    
+
     return edad > 18;
   }
 }
