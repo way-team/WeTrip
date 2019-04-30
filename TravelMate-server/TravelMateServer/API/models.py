@@ -84,8 +84,9 @@ class UserProfile(models.Model):
 
     def age(self):
         today = date.today()
-        age = today - self.birthdate
-        return age.year
+        return today.year - self.birthdate.year - (
+            (today.month, today.day) <
+            (self.birthdate.month, self.birthdate.day))
 
 
 class Message(models.Model):

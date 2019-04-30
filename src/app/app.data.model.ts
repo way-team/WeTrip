@@ -1,5 +1,6 @@
 export class UserProfile {
   user: User;
+  age: Number;
   email: string;
   first_name: string;
   last_name: string;
@@ -16,7 +17,7 @@ export class UserProfile {
   profesion: string;
   civilStatus: string;
   gender: string;
-  language: string;
+  languages: string[];
   interests: string[];
   created_trips: Trip[];
   past_joined_trips: Trip[];
