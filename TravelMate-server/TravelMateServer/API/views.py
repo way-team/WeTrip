@@ -233,6 +233,41 @@ class GetPendingView(APIView):
 
         return Response(UserProfileSerializer(pending, many=True).data)
 
+class GetPendingInvitationsView(APIView):
+    """
+    Method to get the user's invitations not accepted
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        pendingI=[]
+
+        user = get_user_by_token(request)
+
+        pendingInvitations = get_pendingInvitations(user, False)
+        if pendingInvitations:
+            for i in pendingInvitations:
+                    pendingI.append(i.receiver)
+
+        return Response(UserProfileSerializer(pendingI, many=True).data)
+
+
+
+def get_pendingInvitations(user, discover):
+    """
+    Method to get the list of an user's invitations not accepted
+    """
+
+    pendingInvitations = []
+
+    pendingInvitations = Invitation.objects.filter(sender=user, status="P")
+
+    return pendingInvitations
+
 
 class SendInvitation(APIView):
     """

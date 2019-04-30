@@ -39,6 +39,7 @@ export class ContactsPage implements OnInit {
       });
     this.listFriends();
     this.listMeetYou();
+    this.listYouWantToMeet();
   }
 
   ngOnInit() {}

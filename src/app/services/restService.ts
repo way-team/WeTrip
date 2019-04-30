@@ -188,7 +188,7 @@ export class RestWS extends AbstractWS {
     const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getYouWantToMeet/', fd, token)
+    return this.makePostRequest(this.path + 'getPendingInvitations/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })

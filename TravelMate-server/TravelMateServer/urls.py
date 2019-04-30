@@ -40,6 +40,7 @@ urlpatterns = [
     path('createTrip/', views.CreateTrip.as_view()),
     path('getFriends/', views.GetFriendsView.as_view()),
     path('getPending/', views.GetPendingView.as_view()),
+    path('getPendingInvitations/', views.GetPendingInvitationsView.as_view()),
     path('sendInvitation/', views.SendInvitation.as_view()),
     path('acceptFriend/', views.AcceptFriend.as_view()),
     path('rejectFriend/', views.RejectFriend.as_view()),
