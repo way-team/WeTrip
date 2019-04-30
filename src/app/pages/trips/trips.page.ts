@@ -34,7 +34,7 @@ export class TripsPage implements OnInit {
   }
 
   goToCreate() {
-    this.navCtrl.navigateForward('/create-trip');
+    this.navCtrl.navigateForward('/trip-form');
   }
 
   public listYourTrips(): void {

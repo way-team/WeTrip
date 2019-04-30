@@ -139,7 +139,7 @@
                 <ion-list-header color="light">
                   <ion-label class="fw700">{{ 'PROFILE.HAS_VISITED' | translate }}</ion-label>
                 </ion-list-header>
-                <ion-item *ngFor="let i of user.past_joined_trips">
+                <ion-item *ngFor="let i of past_joined_trips">
                   <div *ngIf=""></div>
                   <ion-label color="primary">
                     {{ i.title }}

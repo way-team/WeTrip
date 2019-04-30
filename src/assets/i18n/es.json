@@ -27,6 +27,7 @@
   "CREATE_TRIP": {
     "CITY": "Ciudad",
     "CREATE_NEW_TRIP": "Crear un viaje nuevo",
+    "EDIT_TRIP": "Editar viaje",
     "DESCRIPTION": "Descripción",
     "EDIT": "Editar",
     "END_DATE": "Fecha de finalización",
