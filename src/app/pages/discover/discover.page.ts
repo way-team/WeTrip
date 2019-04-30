@@ -48,13 +48,13 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getData(6,6);
+    this.getData(6,1);
 
   }
  loadData(event) {
     setTimeout(() => {
       console.log('Done');
-      this.getData(this.discover.length, 9);
+      this.getData(6 + this.discover.length, 1);
       this.discover.concat(this.newData);
       event.target.complete();
 
@@ -75,7 +75,16 @@ export class DiscoverPage {
       })
       .catch(error => {});
   }
-
+ getDataReload (offset: Number, limit: Number){
+ this.offsetString= "" + offset;
+ this.limitString="" + limit;
+ this.dM
+      .getData(this.offsetString, this.limitString)
+      .then((data: any) => {
+        this.newData = data;
+      })
+      .catch(error => {});
+  }
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
 
