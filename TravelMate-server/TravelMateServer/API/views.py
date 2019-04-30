@@ -409,10 +409,9 @@ class DiscoverPeopleView(APIView):
         POST method
         """
         user = get_user_by_token(request)
-
         friends, pending, rejected = get_friends(user, True)
-        limit = request.data.get("limit","")
-        offset = request.data.get("offset","")
+        limit = int(request.data.get("limit",""))
+        offset = int(request.data.get("offset",""))
         discover_people = []
         interests = user.interests.all()
 
@@ -452,8 +451,8 @@ class DiscoverPeopleView(APIView):
             discover_people.discard(person)
 
         discover_people.discard(user)
-
-        return Response(UserProfileSerializer(discover_people[offset:offset+limit], many=True).data)
+        discover_people = list(discover_people)
+        return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
 
 class MyTripsList(generics.ListAPIView):
