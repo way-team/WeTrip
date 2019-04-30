@@ -60,15 +60,17 @@ class UserProfile(models.Model):
         ('N', 'Non-binary'),
     )
     gender = models.CharField(max_length=1, choices=GENDER_OPTIONS, null=True)
-    
+
     profesion = models.CharField(max_length=80, default="N/A")
     CIVIL_STATUS_OPTIONS = (
         ('M', 'Married'),
         ('S', 'Single'),
         ('R', 'Widower'),
         ('W', 'Widow'),
+        ('D', 'Divorced'),
     )
-    civilStatus = models.CharField(max_length=1, choices=CIVIL_STATUS_OPTIONS, default='S')
+    civilStatus = models.CharField(
+        max_length=1, choices=CIVIL_STATUS_OPTIONS, default='S')
 
     def __str__(self):
         return self.user.username
@@ -172,7 +174,7 @@ class Trip(models.Model):
 
     title = models.CharField(max_length=150)
     description = models.CharField(max_length=250, null=True, blank=True)
-    price = models.IntegerField(default=0,validators=[MinValueValidator(0)])
+    price = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     startDate = models.DateField(default="1999-12-01")
     endDate = models.DateField(default="1999-12-01")
     tripType = models.CharField(

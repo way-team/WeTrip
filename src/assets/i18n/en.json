@@ -227,6 +227,14 @@
     "USERS_TO_ACCEPT": "Users to accept",
     "CREATE": "My trips",
     "YES": "YES"
+    "PROFESSION": "Profession",
+    "CIVILSTATUS": "Civil Status",
+    "AGE": "Age",
+    "SINGLE": "Single",
+    "WIDOW": "Widow",
+    "MARRIED": "Married",
+    "WIDOWER": "Widower",
+    "DIVORCED": "Divorced"
   },
   "RATING": {
     "RATE": "Rate",

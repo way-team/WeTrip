@@ -72,6 +72,20 @@
                 <ion-label color="dark">{{ 'PROFILE.STATE' | translate }}</ion-label>
                 Spain
               </ion-item>
+
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.PROFESSION' | translate }}</ion-label>
+                {{user.profesion}}
+              </ion-item>
+
+              <ion-item>
+                <ion-label color="dark">{{ 'PROFILE.CIVILSTATUS' | translate }}</ion-label>
+                <ion-text *ngIf="user.civilStatus == 'S'">{{ 'PROFILE.SINGLE' | translate }}</ion-text>
+                <ion-text *ngIf="user.civilStatus == 'M'">{{ 'PROFILE.MARRIED' | translate }}</ion-text>
+                <ion-text *ngIf="user.civilStatus == 'R'">{{ 'PROFILE.WIDOWER' | translate }}</ion-text>
+                <ion-text *ngIf="user.civilStatus == 'W'">{{ 'PROFILE.WIDOW' | translate }}</ion-text>
+                <ion-text *ngIf="user.civilStatus == 'D'">{{ 'PROFILE.DIVORCED' | translate }}</ion-text>
+              </ion-item>
             </ion-list>
 
             <ion-list>
