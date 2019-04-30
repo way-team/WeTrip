@@ -102,7 +102,7 @@
               <ion-icon name="cash" item-start></ion-icon>
               {{ 'CREATE_TRIP.PRICE' | translate}}
             </ion-label>
-            <ion-input [(ngModel)]="price" [min]="0" value="0" type="number" formControlName="price"></ion-input>
+            <ion-input [(ngModel)]="price" [min]="0" type="number" formControlName="price"></ion-input>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('price').touched && onCreateForm.get('price').hasError('required')">

@@ -368,7 +368,8 @@ export class RestWS extends AbstractWS {
     endDate: String,
     tripType: string,
     city: Number,
-    userImage
+    userImage,
+    price
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -376,6 +377,7 @@ export class RestWS extends AbstractWS {
     token = this.cookieService.get('token');
     fd.append('tripId', String(tripId));
     fd.append('title', title);
+    fd.append('price', price);
     fd.append('description', description);
     fd.append('startDate', String(startDate));
     fd.append('endDate', String(endDate));
