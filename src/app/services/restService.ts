@@ -151,12 +151,14 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
-  public getData(offset: Number, limit: Number): Promise<any> {
+  public getData(offset: string, limit: string): Promise<any> {
     let token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
+    fd.append('offset', offset);
+    fd.append('limit', limit);
     return this.makePostRequest(
-      this.path + 'getDiscoverPeople2/?offset=' + offset + '&limit=' + limit,
+      this.path + 'getDiscoverPeople/',
       fd,
       token
     )

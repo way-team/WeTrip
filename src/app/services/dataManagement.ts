@@ -183,7 +183,7 @@ export class DataManagement {
       }
     });
   }
-  public getData(offset: Number, limit: Number): Promise<any> {
+  public getData(offset: string, limit: string): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.hasConnection()) {
         return this.restService

@@ -27,6 +27,8 @@ import { IonInfiniteScroll } from '@ionic/angular';
   styleUrls: ['./discover.page.scss']
 })
 export class DiscoverPage {
+  offsetString="";
+  limitString="";
   searchKey = '';
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
@@ -46,7 +48,7 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.listDiscover();
+    this.getData(6,6);
 
   }
  loadData(event) {
@@ -64,10 +66,12 @@ export class DiscoverPage {
     }, 500);
   }
  getData(offset: Number, limit: Number){
+ this.offsetString= "" + offset;
+ this.limitString="" + limit;
  this.dM
-      .getData(offset, limit)
+      .getData(this.offsetString, this.limitString)
       .then((data: any) => {
-        this.newData = data;
+        this.discover = data;
       })
       .catch(error => {});
   }
