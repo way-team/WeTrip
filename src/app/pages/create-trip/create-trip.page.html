@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="light">{{ 'CREATE_TRIP.CREATE_NEW_TRIP' | translate}}</ion-title>
+    <ion-title *ngIf="!id" color="light">{{ 'CREATE_TRIP.CREATE_NEW_TRIP' | translate}}</ion-title>
+    <ion-title *ngIf="id" color="light">{{ 'CREATE_TRIP.EDIT_TRIP' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 

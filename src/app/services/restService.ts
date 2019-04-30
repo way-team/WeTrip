@@ -592,6 +592,6 @@ export class RestWS extends AbstractWS {
   }
 
   public turnOnDjangoServer() {
-    this.makePostRequest(this.path + 'backend-wakeup/', null);
+    this.makeGetRequest(this.path + 'backend-wakeup/', null);
   }
 }

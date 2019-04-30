@@ -77,11 +77,11 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
-    path: 'create-trip',
+    path: 'trip-form',
     loadChildren: './pages/create-trip/create-trip.module#CreateTripPageModule'
   },
   {
-    path: 'create-trip/:id',
+    path: 'trip-form/:id',
     loadChildren: './pages/create-trip/create-trip.module#CreateTripPageModule'
   },
   {

@@ -16,13 +16,15 @@ export class TripdetailPage {
   userLogged: UserProfile;
   myTrip = true;
   applicationsAccepted: [];
-  applicationPending: [];
+  applicationsPending: [];
+  applicationsRejected: [];
   isReady: Boolean;
   rating: any;
   creator: UserProfile;
 
   usersAccepted: application_user[] = [];
   usersPending: application_user[] = [];
+  usersRejected: application_user[] = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -50,7 +52,8 @@ export class TripdetailPage {
         this.trip = response[0]['trip'];
 
         this.applicationsAccepted = response[0]['applicationsList'];
-        this.applicationPending = response[0]['pendingsList'];
+        this.applicationsPending = response[0]['pendingsList'];
+        this.applicationsRejected = response[0]['rejectedList'];
         this.userLogged = response[1];
         if (this.trip.creator !== this.userLogged.user.username) {
           this.myTrip = false;
@@ -58,6 +61,7 @@ export class TripdetailPage {
 
         this.getUserPending();
         this.getUserAccepted();
+        this.getUserRejecteds();
 
         this.dm
           .getUserBy(this.trip.creator, this.cookieService.get('token'))
@@ -66,9 +70,9 @@ export class TripdetailPage {
             this.isReady = true;
             this.creator = res;
           })
-          .catch(_ => {});
+          .catch(_ => { });
       })
-      .catch(_ => {});
+      .catch(_ => { });
   }
 
   join() {
@@ -78,7 +82,7 @@ export class TripdetailPage {
         response != null ? this.presentAlert() : '';
         this.getItems();
       })
-      .catch(err => {});
+      .catch(err => { });
   }
 
   async presentAlert() {
@@ -97,7 +101,7 @@ export class TripdetailPage {
   }
 
   getUserPending() {
-    this.applicationPending.forEach(element => {
+    this.applicationsPending.forEach(element => {
       const userId = element['applicant'];
       this.dm.getUserById(userId).then(response => {
         const userPending = new application_user(
@@ -118,6 +122,19 @@ export class TripdetailPage {
           element['id']
         );
         this.usersAccepted.push(userAccepted);
+      });
+    });
+  }
+
+  getUserRejecteds() {
+    this.applicationsRejected.forEach(element => {
+      const userId = element['applicant'];
+      this.dm.getUserById(userId).then(response => {
+        const userRejected = new application_user(
+          response.user.username,
+          element['id']
+        );
+        this.usersRejected.push(userRejected);
       });
     });
   }
@@ -150,7 +167,11 @@ export class TripdetailPage {
       this.usersPending.find(
         x => x.applicantName === this.userLogged.user.username
       ) != undefined;
-    pastTrip || accepted || pending ? (show = false) : (show = true);
+    const rejected =
+      this.usersRejected.find(
+        x => x.applicantName === this.userLogged.user.username
+      ) != undefined;
+    pastTrip || accepted || pending || rejected ? (show = false) : (show = true);
     return show;
   }
 }
