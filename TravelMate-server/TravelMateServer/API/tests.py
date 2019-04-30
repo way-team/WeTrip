@@ -12,6 +12,9 @@ from .serializers import TripSerializer
 class TravelMateTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        """Creating a Test Scenario"""
+
+        # In this method we will create all objects that we will be using to perform the functional tests
 
         cls.lang1 = Language.objects.create(name='english')
         cls.lang2 = Language.objects.create(name='spanish')
@@ -100,33 +103,50 @@ class TravelMateTests(APITestCase):
         
 
     def api_authentication(self):
+        """This is the authentication method"""
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
 
     def test_my_trips_list(self):
-        
+        """The method 'my_trips_list' has to return a list with all the trips created by the current user ordered by their start date."""
+
+        # We log in as 'user1'
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
         response = self.client.get(reverse('my_trips_list'))
+
+        # We check the status code of the request
         self.assertEqual(200, response.status_code)
+
+        # user1 has created 2 trips. Let's check this:
         jsonResponse = response.json()
         self.assertTrue(jsonResponse['count'] == 2)
+
+        # The 2 trips that user1 has created are 'trip1' and 'trip2'. 'trip1' should appear first. Let's check this: 
         myTrips = []
         myTrips.append(self.trip1)
         myTrips.append(self.trip2)
         serializer = TripSerializer(myTrips, many=True)
         self.assertEqual(jsonResponse['results'], serializer.data)
     
+
+        # We log in as 'user3'
         self.user = self.user3
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         response = self.client.get(reverse('my_trips_list'))
+
+        # We check the status code of the request
         self.assertEqual(200, response.status_code)
+
+        # user3 has created 3 trips. Let's check this:
         jsonResponse = response.json()
         self.assertTrue(jsonResponse['count'] == 3)
+
+        # The 3 trips that user3 has created are 'trip6', 'trip7' and 'trip8'. They should be ordered correctly. Let's check this:
         myTrips = []
         myTrips.append(self.trip6)
         myTrips.append(self.trip8)
@@ -134,16 +154,31 @@ class TravelMateTests(APITestCase):
         serializer = TripSerializer(myTrips, many=True)
         self.assertEqual(jsonResponse['results'], serializer.data)
 
+
     def test_available_trips_list(self):
-        
+        """The method 'available_trips_list' return all available trips to the current user. A trip is considered 'avaiable' if:
+          1) It has not been marked as 'deleted' (status = True)
+          2) Its start date is in the future
+          3) It is public
+          4) Its creator is not the current user, but another user
+          5) There is no application with 'Rejected' status that refers the current user to the trip.
+        """
+
+        # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
         response = self.client.get(reverse('available_trips_list'))
+
+        #Let's check the status code of the request
         self.assertEqual(200, response.status_code)
+
+        #There must be 6 available trips. 
         jsonResponse = response.json()
         self.assertTrue(jsonResponse['count'] == 6)
+
+        #'trip11' should appear first in the list, because it has been created by a premium user. The rest of the available trips are: 'trip3', 'trip6', 'trip8', 'trip9' and 'trip10'
         myTrips = []
         myTrips.append(self.trip11)
         myTrips.append(self.trip3)
