@@ -511,10 +511,16 @@ class AvailableTripsList(generics.ListAPIView):
 
     def get_queryset(self):
         today = datetime.today()
+        user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id, status='R')
-        rejectedAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
+
+        return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
+            Q(status=True) & Q(startDate__gte=today) & Q(
+                tripType='PUBLIC')).exclude(
+                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
@@ -532,15 +538,16 @@ class AvailableTripsSearch(generics.ListAPIView):
 
     def get_queryset(self):
         today = datetime.today()
+        user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id, status='R')
-        rejectedAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=rejectedAppTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
     queryset = get_queryset
     serializer_class = TripSerializer
