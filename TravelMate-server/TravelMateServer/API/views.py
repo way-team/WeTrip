@@ -37,7 +37,7 @@ def get_user_by_token(request):
 
 
 class GetUserView(APIView):
-    def get(self, request):
+    def post(self, request):
         user_profile = get_user_by_token(request)
 
         return Response(UserProfileSerializer(user_profile, many=False).data)
