@@ -44,18 +44,18 @@ class TravelMateTests(APITestCase):
         cls.userprofile6.languages.add(cls.lang1, cls.lang3, cls.lang4)
 
         
-        cls.trip1 = Trip.objects.create(user=cls.userprofile1, title='trip1', startDate='2019-09-21', endDate='2019-10-02', tripType='PUBLIC')
-        cls.trip2 = Trip.objects.create(user=cls.userprofile1, title='trip2', startDate='2019-02-03', endDate='2019-02-06', tripType='PUBLIC')
-        cls.trip3 = Trip.objects.create(user=cls.userprofile2, title='trip3', startDate='2019-09-20', endDate='2019-09-30', tripType='PUBLIC')
-        cls.trip4 = Trip.objects.create(user=cls.userprofile2, title='trip4', startDate='2019-12-20', endDate='2019-12-31', tripType='PRIVATE')
-        cls.trip5 = Trip.objects.create(user=cls.userprofile2, title='trip5', startDate='2018-07-18', endDate='2018-07-24', tripType='PUBLIC')
-        cls.trip6 = Trip.objects.create(user=cls.userprofile3, title='trip6', startDate='2020-04-05', endDate='2020-04-06', tripType='PUBLIC')
-        cls.trip7 = Trip.objects.create(user=cls.userprofile3, title='trip7', startDate='2019-01-20', endDate='2019-01-25', tripType='PUBLIC')
-        cls.trip8 = Trip.objects.create(user=cls.userprofile3, title='trip8', startDate='2019-06-03', endDate='2019-06-12', tripType='PUBLIC')
+        cls.trip1 = Trip.objects.create(user=cls.userprofile1, title='trip1', description='mountains', startDate='2019-09-21', endDate='2019-10-02', tripType='PUBLIC')
+        cls.trip2 = Trip.objects.create(user=cls.userprofile1, title='trip2', description='cruise', startDate='2019-02-03', endDate='2019-02-06', tripType='PUBLIC')
+        cls.trip3 = Trip.objects.create(user=cls.userprofile2, title='trip3', description='mountain', startDate='2019-09-20', endDate='2019-09-30', tripType='PUBLIC')
+        cls.trip4 = Trip.objects.create(user=cls.userprofile2, title='trip4', description='beach', startDate='2019-12-20', endDate='2019-12-31', tripType='PRIVATE')
+        cls.trip5 = Trip.objects.create(user=cls.userprofile2, title='trip5', description='mountains', startDate='2018-07-18', endDate='2018-07-24', tripType='PUBLIC')
+        cls.trip6 = Trip.objects.create(user=cls.userprofile3, title='trip6', description='wonderful experience', startDate='2020-04-05', endDate='2020-04-06', tripType='PUBLIC')
+        cls.trip7 = Trip.objects.create(user=cls.userprofile3, title='trip7', description='journey', startDate='2019-01-20', endDate='2019-01-25', tripType='PUBLIC')
+        cls.trip8 = Trip.objects.create(user=cls.userprofile3, title='trip8', description='mountain', startDate='2019-06-03', endDate='2019-06-12', tripType='PUBLIC')
         cls.trip9 = Trip.objects.create(user=cls.userprofile4, title='trip9', startDate='2019-07-03', endDate='2019-07-19', tripType='PUBLIC')
-        cls.trip10 = Trip.objects.create(user=cls.userprofile4, title='trip10', startDate='2019-08-15', endDate='2019-08-18', tripType='PUBLIC')
-        cls.trip11 = Trip.objects.create(user=cls.userprofile5, title='trip11', startDate='2020-01-03', endDate='2020-01-13', tripType='PUBLIC')
-        cls.trip12 = Trip.objects.create(user=cls.userprofile5, title='trip12', startDate='2019-09-17', endDate='2019-09-24', tripType='PRIVATE')
+        cls.trip10 = Trip.objects.create(user=cls.userprofile4, title='trip10', description='snow, skiing, mountains', startDate='2019-08-15', endDate='2019-08-18', tripType='PUBLIC')
+        cls.trip11 = Trip.objects.create(user=cls.userprofile5, title='trip11', description='beach, sun, sea', startDate='2020-01-03', endDate='2020-01-13', tripType='PUBLIC')
+        cls.trip12 = Trip.objects.create(user=cls.userprofile5, title='trip12', description='low-cost', startDate='2019-09-17', endDate='2019-09-24', tripType='PRIVATE')
 
         cls.country1 = Country.objects.create(name='Spain')
         cls.country2 = Country.objects.create(name='England')
@@ -203,6 +203,40 @@ class TravelMateTests(APITestCase):
         myTrips.append(self.trip6)
         myTrips.append(self.trip8)
         myTrips.append(self.trip9)
+        myTrips.append(self.trip10)
+        serializer = TripSerializer(myTrips, many=True)
+        self.assertEqual(jsonResponse['results'], serializer.data)
+
+
+
+    def test_available_trips_search(self):
+        """The method 'available_trips_search' returns all available trips to the current user that contain the chosen key word in their title or description. A trip is considered 'avaiable' if:
+          1) It has not been marked as 'deleted' (status = True)
+          2) Its start date is in the future
+          3) It is public
+          4) Its creator is not the current user, but another user
+          5) There is no application with 'Rejected' status that refers the current user to the trip.
+        """
+
+        # We log in as user5
+        self.user = self.user5
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        # user5 wants to see all available trips that contain the word 'mountain'
+        response = self.client.get('/trips/search/?search=mountain')
+
+        #Let's check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        #There must be only 3 results. There are 5 available trips for user5, but only trip1, trip3 and trip10 match the search criteria. 
+        #There are other trips that contain the key word 'mountain' in their description (like trip5 and trip8), but they are not 'available'.
+        jsonResponse = response.json()
+        self.assertTrue(jsonResponse['count'] == 3)
+
+        myTrips = []
+        myTrips.append(self.trip1)
+        myTrips.append(self.trip3)
         myTrips.append(self.trip10)
         serializer = TripSerializer(myTrips, many=True)
         self.assertEqual(jsonResponse['results'], serializer.data)
@@ -644,14 +678,5 @@ class TravelMateTests(APITestCase):
         # But his/her average rating has been updated
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 4)
 
-
-
-   
     
         
-
-       
-    
-
-        
-     
