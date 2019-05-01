@@ -25,7 +25,7 @@
     "ALERT_MESSAGE_MESSAGE": "Are you sure of blocking this user? You won't see this user anymore so please, remember to rate him to preserve Travelmate's community safety"
   },
   "CREATE_TRIP": {
-    "CITY": "City",
+    "CITY": "Cities",
     "CREATE_NEW_TRIP": "Create a new trip",
     "EDIT_TRIP": "Edit trip",
     "DESCRIPTION": "Description",
@@ -119,7 +119,7 @@
     "PRIVACY_INFORMATION": "Privacy information",
     "TEXT_1": "About us",
     "TEXT_10": ". The photos you add will be stored in ",
-    "TEXT_10B":". All the data will de showed to others users for them to join.",
+    "TEXT_10B": ". All the data will de showed to others users for them to join.",
     "TEXT_11": "What happens when you are premium?",
     "TEXT_12": "In this case we will only and exclusively store if a payment has been made and the date. The rest of the information such as card number and passwords to access payment accounts, will be stored by Paypal, a third party to whom you send your data from your browser. If you need more information, you can read Paypal's privacy policy ",
     "TEXT_13": ".",
@@ -163,7 +163,7 @@
     "TEXT_9": "We will keep all the data you provide us on our server and in ",
     "TEXT_9B": "to show them to other users.",
     "TITLE": "General Data Protection Regulation",
-    "HERE":"here"
+    "HERE": "here"
   },
   "IMAGE": {
     "CLOSE": "Close"

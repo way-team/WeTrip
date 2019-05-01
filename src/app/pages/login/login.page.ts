@@ -35,7 +35,7 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     public dm: DataManagement,
     private cookieService: CookieService,
-     private translate: TranslateService,
+    private translate: TranslateService,
     public events: Events
   ) { 
     this.turnOnDjangoServer();
@@ -171,5 +171,11 @@ export class LoginPage implements OnInit {
 
   turnOnDjangoServer() {
     this.dm.turnOnDjangoServer();
+  }
+  
+  changeLanguage(selectedValue: { detail: { value: string; }; }){
+    
+    this.cookieService.set('lang', selectedValue.detail.value);
+    this.translate.use(selectedValue.detail.value);
   }
 }

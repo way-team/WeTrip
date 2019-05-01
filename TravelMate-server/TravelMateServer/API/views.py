@@ -9,12 +9,14 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from django.db.models import Q, Count, StdDev, Avg, Sum, Case, When, IntegerField, Value
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from collections import namedtuple
 from django.contrib.auth.hashers import make_password
+import json
 
 
 def get_user_by_token(request):
@@ -27,13 +29,11 @@ def get_user_by_token(request):
     if user_profile.isPremium:
         today = datetime.today().date()
         datePremium = user_profile.datePremium
-        diff = today - datePremium
-        if diff.days >= 365:
+        if today > datePremium:
             user_profile.isPremium = False
             user_profile.save()
 
     return user_profile
-
 
 
 class GetUserView(APIView):
@@ -593,11 +593,17 @@ class CreateTrip(APIView):
         tripType = request.data.get('trip_type', '')
 
         #GET CITY DATA
-        cityId = request.data.get('city')
-
-        #GET CITY
-        city = City.objects.get(pk=cityId)
-        image_name = city.country.name + '.jpg'
+        cities = json.loads(request.data.get('cities'))
+        
+        
+        
+        if(len(cities) == 1):
+            city = City.objects.get(pk=cities[0])
+            image_name = city.country.name + '.jpg'
+        else:
+            image_name = 'World.jpg'
+        
+        
 
         try:
             userImage = request.data['file']
@@ -628,8 +634,9 @@ class CreateTrip(APIView):
             trip.save()
         finally:
             #GET CITY AND ADD TRIP
-            city = City.objects.get(pk=cityId)
-            city.trips.add(trip)
+            for i in cities:
+                city = City.objects.get(pk=i)
+                city.trips.add(trip)
 
             return Response(TripSerializer(trip, many=False).data)
 
@@ -678,11 +685,14 @@ class EditTripView(APIView):
         POST method
         """
         data = request.data
-
+        
         trip = Trip.objects.get(pk=request.data["tripId"])
-        if data.get('file'):
-            trip.userImage = data.get('file')
-
+        for i in trip.cities.all():
+            print(i)
+            i.trips.remove(trip)
+        
+        if trip.tripType == "PUBLIC": 
+            raise ValueError("This trip is public, so it can't be edited ")
         stored_creator = trip.user
         user = get_user_by_token(request)
         if stored_creator != user:
@@ -694,16 +704,44 @@ class EditTripView(APIView):
         if request.data["tripType"] == "PUBLIC":
             raise ValueError("This trip is public, so it can't be edited ")
 
-        serializer = TripSerializer(trip, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            try:
-                new_city = City.objects.get(pk=request.data["city"])
-                new_city.trips.add(trip)
-            except City.DoesNotExist:
-                raise ValueError("The city does not exist")
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+        if data.get('file'):
+            trip.userImage = data.get('file')
+            
+        cities = json.loads(data.get('cities'))
+
+        if(len(cities) == 1):
+            city = City.objects.get(pk=cities[0])
+            trip.image_name = city.country.name + '.jpg'
+        else:
+            trip.image_name = 'World.jpg'
+
+        title = data.get('title')
+        description = data.get('description')
+        price = data.get('price')
+        startDate = data.get('startDate')
+        endDate = data.get('endDate')
+        tripType = data.get('tripType')
+       
+
+        trip.title = title
+        trip.description = description
+        trip.price = price
+        trip.startDate = startDate
+        trip.endDate = endDate
+        trip.tripType = tripType
+        try:
+            trip.save()
+        except:
+            raise ValueError("Error saving trip")
+        try:
+            for i in cities:
+                city = City.objects.get(pk=i)
+                city.trips.add(trip)
+        except City.DoesNotExist:
+            raise ValueError("The city does not exist")
+
+        return JsonResponse({'message':'Edit success'}, status=201)
+        return JsonResponse({'error':'Error editing'}, status=400)
 
 
 class DashboardData(APIView):
@@ -934,10 +972,15 @@ class SetUserToPremium(APIView):
 
     def post(self, request):
         usernamepaid = request.user.username
-
         userpaid = User.objects.get(username=usernamepaid)
         userprofilepaid = UserProfile.objects.get(user=userpaid)
-        userprofilepaid.isPremium = True
+
+        if not userprofilepaid.isPremium:
+            userprofilepaid.isPremium = True
+            userprofilepaid.datePremium = datetime.today() + relativedelta(years=1)
+        else:
+            userprofilepaid.datePremium += relativedelta(years=1)
+
         userprofilepaid.save()
 
         return Response(
@@ -998,7 +1041,7 @@ class RegisterUser(APIView):
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
         status = 'A'
-        import json
+        
         languages = json.loads(request.data.get('languages'))
         interests = json.loads(request.data.get('interests'))
 
