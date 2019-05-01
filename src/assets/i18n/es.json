@@ -285,7 +285,8 @@
     "MARRIED": "Casado",
     "WIDOW": "Viudo",
     "WIDOWER": "Viuda",
-    "DIVORCED": "Divorciado"
+    "DIVORCED": "Divorciado",
+    "IMAGE_ERROR": "Tienes que seleccionar una imagen"
   },
   "SEARCH": {
     "MY_TRIPS": "Acceder a Mis viajes creados",
