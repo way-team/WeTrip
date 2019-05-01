@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from django.db.models import Q, Count, StdDev, Avg, Sum, Case, When, IntegerField, Value
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
@@ -27,13 +28,11 @@ def get_user_by_token(request):
     if user_profile.isPremium:
         today = datetime.today().date()
         datePremium = user_profile.datePremium
-        diff = today - datePremium
-        if diff.days >= 365:
+        if today > datePremium:
             user_profile.isPremium = False
             user_profile.save()
 
     return user_profile
-
 
 
 class GetUserView(APIView):
@@ -680,6 +679,10 @@ class EditTripView(APIView):
         data = request.data
 
         trip = Trip.objects.get(pk=request.data["tripId"])
+
+        if trip.tripType == "PUBLIC": 
+            raise ValueError("This trip is public, so it can't be edited ")
+
         if data.get('file'):
             trip.userImage = data.get('file')
 
@@ -690,9 +693,6 @@ class EditTripView(APIView):
 
         if request.data["startDate"] > request.data["endDate"]:
             raise ValueError("The start date must be before the end date")
-
-        if request.data["tripType"] == "PUBLIC":
-            raise ValueError("This trip is public, so it can't be edited ")
 
         serializer = TripSerializer(trip, data=data)
         if serializer.is_valid():
@@ -934,10 +934,15 @@ class SetUserToPremium(APIView):
 
     def post(self, request):
         usernamepaid = request.user.username
-
         userpaid = User.objects.get(username=usernamepaid)
         userprofilepaid = UserProfile.objects.get(user=userpaid)
-        userprofilepaid.isPremium = True
+
+        if not userprofilepaid.isPremium:
+            userprofilepaid.isPremium = True
+            userprofilepaid.datePremium = datetime.today() + relativedelta(years=1)
+        else:
+            userprofilepaid.datePremium += relativedelta(years=1)
+
         userprofilepaid.save()
 
         return Response(

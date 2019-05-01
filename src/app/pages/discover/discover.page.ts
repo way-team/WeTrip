@@ -1,4 +1,3 @@
-
 import { EditProfilePage } from '../../pages/edit-profile/edit-profile.page';
 import {
   NavController,
@@ -27,17 +26,16 @@ import { IonInfiniteScroll } from '@ionic/angular';
   styleUrls: ['./discover.page.scss']
 })
 export class DiscoverPage {
-  offsetString="";
-  limitString="";
+  offsetString = '';
+  limitString = '';
   searchKey = '';
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
   discover: UserProfile[] = [];
   newData: UserProfile[] = [];
- @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
- @ViewChild('content') private content: any;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild('content') private content: any;
   constructor(
-
     public navCtrl: NavController,
     public menuCtrl: MenuController,
     public popoverCtrl: PopoverController,
@@ -49,22 +47,20 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getInit(9,0);
+    this.getInit(6, 0);
+    this.getData(6, 6);
+  }
 
-      }
-
-
-scrollToTop() {
-  this.content.scrollToTop(300);
-}
- loadData(event) {
+  scrollToTop() {
+    this.content.scrollToTop(300);
+  }
+  loadData(event) {
     setTimeout(() => {
       console.log('Done');
 
-      this.getData(9,  this.discover.length+1);
+      this.getData(6, this.discover.length + 6);
 
-      this.newData.forEach( x=> this.discover.push(x));
-
+      this.newData.forEach(x => this.discover.push(x));
 
       event.target.complete();
       // App logic to determine if all data is loaded
@@ -74,10 +70,10 @@ scrollToTop() {
       }
     }, 500);
   }
- getData(offset: Number, limit: Number){
- this.offsetString= "" + offset;
- this.limitString="" + limit;
- this.dM
+  getData(offset: Number, limit: Number) {
+    this.offsetString = '' + offset;
+    this.limitString = '' + limit;
+    this.dM
       .getData(this.offsetString, this.limitString)
       .then((data: UserProfile[]) => {
         this.newData = data;
@@ -85,30 +81,20 @@ scrollToTop() {
       .catch(error => {});
   }
 
- getInit(offset: Number, limit: Number){
- this.offsetString= "" + offset;
- this.limitString="" + limit;
- this.dM
+  getInit(offset: Number, limit: Number) {
+    this.offsetString = '' + offset;
+    this.limitString = '' + limit;
+    this.dM
       .getData(this.offsetString, this.limitString)
       .then((data: any) => {
         this.discover = data;
       })
       .catch(error => {});
   }
- getDataReload (offset: Number, limit: Number){
- this.offsetString= "" + offset;
- this.limitString="" + limit;
- this.dM
-      .getData(this.offsetString, this.limitString)
-      .then((data: any) => {
-        this.newData = data;
-      })
-      .catch(error => {});
-  }
+
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
-
- }
+  }
   contact(id) {
     this.navCtrl.navigateForward('/');
   }
@@ -126,7 +112,6 @@ scrollToTop() {
       })
       .catch(error => {});
   }
-
 
   settings() {
     this.navCtrl.navigateForward('settings');
@@ -223,10 +208,10 @@ scrollToTop() {
               alertEl.present();
             });
         }, 1500);
-        this.listDiscover();
+        this.getInit(6, 0);
       })
       .catch(err => {
-        this.listDiscover();
+        this.getInit(6, 0);
       });
   }
 
