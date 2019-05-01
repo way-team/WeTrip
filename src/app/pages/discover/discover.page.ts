@@ -49,7 +49,7 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getInit(9,1);
+    this.getInit(9,0);
 
       }
 
@@ -61,7 +61,7 @@ scrollToTop() {
     setTimeout(() => {
       console.log('Done');
 
-      this.getData(9,  this.discover.length+10);
+      this.getData(9,  this.discover.length+1);
 
       this.newData.forEach( x=> this.discover.push(x));
 
