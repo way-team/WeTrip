@@ -6,6 +6,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 from .models import Trip, UserProfile, Language, City, Country, Interest, Application
 from .serializers import TripSerializer
+from .serializers import LanguageSerializer
+from .serializers import *
+
+
 
 
 
@@ -99,6 +103,7 @@ class TravelMateTests(APITestCase):
         cls.application3 = Application.objects.create(applicant=cls.userprofile3, trip=cls.trip8, status='R')
         cls.application4 = Application.objects.create(applicant=cls.userprofile3, trip=cls.trip9, status='A')
 
+        cls.invitation=Invitation.objects.create(sender=cls.userprofile1, receiver=cls.userprofile2, status='A')
         
         
 
@@ -189,7 +194,63 @@ class TravelMateTests(APITestCase):
         serializer = TripSerializer(myTrips, many=True)
         self.assertEqual(jsonResponse['results'], serializer.data)
     
+    def test_list_languages(self):
+        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+
+        # We log in as 'user1'
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
         
+        response = self.client.get(reverse('list_languages'))
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # user1 has salected 2 languages. Let's check this:
+        jsonResponse = response.json()
+        self.assertTrue(jsonResponse['count'] == 2)
+
+        # The 2 languages that user1 has selected are 'lang1' and 'lang2'. 'trip1'. Let's check this: 
+        languages = []
+        languages.append(self.lang1)
+        languages.append(self.lang2)
+        serializer = LanguageSerializer(languages, many=True)
+        self.assertEqual(jsonResponse['results'], serializer.data)
+    
+        # We log in as 'user3'
+        self.user = self.user3
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        response = self.client.get(reverse('list_languages'))
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # user3 has selected 2 languages. Let's check this:
+        jsonResponse = response.json()
+        self.assertTrue(jsonResponse['count'] == 2)
+
+        # The 2 languages that user3 has selected are 'lang1'and'lang5'. Let's check this:
+        languages = []
+        languages.append(self.lang1)
+        languages.append(self.lang5)
+        serializer = LanguageSerializer(languages, many=True)
+        self.assertEqual(jsonResponse['results'], serializer.data)
+        
+    def test_get_friends(self):
+       
+        user = {' user': 'user1', ' email': 'user1@gmail.com', ' first_name': 'user1', ' last_name': 'user1', ' birthdate': '1991-03-30', ' nationality': 'spanish', ' avarageRate': '4', ' numRate': '2', ' isPremium': 'False', ' gender': 'M', ' status': 'A', ' civilStatus': 'S'}
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        response = self.client.post('/getFriends/', user, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        friends = response.json()
+        self.assertEqual(friends['invitation'].STATUS_OPTION, 'A')
 
        
     
