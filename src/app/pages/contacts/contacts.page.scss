@@ -1,12 +1,14 @@
 :host {
     ion-content {
-        --background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light))
+        --background: linear-gradient(-135deg, var(--ion-color-medium), var(--ion-color-light));
+        --padding: 0px;
     }
 }
 ion-avatar{
-    width: 70px;
-    height:70px;
+    width: 60px;
+    height:60px;
 }
 .larger{
-    font-size: 26px;
+    font-size: 22px;
 }
+

@@ -1,5 +1,6 @@
 export class UserProfile {
   user: User;
+  age: Number;
   email: string;
   first_name: string;
   last_name: string;
@@ -12,9 +13,11 @@ export class UserProfile {
   avarageRate: Number;
   numRate: Number;
   isPremium: boolean;
-  status: boolean;
+  status: string;
+  profesion: string;
+  civilStatus: string;
   gender: string;
-  language: string;
+  languages: string[];
   interests: string[];
   created_trips: Trip[];
   past_joined_trips: Trip[];
@@ -31,6 +34,7 @@ export class Interest {
 export class Trip {
   id: Number;
   title: String;
+  price: Number;
   description: String;
   startDate: Date;
   endDate: Date;
@@ -40,6 +44,7 @@ export class Trip {
   status: Boolean;
   user_id: Number;
   creator: string;
+  cities: string[];
 }
 
 export class City {

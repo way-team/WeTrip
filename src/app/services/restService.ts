@@ -43,6 +43,8 @@ export class RestWS extends AbstractWS {
     last_name: string,
     description: string,
     birthdate: string,
+    profesion: string,
+    civilStatus: string,
     gender: string,
     nationality: string,
     city: string,
@@ -59,6 +61,8 @@ export class RestWS extends AbstractWS {
     fd.append('last_name', last_name);
     fd.append('description', description);
     fd.append('birthdate', String(birthdate));
+    fd.append('profesion', profesion);
+    fd.append('civilStatus', civilStatus);
     fd.append('nationality', nationality);
     fd.append('city', city);
     fd.append('gender', gender);
@@ -151,12 +155,40 @@ export class RestWS extends AbstractWS {
         return Promise.reject(error);
       });
   }
+  public getData(offset: string, limit: string): Promise<any> {
+    let token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('token', token);
+    fd.append('offset', offset);
+    fd.append('limit', limit);
+    return this.makePostRequest(this.path + 'getDiscoverPeople/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
 
   public listMeetYou(): Promise<any> {
     const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
     return this.makePostRequest(this.path + 'getPending/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+  public listYouWantToMeet(): Promise<any> {
+    const token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('token', token);
+    return this.makePostRequest(this.path + 'getPendingInvitations/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })
@@ -242,6 +274,22 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public block(userToBlock: string): Promise<any> {
+    const fd = new FormData();
+    let token: string;
+    token = this.cookieService.get('token');
+    fd.append('token', token);
+    fd.append('sendername', userToBlock);
+    return this.makePostRequest(this.path + 'removeFriend/', fd, token)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
   public paid(): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -274,7 +322,8 @@ export class RestWS extends AbstractWS {
     end_date: String,
     trip_type: string,
     city: Number,
-    userImage
+    userImage,
+    price
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -283,6 +332,7 @@ export class RestWS extends AbstractWS {
     return this.getUserLogged(token)
       .then(res => {
         fd.append('title', title);
+        fd.append('price', price);
         fd.append('description', description);
         fd.append('start_date', String(start_date));
         fd.append('end_date', String(end_date));
@@ -292,8 +342,7 @@ export class RestWS extends AbstractWS {
           fd.append('file', userImage, userImage.name);
         }
 
-        user = res;
-        fd.append('user_id', String(user.id));
+        fd.append('user_id', String(res.user.id));
 
         return this.makePostRequest(this.path + 'createTrip/', fd, token)
           .then(res2 => {
@@ -319,7 +368,8 @@ export class RestWS extends AbstractWS {
     endDate: String,
     tripType: string,
     city: Number,
-    userImage
+    userImage,
+    price
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -327,6 +377,7 @@ export class RestWS extends AbstractWS {
     token = this.cookieService.get('token');
     fd.append('tripId', String(tripId));
     fd.append('title', title);
+    fd.append('price', price);
     fd.append('description', description);
     fd.append('startDate', String(startDate));
     fd.append('endDate', String(endDate));
@@ -339,7 +390,7 @@ export class RestWS extends AbstractWS {
 
     return this.makePostRequest(this.path + 'editTrip/', fd, token)
       .then(res2 => {
-        console.log('Se ha creado exitosamente');
+        console.log('Se ha editado exitosamente');
         return Promise.resolve(res2);
       })
       .catch(error => {
@@ -527,5 +578,23 @@ export class RestWS extends AbstractWS {
         console.log('Error: ' + error);
         return Promise.reject(error);
       });
+  }
+
+  public deleteUser() {
+    const fd = new FormData();
+    const Authorization = this.cookieService.get('token');
+    fd.append('token', Authorization);
+    return this.makePostRequest(this.path + 'deleteUser/', fd, Authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+        return Promise.reject(err);
+      });
+  }
+
+  public turnOnDjangoServer() {
+    this.makeGetRequest(this.path + 'backend-wakeup/', null);
   }
 }

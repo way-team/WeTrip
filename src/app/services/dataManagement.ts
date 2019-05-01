@@ -24,6 +24,8 @@ export class DataManagement {
     last_name: string,
     description: string,
     birthdate: string,
+    profesion: string,
+    civilStatus: string,
     gender: string,
     nationality: string,
     city: string,
@@ -41,6 +43,8 @@ export class DataManagement {
         last_name,
         description,
         birthdate,
+        profesion,
+        civilStatus,
         gender,
         nationality,
         city,
@@ -150,6 +154,22 @@ export class DataManagement {
       }
     });
   }
+  public listYouWantToMeet(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .listYouWantToMeet()
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
 
   public listDiscover(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -167,7 +187,22 @@ export class DataManagement {
       }
     });
   }
-
+  public getData(offset: string, limit: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.hasConnection()) {
+        return this.restService
+          .getData(offset, limit)
+          .then((data: any) => {
+            resolve(data);
+          })
+          .catch(error => {
+            reject('error');
+          });
+      } else {
+        reject('error');
+      }
+    });
+  }
   public createTrip(
     title: string,
     description: string,
@@ -175,7 +210,8 @@ export class DataManagement {
     end_date: String,
     trip_type: string,
     city: Number,
-    userImage
+    userImage,
+    price: Number
   ): Promise<any> {
     return this.restService
       .createTrip(
@@ -185,7 +221,8 @@ export class DataManagement {
         end_date,
         trip_type,
         city,
-        userImage
+        userImage,
+        price
       )
       .then(data => {
         return Promise.resolve(data);
@@ -203,7 +240,8 @@ export class DataManagement {
     end_date: String,
     trip_type: string,
     city: Number,
-    userImage
+    userImage,
+    price: Number
   ): Promise<any> {
     return this.restService
       .editTrip(
@@ -214,7 +252,8 @@ export class DataManagement {
         end_date,
         trip_type,
         city,
-        userImage
+        userImage,
+        price
       )
       .then(data => {
         return Promise.resolve(data);
@@ -227,6 +266,17 @@ export class DataManagement {
   public rate(voted: string, rating: Number): Promise<any> {
     return this.restService
       .rate(voted, rating)
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
+  public block(userToBlock: string): Promise<any> {
+    return this.restService
+      .block(userToBlock)
       .then(data => {
         return Promise.resolve(data);
       })
@@ -398,5 +448,20 @@ export class DataManagement {
         reject('error');
       }
     });
+  }
+
+  public deleteUser(): Promise<any> {
+    return this.restService
+      .deleteUser()
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
+  public turnOnDjangoServer() {
+    this.restService.turnOnDjangoServer();
   }
 }

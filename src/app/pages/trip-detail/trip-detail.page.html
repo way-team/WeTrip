@@ -7,32 +7,63 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="trip">
+<ion-content *ngIf="trip && isReady">
 
-  <div class="bg-light" text-center>
-    <img src="https://wayteam-static.s3.amazonaws.com/static/img/{{trip.userImage}}" width="100%">
+
+  <div class="image-container"
+    [style.background-image]="'url(https://wayteam-static.s3.amazonaws.com/static/img/' + trip.userImage + ')'">
+    <ion-fab vertical="top" horizontal="end" slot="start">
+
+      <ion-avatar>
+        <img src="assets/img/trip/{{trip.image}}" class="user-avatar">
+      </ion-avatar>
+
+    </ion-fab>
+
   </div>
 
   <ion-card class="bg-light" no-margin>
     <ion-card-content>
-      <h1 margin-bottom>
+      <h1 style="cursor: pointer" (click)="goTo('user-profile/', creator.user.username)" margin-bottom>
         <ion-text color="dark"><strong>{{ trip.creator }}</strong></ion-text>
       </h1>
       <h4> {{ trip.title }}: {{ trip.description }} </h4>
-      <h5> {{ 'TRIP_DETAILS.START_DATE' | translate }}: {{ trip.startDate }} {{ 'TRIP_DETAILS.TO' | translate }} {{ trip.endDate }} </h5>
+      <h5> {{ 'TRIP_DETAILS.START_DATE' | translate }}: {{ trip.startDate }} {{ 'TRIP_DETAILS.TO' | translate }}
+        {{ trip.endDate }} </h5>
+      <h5>{{ 'TRIP_DETAILS.PRICE' | translate }}: {{trip.price}}€</h5>
+      <ion-card class="card-cities">
+        <ion-card-header>
+          {{ 'TRIP_DETAILS.CITIES' | translate }}
+
+        </ion-card-header>
+        <ion-card-content>
+          <div class="listCities" *ngFor="let city of trip.cities">
+            <ion-item>
+              <h5>{{city}}</h5>
+            </ion-item>
+          </div>
+        </ion-card-content>
+      </ion-card>
     </ion-card-content>
   </ion-card>
 
 
   <ion-item class="bg-profile">
 
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-icon name="star" slot="end" size="small" color="warning" no-margin></ion-icon>
-    <ion-avatar slot="start">
-      <img src="assets/img/trip/{{trip.image}}" class="user-avatar">
+    <ion-icon *ngIf="rating >=1" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=2" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=3" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=4" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating >=5" name="star" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <1" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <2" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <3" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <4" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+    <ion-icon *ngIf="rating <5" name="star-outline" color="dark" slot="end" size="small" no-margin></ion-icon>
+
+
+    <ion-avatar style="cursor: pointer" slot="start" (click)="goTo('user-profile/', creator.user.username)">
+      <img src="{{creator.photo}}" class="user-avatar">
     </ion-avatar>
     <ion-label>
       <ion-text color="light">
@@ -41,12 +72,12 @@
         </h2>
       </ion-text>
       <ion-text color="warning">
-        <h3>
+        <h3 style="cursor: pointer" (click)="goTo('user-profile/', creator.user.username)">
           {{ trip.creator }}
         </h3>
       </ion-text>
 
-      <ng-container *ngIf="!myTrip">
+      <ng-container *ngIf="!myTrip && showJoinButton()">
         <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">
           {{ 'TRIP_DETAILS.JOIN' | translate }}
         </ion-button>
@@ -62,17 +93,17 @@
 
       <ng-container *ngIf="usersAccepted.length != 0">
         <ion-item *ngFor="let i of usersAccepted">
-          <ion-label color="primary" (click)="goTo('user-profile/', i.applicantName)">
-            {{ i.applicantName }} 
+          <ion-label color="primary" style="cursor: pointer" (click)="goTo('user-profile/', i.applicantName)">
+            {{ i.applicantName }}
           </ion-label>
         </ion-item>
       </ng-container>
       <ng-container *ngIf="usersAccepted.length == 0">
-          <ion-item>
-            <ion-label>
-              {{ 'PROFILE.NO_USER_ACCEPTED' | translate }}
-            </ion-label>
-          </ion-item>
+        <ion-item>
+          <ion-label>
+            {{ 'PROFILE.NO_USER_ACCEPTED' | translate }}
+          </ion-label>
+        </ion-item>
       </ng-container>
     </ion-radio-group>
   </ion-list>
@@ -86,27 +117,29 @@
 
         <ng-container *ngIf="usersPending.length != 0">
           <ion-item *ngFor="let i of usersPending">
-            <ion-label color="primary" (click)="goTo('user-profile/', i.applicantName)">
-              {{ i.applicantName }} 
+            <ion-label color="primary" style="cursor: pointer" (click)="goTo('user-profile/', i.applicantName)">
+              {{ i.applicantName }}
             </ion-label>
             <ion-buttons slot="end">
-                <ion-button size="small" shape="round" color="dark" slot="end" (click)="acceptApplication(i.applicationId)">
-                    <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
-                </ion-button>
+              <ion-button size="small" shape="round" color="dark" slot="end"
+                (click)="acceptApplication(i.applicationId)">
+                <ion-icon name="checkmark-circle" color="dark" item-right></ion-icon>
+              </ion-button>
 
-                <ion-button size="small" shape="round" color="dark" slot="end" (click)="rejectApplication(i.applicationId)">
-                    <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
-                </ion-button>
-                
+              <ion-button size="small" shape="round" color="dark" slot="end"
+                (click)="rejectApplication(i.applicationId)">
+                <ion-icon name="close-circle" color="tertiary" item-right></ion-icon>
+              </ion-button>
+
             </ion-buttons>
           </ion-item>
         </ng-container>
         <ng-container *ngIf="usersPending.length == 0">
-            <ion-item>
-              <ion-label>
-                {{ 'PROFILE.NO_USER_PENDING' | translate }}
-              </ion-label>
-            </ion-item>
+          <ion-item>
+            <ion-label>
+              {{ 'PROFILE.NO_USER_PENDING' | translate }}
+            </ion-label>
+          </ion-item>
         </ng-container>
       </ion-radio-group>
     </ion-list>

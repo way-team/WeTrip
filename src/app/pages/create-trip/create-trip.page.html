@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="light">{{ 'CREATE_TRIP.CREATE_NEW_TRIP' | translate}}</ion-title>
+    <ion-title *ngIf="!id" color="light">{{ 'CREATE_TRIP.CREATE_NEW_TRIP' | translate}}</ion-title>
+    <ion-title *ngIf="id" color="light">{{ 'CREATE_TRIP.EDIT_TRIP' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -22,7 +23,7 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'CREATE_TRIP.TITLE' | translate}}
             </ion-label>
-            <ion-input [(ngModel)]="title" maxlength="100" type="text" formControlName="title"></ion-input>
+            <ion-input [(ngModel)]="title" maxlength="20" type="text" formControlName="title"></ion-input>
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('title').touched && onCreateForm.get('title').hasError('required')">
@@ -98,14 +99,27 @@
 
           <ion-item>
             <ion-label position="floating">
+              <ion-icon name="cash" item-start></ion-icon>
+              {{ 'CREATE_TRIP.PRICE' | translate}}
+            </ion-label>
+            <ion-input [(ngModel)]="price" [min]="0" type="number" formControlName="price"></ion-input>
+          </ion-item>
+          <p ion-text class="text08"
+            *ngIf="onCreateForm.get('price').touched && onCreateForm.get('price').hasError('required')">
+            <ion-text color="warning">
+              {{ 'CREATE_TRIP.REQUIRED_FIELD' | translate}}
+            </ion-text>
+          </p>
+
+          <ion-item>
+            <ion-label position="floating">
               <ion-icon name="map" item-start></ion-icon>
               {{ 'CREATE_TRIP.CITY' | translate}}
             </ion-label>
-            <ion-select [(ngModel)]="city" formControlName="city">
-              <ion-select-option value="city.id" *ngFor="let city of cities" value="{{city.id}}">{{ city.name }}
-                ({{ city.country.name }})
-              </ion-select-option>
-            </ion-select>
+            <ionic-selectable formControlName="city" [(ngModel)]="city" [items]="cities" itemValueField="id"
+              itemTextField="name" [canSearch]="true">
+            </ionic-selectable>
+
           </ion-item>
           <p ion-text class="text08"
             *ngIf="onCreateForm.get('city').touched && onCreateForm.get('city').hasError('required')">

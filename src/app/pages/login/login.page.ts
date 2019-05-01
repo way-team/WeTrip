@@ -37,7 +37,9 @@ export class LoginPage implements OnInit {
     private cookieService: CookieService,
      private translate: TranslateService,
     public events: Events
-  ) { }
+  ) { 
+    this.turnOnDjangoServer();
+  }
 
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
@@ -165,5 +167,9 @@ export class LoginPage implements OnInit {
       now.getHours(),
       now.getMinutes() + 30
     );
+  }
+
+  turnOnDjangoServer() {
+    this.dm.turnOnDjangoServer();
   }
 }

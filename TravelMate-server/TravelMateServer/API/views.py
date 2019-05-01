@@ -22,8 +22,18 @@ def get_user_by_token(request):
     tk = get_object_or_404(Token, key=key)
     user = tk.user
     user_profile = UserProfile.objects.get(user=user)
+    
+    # Sets user to no Premium if it's been 1 year since the user paid
+    if user_profile.isPremium:
+        today = datetime.today().date()
+        datePremium = user_profile.datePremium
+        diff = today - datePremium
+        if diff.days >= 365:
+            user_profile.isPremium = False
+            user_profile.save()
 
     return user_profile
+
 
 
 class GetUserView(APIView):
@@ -140,36 +150,53 @@ def get_friends(user, discover):
     sended_accepted = Invitation.objects.filter(sender=user, status="A")
     if sended_accepted:
         for i in sended_accepted:
-            friends.append(i.receiver)
+            if i.receiver.status=='A':
+                friends.append(i.receiver)
 
     received_accepted = Invitation.objects.filter(receiver=user, status="A")
     if received_accepted:
         for j in received_accepted:
-            friends.append(j.sender)
+            if j.sender.status=='A':
+                friends.append(j.sender)
 
     sended_rejected = Invitation.objects.filter(sender=user, status="R")
     if sended_rejected:
         for i in sended_rejected:
-            rejected.append(i.receiver)
+            if i.receiver.status=='A':
+                rejected.append(i.receiver)
 
     received_rejected = Invitation.objects.filter(receiver=user, status="R")
     if received_rejected:
         for j in received_rejected:
-            rejected.append(j.sender)
+            if j.sender.status=='A':
+                rejected.append(j.sender)
 
     received_pending = Invitation.objects.filter(receiver=user, status="P")
     if received_pending:
         for i in received_pending:
-            pending.append(i.sender)
+            if i.sender.status=='A':
+                pending.append(i.sender)
 
     if discover:
         sended_pending = Invitation.objects.filter(sender=user, status="P")
         if sended_pending:
             for j in sended_pending:
-                pending.append(j.receiver)
+                    pending.append(j.receiver)
+
 
     return (friends, pending, rejected)
 
+def get_deleted_users():
+    """
+    Method to get the list of all deleted users
+    """
+    users = []
+
+    users_deleted = UserProfile.objects.filter(status="D")
+    for i in users_deleted:
+        users.append(i)
+
+    return users
 
 class GetFriendsView(APIView):
     """
@@ -205,6 +232,41 @@ class GetPendingView(APIView):
         friends, pending, rejected = get_friends(user, False)
 
         return Response(UserProfileSerializer(pending, many=True).data)
+
+class GetPendingInvitationsView(APIView):
+    """
+    Method to get the user's invitations not accepted
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        pendingI=[]
+
+        user = get_user_by_token(request)
+
+        pendingInvitations = get_pendingInvitations(user, False)
+        if pendingInvitations:
+            for i in pendingInvitations:
+                    pendingI.append(i.receiver)
+
+        return Response(UserProfileSerializer(pendingI, many=True).data)
+
+
+
+def get_pendingInvitations(user, discover):
+    """
+    Method to get the list of an user's invitations not accepted
+    """
+
+    pendingInvitations = []
+
+    pendingInvitations = Invitation.objects.filter(sender=user, status="P")
+
+    return pendingInvitations
 
 
 class SendInvitation(APIView):
@@ -276,7 +338,7 @@ class SendInvitation(APIView):
 
 class AcceptFriend(APIView):
     """
-    Method to accept or decline an invitation to be a friend of the logged user
+    Method to accept an invitation to be a friend of the logged user
     """
 
     permission_classes = (IsAuthenticated, )
@@ -309,7 +371,7 @@ class AcceptFriend(APIView):
 
 class RejectFriend(APIView):
     """
-    Method to accept or decline an invitation to be a friend of the logged user
+    Method to decline an invitation to be a friend of the logged user
     """
 
     permission_classes = (IsAuthenticated, )
@@ -340,6 +402,36 @@ class RejectFriend(APIView):
         return Response(InvitationSerializer(invitation, many=False).data)
 
 
+class RemoveFriend(APIView):
+    """
+    Method to remove a friend of the logged user
+    """
+
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user = get_user_by_token(request)
+
+        sendername = request.data.get("sendername", "")
+        sender = User.objects.get(username=sendername).userprofile
+
+        try:
+            invitation = Invitation.objects.get(Q(sender=sender, receiver=user, status="A") | Q(sender=user, receiver=sender, status="A"))
+        except Invitation.DoesNotExist:
+            invitation = None
+
+        if invitation is not None:
+            invitation.status = "R"
+            invitation.save()
+        else:
+            raise ValueError("No relation between these two users")
+
+        return Response(InvitationSerializer(invitation, many=False).data)
+
 class DiscoverPeopleView(APIView):
     """
     Method to get the people who have the same interests as you in order to discover people
@@ -352,9 +444,9 @@ class DiscoverPeopleView(APIView):
         POST method
         """
         user = get_user_by_token(request)
-
         friends, pending, rejected = get_friends(user, True)
-
+        limit = int(request.data.get("limit",""))
+        offset = int(request.data.get("offset",""))
         discover_people = []
         interests = user.interests.all()
 
@@ -370,6 +462,7 @@ class DiscoverPeopleView(APIView):
         import collections
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
+        discover_people = set(discover_people)
 
         # After, we obtain the people without the same interests
         # and append them at the end of the discover list
@@ -377,19 +470,24 @@ class DiscoverPeopleView(APIView):
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.append(person)
+            discover_people.add(person)
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
         for person in friends:
-            discover_people.remove(person)
+            discover_people.discard(person)
         for person in pending:
-            discover_people.remove(person)
+            discover_people.discard(person)
         for person in rejected:
-            discover_people.remove(person)
-        discover_people.remove(user)
+            discover_people.discard(person)
+        # who are the deleted users and remove them
+        deleted_users = get_deleted_users()
+        for person in deleted_users:
+            discover_people.discard(person)
 
-        return Response(UserProfileSerializer(discover_people, many=True).data)
+        discover_people.discard(user)
+        discover_people = list(discover_people)
+        return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
 
 class MyTripsList(generics.ListAPIView):
@@ -404,6 +502,8 @@ class MyTripsList(generics.ListAPIView):
 
 
 class AvailableTripsList(generics.ListAPIView):
+    ''' Gets trips available (Application not rejected) '''
+    
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
@@ -411,18 +511,21 @@ class AvailableTripsList(generics.ListAPIView):
 
     def get_queryset(self):
         today = datetime.today()
+        user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id).exclude(status='R')
-        myTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
 
 class AvailableTripsSearch(generics.ListAPIView):
+    ''' Search trips available (Application not rejected) '''
+
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
@@ -430,15 +533,16 @@ class AvailableTripsSearch(generics.ListAPIView):
 
     def get_queryset(self):
         today = datetime.today()
+        user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myApplications = Application.objects.filter(applicant_id = self.request.user.id).exclude(status='R')
-        myTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
         premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
 
         return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
             Q(status=True) & Q(startDate__gte=today) & Q(
                 tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myTripsIds).order_by('-isPremiumUser')
+                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
 
     queryset = get_queryset
     serializer_class = TripSerializer
@@ -483,6 +587,7 @@ class CreateTrip(APIView):
         user = User.objects.get(username=username).userprofile
         title = request.data.get('title', '')
         description = request.data.get('description', '')
+        price = request.data.get('price', '0')
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
@@ -500,6 +605,7 @@ class CreateTrip(APIView):
                 user=user,
                 title=title,
                 description=description,
+                price=price,
                 startDate=startDate,
                 endDate=endDate,
                 tripType=tripType,
@@ -513,6 +619,7 @@ class CreateTrip(APIView):
                 user=user,
                 title=title,
                 description=description,
+                price=price,
                 startDate=startDate,
                 endDate=endDate,
                 tripType=tripType,
@@ -527,7 +634,7 @@ class CreateTrip(APIView):
             return Response(TripSerializer(trip, many=False).data)
 
 
-FullTrip = namedtuple('FullTrip', ('trip', 'applicationsList', 'pendingsList'))
+FullTrip = namedtuple('FullTrip', ('trip', 'applicationsList', 'pendingsList', 'rejectedList'))
 
 
 class GetTripView(APIView):
@@ -546,11 +653,13 @@ class GetTripView(APIView):
             trip = Trip.objects.get(pk=trip_id)
             applications = Application.objects.filter(trip=trip, status="A")
             pendings = Application.objects.filter(trip=trip, status="P")
+            rejected = Application.objects.filter(trip=trip, status="R")
 
             full_trip = FullTrip(
                 trip=trip,
                 applicationsList=applications,
                 pendingsList=pendings,
+                rejectedList=rejected,
             )
             return Response(FullTripSerializer(full_trip, many=False).data)
         except Trip.DoesNotExist:
@@ -569,7 +678,10 @@ class EditTripView(APIView):
         POST method
         """
         data = request.data
+
         trip = Trip.objects.get(pk=request.data["tripId"])
+        if data.get('file'):
+            trip.userImage = data.get('file')
 
         stored_creator = trip.user
         user = get_user_by_token(request)
@@ -577,14 +689,17 @@ class EditTripView(APIView):
             raise ValueError("You are not the creator of this trip")
 
         if request.data["startDate"] > request.data["endDate"]:
-            raise ValueError("The start date must be before that the end date")
+            raise ValueError("The start date must be before the end date")
+
+        if request.data["tripType"] == "PUBLIC":
+            raise ValueError("This trip is public, so it can't be edited ")
 
         serializer = TripSerializer(trip, data=data)
         if serializer.is_valid():
             serializer.save()
             try:
                 new_city = City.objects.get(pk=request.data["city"])
-                trip.city = new_city
+                new_city.trips.add(trip)
             except City.DoesNotExist:
                 raise ValueError("The city does not exist")
             return JsonResponse(serializer.data, status=201)
@@ -869,9 +984,19 @@ class RegisterUser(APIView):
         lastName = request.data.get('last_name', '')
         description = request.data.get('description', '')
         birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
+
         gender = request.data.get('gender', '')
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
+        profesion = request.data.get('profesion', '')
+        civilStatus = request.data.get('civilStatus', '')
         status = 'A'
         import json
         languages = json.loads(request.data.get('languages'))
@@ -894,6 +1019,8 @@ class RegisterUser(APIView):
                 nationality=nationality,
                 city=city,
                 status=status,
+                profesion=profesion,
+                civilStatus=civilStatus,
                 photo=photo,
                 discoverPhoto=discoverPhoto)
 
@@ -920,6 +1047,8 @@ class RegisterUser(APIView):
                     nationality=nationality,
                     city=city,
                     status=status,
+                    profesion=profesion,
+                    civilStatus=civilStatus,
                     photo=photo)
 
                 userProfile.save()
@@ -945,6 +1074,8 @@ class RegisterUser(APIView):
                         nationality=nationality,
                         city=city,
                         status=status,
+                        profesion=profesion,
+                        civilStatus=civilStatus,
                         discoverPhoto=discoverPhoto)
 
                     userProfile.save()
@@ -965,7 +1096,9 @@ class RegisterUser(APIView):
                         gender=gender,
                         nationality=nationality,
                         city=city,
-                        status=status)
+                        status=status,
+                        profesion=profesion,
+                        civilStatus=civilStatus)
                     userProfile.save()
                     for i in languages:
                         lang = Language.objects.get(name=i)
@@ -976,5 +1109,8 @@ class RegisterUser(APIView):
             
 
         finally:
-            return Response(
-                UserProfileSerializer(userProfile, many=False).data)
+            return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
+
+
+def backendWakeUp(request):
+    return JsonResponse({'message':'Waking up backend'}, status=200)
