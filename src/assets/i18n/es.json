@@ -45,7 +45,9 @@
     "UPLOAD_AN_IMAGE": "Subir una imagen",
     "WARNING_DATE": "La fecha de finalización no puede ser anterior a la fecha de comienzo",
     "WARNING_DATE_MIN": "No se puede establecer una fecha pasada",
-    "PRICE": "Precio estimado (€)"
+    "PRICE": "Precio estimado (€)",
+    "PUBLIC_ALERT": "Has seleccionado Público",
+    "PUBLIC_ALERT_M": "Si guardas en este modo no podrás editar el viaje y las personas podrán apuntarse"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Usuarios: activos VS. inactivos",

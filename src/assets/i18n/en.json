@@ -45,7 +45,9 @@
     "UPLOAD_AN_IMAGE": "Upload an image",
     "WARNING_DATE": "End date can not been set before the start date",
     "WARNING_DATE_MIN": "Can not set a past date",
-    "PRICE": "Estimated price (€)"
+    "PRICE": "Estimated price (€)",
+    "PUBLIC_ALERT": "You've selected Public",
+    "PUBLIC_ALERT_M": "If you save this mode, you will not be able to edit this trip and people could start applying it"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Users: active VS. inactive",
