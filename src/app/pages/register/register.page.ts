@@ -112,68 +112,62 @@ export class RegisterPage implements OnInit {
   }
 
   public signUp() {
-    let translation1: string = this.translate.instant(
-      'REGISTER.HEADER_SUCCESS'
-    );
+    let translation1: string = this.translate.instant('REGISTER.HEADER_SUCCESS');
     let translation2: string = this.translate.instant('REGISTER.SUCCESS');
-    let translation3: string = this.translate.instant(
-      'REGISTER.ERROR_USERNAME'
-    );
+    let translation3: string = this.translate.instant('REGISTER.ERROR_USERNAME');
 
-    this.dm
-      .register(
-        this.username,
-        this.password,
-        this.email,
-        this.first_name,
-        this.last_name,
-        this.description,
-        this.birthdate.split('T')[0],
-        this.profesion,
-        this.civilStatus,
-        this.gender,
-        this.nationality,
-        this.city,
-        this.languages,
-        this.interests,
-        this.profilePic,
-        this.discoverPic
-      )
-      .then(data => {
-        this.showLoading();
-        setTimeout(() => {
-          this.alertCtrl
-            .create({
-              header: translation1,
-              message: translation2,
-              buttons: [
-                {
-                  text: 'Ok',
-                  role: 'ok'
-                }
-              ]
-            })
-            .then(alertEl => {
-              alertEl.present();
-            });
-          this.navCtrl.navigateForward('/');
-          (this.username = ''),
-            (this.password = ''),
-            (this.confirmPassword = ''),
-            (this.email = ''),
-            (this.first_name = ''),
-            (this.last_name = ''),
-            (this.description = ''),
-            (this.birthdate = ''),
-            (this.gender = ''),
-            (this.nationality = ''),
-            (this.city = ''),
-            (this.languages = ''),
-            (this.interests = ''),
-            (this.profilePic = null),
-            (this.discoverPic = null);
-        }, 1500);
-      })
+    this.dm.register(
+      this.username,
+      this.password,
+      this.email,
+      this.first_name,
+      this.last_name,
+      this.description,
+      this.birthdate.split('T')[0],
+      this.profesion,
+      this.civilStatus,
+      this.gender,
+      this.nationality,
+      this.city,
+      this.languages,
+      this.interests,
+      this.profilePic,
+      this.discoverPic
+    ).then(data => {
+      this.showLoading();
+      setTimeout(() => {
+        this.alertCtrl
+          .create({
+            header: translation1,
+            message: translation2,
+            buttons: [
+              {
+                text: 'Ok',
+                role: 'ok'
+              }
+            ]
+          })
+          .then(alertEl => {
+            alertEl.present();
+          });
+        this.navCtrl.navigateForward('/');
+        (this.username = ''),
+          (this.password = ''),
+          (this.confirmPassword = ''),
+          (this.email = ''),
+          (this.first_name = ''),
+          (this.last_name = ''),
+          (this.description = ''),
+          (this.birthdate = ''),
+          (this.gender = ''),
+          (this.nationality = ''),
+          (this.city = ''),
+          (this.languages = ''),
+          (this.interests = ''),
+          (this.profilePic = null),
+          (this.discoverPic = null);
+      }, 1500);
+    })
       .catch(error => {
         this.showLoading();
         setTimeout(() => {
@@ -213,11 +207,51 @@ export class RegisterPage implements OnInit {
   }
 
   onProfilePicInputChange(file: File) {
+    this.checkFileIsImage(file[0], 'profPic');
     this.profilePic = file[0];
   }
 
   onDiscoverPicInputChange(file: File) {
+    this.checkFileIsImage(file[0], 'dicPic');
     this.discoverPic = file[0];
+  }
+
+  private checkFileIsImage(file: File, picture: string) {
+    if (!(file.type.split('/')[0] == 'image')) {
+      let translation1: string = this.translate.instant('REGISTER.IMAGE_ERROR');
+
+      this.alertCtrl
+        .create({
+          header: translation1,
+          buttons: [
+            {
+              text: 'Ok',
+              role: 'ok'
+            }
+          ]
+        })
+        .then(alertEl => {
+          alertEl.present();
+        });
+
+      if (picture == 'profPic') {
+        this.profilePic = null;
+        // Aunque de fallo de compilación, funciona
+        (<HTMLInputElement>document.getElementById('procPic')).value = "";
+      }
+
+      if (picture == 'dicPic') {
+        this.discoverPic = null;
+        // Aunque de fallo de compilación, funciona
+        (<HTMLInputElement>document.getElementById('dicoverPic')).value = "";
+      }
+    }
+
+
+
+
+
+
   }
 
   validateBirthdate() {
