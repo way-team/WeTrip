@@ -36,8 +36,8 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'CREATE_TRIP.DESCRIPTION' | translate}}
             </ion-label>
-            <ion-textarea [(ngModel)]="description" maxlength="200" [ngModelOptions]="{standalone: true}">
-            </ion-textarea>
+            <ion-input [(ngModel)]="description" maxlength="200" [ngModelOptions]="{standalone: true}">
+            </ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">
@@ -153,7 +153,8 @@
   <ion-checkbox [(ngModel)]="privacyPolicites" checked="false"></ion-checkbox>
   <ion-label>
     {{ 'CREATE_TRIP.TERMS' | translate}}
-    <ion-text color="dark" (click)="goToPrivacyPolicies()">{{ 'CREATE_TRIP.PRIVACY_POLICIES' | translate}}</ion-text>
+    <a color="dark" style="cursor: pointer" target="_blank"
+      href="{{path}}/gdpr">{{ 'CREATE_TRIP.PRIVACY_POLICIES' | translate}}</a>
   </ion-label>
   <ng-container *ngIf="!id">
     <ion-button [disabled]="!onCreateForm.valid || !privacyPolicites || !validateDatesAttr || !validateDatesBeforeToday"
