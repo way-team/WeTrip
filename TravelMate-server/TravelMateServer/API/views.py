@@ -688,7 +688,6 @@ class EditTripView(APIView):
         
         trip = Trip.objects.get(pk=request.data["tripId"])
         for i in trip.cities.all():
-            print(i)
             i.trips.remove(trip)
         
         if trip.tripType == "PUBLIC": 
@@ -709,9 +708,10 @@ class EditTripView(APIView):
 
         if(len(cities) == 1):
             city = City.objects.get(pk=cities[0])
-            trip.image_name = city.country.name + '.jpg'
+            trip.image = city.country.name + '.jpg'
+            
         else:
-            trip.image_name = 'World.jpg'
+            trip.image = 'World.jpg'
 
         title = data.get('title')
         description = data.get('description')
@@ -1151,6 +1151,7 @@ class RegisterUser(APIView):
 
         finally:
             return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
+
 
 
 class DeleteUser(APIView):
