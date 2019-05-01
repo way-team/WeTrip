@@ -147,7 +147,7 @@
               <ion-icon name="briefcase" item-start></ion-icon>
               {{ 'REGISTER.PROFESION' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="profesion" [(ngModel)]="profesion">
+            <ion-input color="secondary" type="text" formControlName="profesion" [(ngModel)]="profesion" maxlength="50"> 
             </ion-input>
           </ion-item>
 
@@ -209,7 +209,7 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.NATIONALITY' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="nationality" [(ngModel)]="nationality">
+            <ion-input color="secondary" type="text" formControlName="nationality" [(ngModel)]="nationality" maxlength="50">
             </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
@@ -224,7 +224,7 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.CITY' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="city" [(ngModel)]="city"></ion-input>
+            <ion-input color="secondary" type="text" formControlName="city" [(ngModel)]="city" maxlength="50"></ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('city').touched && onRegisterForm.get('city').hasError('required')">
@@ -279,10 +279,9 @@
               </ion-card-header>
               <ion-card-content>
                 <br>
-                <div><input type='file' (change)="onProfilePicInputChange($event.target.files)" /></div>
+                <div><input type='file' id="procPic" (change)="onProfilePicInputChange($event.target.files)" /></div>
               </ion-card-content>
             </ion-card>
-
           </ion-item>
           <ion-item lines="none"></ion-item>
 
@@ -296,7 +295,7 @@
               </ion-card-header>
               <ion-card-content>
                 <br>
-                <div><input type='file' (change)="onDiscoverPicInputChange($event.target.files)" /></div>
+                <div><input type='file' id="dicoverPic" (change)="onDiscoverPicInputChange($event.target.files)" /></div>
               </ion-card-content>
             </ion-card>
 
