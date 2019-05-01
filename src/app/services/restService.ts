@@ -321,7 +321,7 @@ export class RestWS extends AbstractWS {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price
   ): Promise<any> {
@@ -337,7 +337,7 @@ export class RestWS extends AbstractWS {
         fd.append('start_date', String(start_date));
         fd.append('end_date', String(end_date));
         fd.append('trip_type', trip_type);
-        fd.append('city', String(city));
+        fd.append('cities', JSON.stringify(cities));
         if (userImage !== null) {
           fd.append('file', userImage, userImage.name);
         }
@@ -367,7 +367,7 @@ export class RestWS extends AbstractWS {
     startDate: String,
     endDate: String,
     tripType: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price
   ): Promise<any> {
@@ -382,7 +382,7 @@ export class RestWS extends AbstractWS {
     fd.append('startDate', String(startDate));
     fd.append('endDate', String(endDate));
     fd.append('tripType', tripType);
-    fd.append('city', String(city));
+    fd.append('cities', JSON.stringify(cities));
     fd.append('token', token);
     if (userImage !== null) {
       fd.append('file', userImage, userImage.name);
