@@ -33,6 +33,7 @@ export class CreateTripPage implements OnInit {
   validateDatesAttr: boolean = true;
   validateDatesBeforeToday: boolean = true;
   minDate: Date = new Date();
+  isReady: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -43,7 +44,7 @@ export class CreateTripPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private loadingCtrl: LoadingController
   ) {
-    this.listCities();
+    this.initialiceData();
   }
 
   ngOnInit() {
@@ -128,27 +129,22 @@ export class CreateTripPage implements OnInit {
       });
   }
 
-  public async listCities() {
-    this.dm
-      .listCities()
-      .then(data => {
+  public async initialiceData() {
+    this.dm.listCities().then(data => {
         this.cities = data;
         this.id = this.activatedRoute.snapshot.paramMap.get('id');
+        
         if (this.id) {
           const translation2: string = this.translate.instant('LOGIN.WAIT');
-          this.loadingCtrl
-            .create({
+          this.loadingCtrl.create({
               message: translation2,
               showBackdrop: true,
               duration: 1000
-            })
-            .then(loadingEl => {
+            }).then(loadingEl => {
               loadingEl.present();
             });
 
-          this.dm
-            .getTripById(this.id)
-            .then(response => {
+          this.dm.getTripById(this.id).then(response => {
               this.price = response['trip'].price;
               this.title = response['trip'].title;
               this.description = response['trip'].description;
@@ -162,9 +158,12 @@ export class CreateTripPage implements OnInit {
                 this.citiesSelected.push(newCity);
               });
               console.log(this.citiesSelected);
+              this.isReady = true;
               this.loadingCtrl.dismiss();
             })
             .catch(_ => {});
+        } else {
+          this.isReady = true;
         }
       })
       .catch(error => {
