@@ -629,10 +629,11 @@ export class RestWS extends AbstractWS {
       });
   }
 
-  public deleteUser() {
+  public deleteUser(id) {
     const fd = new FormData();
     const Authorization = this.cookieService.get('token');
     fd.append('token', Authorization);
+    fd.append('user_id', id);
     return this.makePostRequest(this.path + 'deleteUser/', fd, Authorization)
       .then(res => {
         return Promise.resolve(res);
