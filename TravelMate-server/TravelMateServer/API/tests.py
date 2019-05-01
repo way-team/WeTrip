@@ -679,7 +679,6 @@ class TravelMateTests(APITestCase):
         # But his/her average rating has been updated
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 4)
 
-<<<<<<< HEAD
     def test_list_languages(self):
         """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
 
@@ -745,7 +744,7 @@ class TravelMateTests(APITestCase):
         # We check the status code of the request
         self.assertEqual(200, response.status_code)
 
-        # There are 6 cities on the system. Let's check this:
+        # There are 8 interest on the system. Let's check this:
         jsonResponse = response.json()
         self.assertTrue(len(jsonResponse) == 8)
 
@@ -760,7 +759,7 @@ class TravelMateTests(APITestCase):
         # We check the status code of the request
         self.assertEqual(200, response.status_code)
 
-        # There are 6 cities on the system. Let's check this:
+        # There are 8 interest on the system. Let's check this:
         jsonResponse = response.json()
         self.assertTrue(len(jsonResponse) == 8)
 
@@ -806,14 +805,187 @@ class TravelMateTests(APITestCase):
         #Check that there are 1 pendings
         self.assertTrue(len(jsonResponse)== 1)
         
-        #Check they are user2 and user4
+        #Check he is user5
         self.assertEqual(jsonResponse[0]['user']['id'], self.user5.id)
-       
     
 
+    #def test_create_trip(self):
+    #    """The method 'accept_application' is used to accept an application sent from another user for a trip."""
+      
+          # We log in as user1
+    #    self.user = self.user1
+    #    self.token = Token.objects.create(user=self.user)
+    #    self.api_authentication()
         
-     
-=======
+    #    data = {"token":self.token.key, "username": self.user1.username , "title": "trip13", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC", "cities": self.city1.name}
+
+        # Let's check the current status of the premium
+
+    #    response = self.client.post(reverse('create_trip'), data, format='json')
+       
+    #    self.assertEqual(200, response.status_code)
+
+    #    #The premium has been accepted.
+    #    self.assertIn(Trip.objects.get(title=trip13) , Trip.objects)
+
+    def test_get_trip(self):
+        """The method 'get_trip' has to return a list with all laguages selected by the current user."""
+
+        # We log in as 'user1'
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        response = self.client.get('/getTrip/1/')
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # There are 8 interest on the system. Let's check this:
+        jsonResponse = response.json()
+
+        trip=self.trip1
+        serializer = TripSerializer(trip, many=False)
+
+        self.assertEqual(jsonResponse['trip'], serializer.data)
+
+
+
+
+
+    #def test_register_user(self):
+    #    The method 'accept_application' is used to accept an application sent from another user for a trip.
+    #   
+          # We log in as user1
+    #   self.user = self.user1
+    #   self.token = Token.objects.create(user=self.user)
+    #   self.api_authentication()
+        
+    #   data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"language1":"english"}, "interests": {"interest1":"cooking"}}
+
+        # Let's check the current status of the premium
+
+    #   response = self.client.post(reverse('register_user'), data, format='json')
+       
+    #   self.assertEqual(200, response.status_code)
+
+        #The premium has been accepted.
+    #   statusAfter = UserProfile.objects
+    #   self.assertIn(self.userprofile7 ,statusAfter)
     
+
+
+
+    #def test_set_user_to_premium(self):
+    #    """The method 'accept_application' is used to accept an application sent from another user for a trip."""
         
->>>>>>> 3e00d7566f19f8549b7c101478fe578fad60121e
+    #      # We log in as user1
+    #    self.user = self.user1
+    #   self.token = Token.objects.create(user=self.user)
+    #   self.api_authentication()
+    # 
+    #   data = {"token":self.token.key, "user": "user1"}
+
+        # Let's check the current status of the premium
+    #   statusBefore = UserProfile.objects.get(pk=1).isPremium
+    #   self.assertEqual(statusBefore, False)
+
+    #   response = self.client.post(reverse('set_user_to_premium'), data, format='json')
+       
+    #   self.assertEqual(200, response.status_code)
+
+        #The premium has been accepted.
+    #   statusAfter = UserProfile.objects.get(pk=1).isPremium
+    #   self.assertEqual(statusAfter, True)
+
+    def test_get_user(self):
+        
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        # We are still logged as user1
+        data = {"token":self.token.key}
+
+        # Will ask for user 1 
+        response = self.client.post(reverse('get_user'), data, format='json')
+        self.assertEqual(200, response.status_code)
+
+        jsonResponse = response.json()
+
+        #Check that we get user1 
+        self.assertEqual(jsonResponse['user']['id'], self.user1.id)
+      #-------------------------------------------------------------
+      # We log in as user2
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        # We are still logged as user1
+        data = {"token":self.token.key}
+
+        # Will ask for user2 
+        response = self.client.post(reverse('get_user'), data, format='json')
+        self.assertEqual(200, response.status_code)
+
+        jsonResponse = response.json()
+
+        #Check that we get user2 
+        self.assertEqual(jsonResponse['user']['id'], self.user2.id)
+    
+    def test_get_user_by_id(self):
+        
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        # We are still logged as user1
+        data = {"user_id": '2'}
+
+        # Will ask for user 2 
+        response = self.client.post(reverse('get_user_by_id'), data, format='json')
+        self.assertEqual(200, response.status_code)
+
+        jsonResponse = response.json()
+
+        #Check that we get user1 
+        self.assertEqual(jsonResponse['user']['id'], self.user2.id)
+        #----------------------------------------------------------------
+        # We log in as user1
+        # We are still logged as user3
+        data = {"user_id": '3'}
+
+        # Will ask for user 3 
+        response = self.client.post(reverse('get_user_by_id'), data, format='json')
+        self.assertEqual(200, response.status_code)
+
+        jsonResponse = response.json()
+
+        #Check that we get user1 
+        self.assertEqual(jsonResponse['user']['id'], self.user3.id)
+
+    def test_user_list(self):
+        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+
+        # We log in as 'user1'
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        response = self.client.get('/users/user1/')
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # There are 8 interest on the system. Let's check this:
+        jsonResponse = response.json()
+
+        user=self.user1
+        serializer = UserSerializer(user, many=False)
+
+        self.assertEqual(jsonResponse['user'], serializer.data)
+
+    
+      
