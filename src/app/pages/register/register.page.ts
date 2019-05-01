@@ -9,9 +9,10 @@ import {
   NavController,
   MenuController,
   LoadingController,
-  AlertController
+  AlertController,
+  Events
 } from '@ionic/angular';
-import { Language, Interest } from 'src/app/app.data.model';
+import { Language, Interest, UserProfile } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -55,7 +56,8 @@ export class RegisterPage implements OnInit {
     private translate: TranslateService,
     private cookieService: CookieService,
     public alertCtrl: AlertController,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    public events: Events
   ) {
     this.listLanguages();
     this.listInterests();
@@ -296,7 +298,8 @@ export class RegisterPage implements OnInit {
             .then(alertEl => {
               alertEl.present();
             });
-          this.navCtrl.navigateForward('/discover');
+
+          this.events.publish('user:edited');
         }, 1500);
       })
       .catch(error => {});
