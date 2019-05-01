@@ -250,7 +250,8 @@
     "MALE": "Male",
     "FEMALE": "Female",
     "NON-BINARY": "Non-Binary",
-    "LANGUAGES": "Languages"
+    "LANGUAGES": "Languages",
+    "EDIT_PROFILE": "Edit profile"
   },
   "RATING": {
     "RATE": "Rate",
@@ -295,7 +296,11 @@
     "MARRIED": "Married",
     "WIDOWER": "Widower",
     "DIVORCED": "Divorced",
-    "IMAGE_ERROR": "You have to select an image"
+    "IMAGE_ERROR": "You have to select an image",
+    "EDITUSER": "Edit profile",
+    "EDIT": "Edit",
+    "HEADER_SUCCESS_EDIT": "Edit profile success",
+    "SUCCESS_EDIT": "Your personal data has been updated!"
   },
   "SEARCH": {
     "MY_TRIPS": "Access to My created trips",

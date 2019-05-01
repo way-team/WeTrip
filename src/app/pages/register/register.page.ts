@@ -15,6 +15,7 @@ import { Language, Interest } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -36,12 +37,14 @@ export class RegisterPage implements OnInit {
   city: string;
   profesion: string;
   civilStatus: string;
-  languages;
+  languages = [];
   languagesOptions: Language[];
-  interests;
+  interests = [];
   interestsOptions: Interest[];
   profilePic: File = null;
   discoverPic: File = null;
+  edit: string;
+  isReady: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -51,10 +54,40 @@ export class RegisterPage implements OnInit {
     public dm: DataManagement,
     private translate: TranslateService,
     private cookieService: CookieService,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    private activatedRoute: ActivatedRoute
   ) {
     this.listLanguages();
     this.listInterests();
+
+    this.edit = this.activatedRoute.snapshot.paramMap.get('edit');
+    if (this.edit === 'edit') {
+      this.dm.getUserLogged(this.cookieService.get('token')).then(res => {
+        this.email = res.email;
+        this.first_name = res.first_name;
+        this.last_name = res.last_name;
+        this.description = res.first_name;
+        this.birthdate = res.birthdate;
+        this.profesion = res.profesion;
+        this.civilStatus = res.civilStatus;
+        this.gender = res.gender;
+        this.nationality = res.nationality;
+        this.city = res.city;
+        res.languages.forEach(x => {
+          var newLanguage: string;
+          newLanguage = x;
+          this.languages.push(newLanguage);
+        });
+        res.interests.forEach(x => {
+          var newInterest: string;
+          newInterest = x;
+          this.interests.push(newInterest);
+        });
+        this.isReady = true;
+      });
+    } else {
+      this.isReady = true;
+    }
   }
 
   public listLanguages() {
@@ -79,30 +112,55 @@ export class RegisterPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.menuCtrl.enable(false);
+    if (this.edit !== 'edit') {
+      this.menuCtrl.enable(false);
+    } else {
+      this.menuCtrl.enable(true);
+    }
   }
 
   ngOnInit() {
-    this.onRegisterForm = this.formBuilder.group({
-      username: [null, Validators.compose([Validators.required])],
-      password: [null, Validators.compose([Validators.required])],
-      confirmPassword: [null, Validators.compose([Validators.required])],
-      email: [
-        null,
-        Validators.compose([Validators.required, Validators.email])
-      ],
-      first_name: [null, Validators.compose([Validators.required])],
-      last_name: [null, Validators.compose([Validators.required])],
-      profesion: [null, null],
-      civilStatus: [null, Validators.compose([Validators.required])],
-      description: [null, Validators.compose([Validators.required])],
-      birthdate: [null, Validators.compose([Validators.required])],
-      gender: [null, Validators.compose([Validators.required])],
-      nationality: [null, Validators.compose([Validators.required])],
-      city: [null, Validators.compose([Validators.required])],
-      languages: [null, Validators.compose([Validators.required])],
-      interests: [null, Validators.compose([Validators.required])]
-    });
+    if (this.edit !== 'edit') {
+      console.log('noo digas hola');
+      this.onRegisterForm = this.formBuilder.group({
+        username: [null, Validators.compose([Validators.required])],
+        password: [null, Validators.compose([Validators.required])],
+        confirmPassword: [null, Validators.compose([Validators.required])],
+        email: [
+          null,
+          Validators.compose([Validators.required, Validators.email])
+        ],
+        first_name: [null, Validators.compose([Validators.required])],
+        last_name: [null, Validators.compose([Validators.required])],
+        profesion: [null, null],
+        civilStatus: [null, Validators.compose([Validators.required])],
+        description: [null, Validators.compose([Validators.required])],
+        birthdate: [null, Validators.compose([Validators.required])],
+        gender: [null, Validators.compose([Validators.required])],
+        nationality: [null, Validators.compose([Validators.required])],
+        city: [null, Validators.compose([Validators.required])],
+        languages: [null, Validators.compose([Validators.required])],
+        interests: [null, Validators.compose([Validators.required])]
+      });
+    } else {
+      this.onRegisterForm = this.formBuilder.group({
+        email: [
+          null,
+          Validators.compose([Validators.required, Validators.email])
+        ],
+        first_name: [null, Validators.compose([Validators.required])],
+        last_name: [null, Validators.compose([Validators.required])],
+        profesion: [null, null],
+        civilStatus: [null, Validators.compose([Validators.required])],
+        description: [null, Validators.compose([Validators.required])],
+        birthdate: [null, Validators.compose([Validators.required])],
+        gender: [null, Validators.compose([Validators.required])],
+        nationality: [null, Validators.compose([Validators.required])],
+        city: [null, Validators.compose([Validators.required])],
+        languages: [null, Validators.compose([Validators.required])],
+        interests: [null, Validators.compose([Validators.required])]
+      });
+    }
   }
 
   confirmPasswordValidation() {
@@ -114,62 +172,68 @@ export class RegisterPage implements OnInit {
   }
 
   public signUp() {
-    let translation1: string = this.translate.instant('REGISTER.HEADER_SUCCESS');
+    let translation1: string = this.translate.instant(
+      'REGISTER.HEADER_SUCCESS'
+    );
     let translation2: string = this.translate.instant('REGISTER.SUCCESS');
-    let translation3: string = this.translate.instant('REGISTER.ERROR_USERNAME');
+    let translation3: string = this.translate.instant(
+      'REGISTER.ERROR_USERNAME'
+    );
 
-    this.dm.register(
-      this.username,
-      this.password,
-      this.email,
-      this.first_name,
-      this.last_name,
-      this.description,
-      this.birthdate.split('T')[0],
-      this.profesion,
-      this.civilStatus,
-      this.gender,
-      this.nationality,
-      this.city,
-      this.languages,
-      this.interests,
-      this.profilePic,
-      this.discoverPic
-    ).then(data => {
-      this.showLoading();
-      setTimeout(() => {
-        this.alertCtrl
-          .create({
-            header: translation1,
-            message: translation2,
-            buttons: [
-              {
-                text: 'Ok',
-                role: 'ok'
-              }
-            ]
-          })
-          .then(alertEl => {
-            alertEl.present();
-          });
-        this.navCtrl.navigateForward('/');
-        (this.username = ''),
-          (this.password = ''),
-          (this.confirmPassword = ''),
-          (this.email = ''),
-          (this.first_name = ''),
-          (this.last_name = ''),
-          (this.description = ''),
-          (this.birthdate = ''),
-          (this.gender = ''),
-          (this.nationality = ''),
-          (this.city = ''),
-          (this.languages = ''),
-          (this.interests = ''),
-          (this.profilePic = null),
-          (this.discoverPic = null);
-      }, 1500);
-    })
+    this.dm
+      .register(
+        this.username,
+        this.password,
+        this.email,
+        this.first_name,
+        this.last_name,
+        this.description,
+        this.birthdate.split('T')[0],
+        this.profesion,
+        this.civilStatus,
+        this.gender,
+        this.nationality,
+        this.city,
+        this.languages,
+        this.interests,
+        this.profilePic,
+        this.discoverPic
+      )
+      .then(data => {
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: translation1,
+              message: translation2,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+          this.navCtrl.navigateForward('/');
+          (this.username = ''),
+            (this.password = ''),
+            (this.confirmPassword = ''),
+            (this.email = ''),
+            (this.first_name = ''),
+            (this.last_name = ''),
+            (this.description = ''),
+            (this.birthdate = ''),
+            (this.gender = ''),
+            (this.nationality = ''),
+            (this.city = ''),
+            (this.languages = []),
+            (this.interests = []),
+            (this.profilePic = null),
+            (this.discoverPic = null);
+        }, 1500);
+      })
       .catch(error => {
         this.showLoading();
         setTimeout(() => {
@@ -189,6 +253,53 @@ export class RegisterPage implements OnInit {
             });
         }, 1500);
       });
+  }
+  public editUser() {
+    let translationHeader: string = this.translate.instant(
+      'REGISTER.HEADER_SUCCESS_EDIT'
+    );
+    let translationMessage: string = this.translate.instant(
+      'REGISTER.SUCCESS_EDIT'
+    );
+
+    this.dm
+      .editUser(
+        this.email,
+        this.first_name,
+        this.last_name,
+        this.description,
+        this.birthdate.split('T')[0],
+        this.profesion,
+        this.civilStatus,
+        this.gender,
+        this.nationality,
+        this.city,
+        this.languages,
+        this.interests,
+        this.profilePic,
+        this.discoverPic
+      )
+      .then(data => {
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: translationHeader,
+              message: translationMessage,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+          this.navCtrl.navigateForward('/discover');
+        }, 1500);
+      })
+      .catch(error => {});
   }
   showLoading() {
     const translation2: string = this.translate.instant('DISCOVER.WAIT');
@@ -239,21 +350,15 @@ export class RegisterPage implements OnInit {
       if (picture == 'profPic') {
         this.profilePic = null;
         // Aunque de fallo de compilación, funciona
-        (<HTMLInputElement>document.getElementById('procPic')).value = "";
+        (<HTMLInputElement>document.getElementById('procPic')).value = '';
       }
 
       if (picture == 'dicPic') {
         this.discoverPic = null;
         // Aunque de fallo de compilación, funciona
-        (<HTMLInputElement>document.getElementById('dicoverPic')).value = "";
+        (<HTMLInputElement>document.getElementById('dicoverPic')).value = '';
       }
     }
-
-
-
-
-
-
   }
 
   validateBirthdate() {
@@ -321,9 +426,8 @@ export class RegisterPage implements OnInit {
 
     return edad > 18;
   }
-  
-  changeLanguage(selectedValue: { detail: { value: string; }; }){
-    
+
+  changeLanguage(selectedValue: { detail: { value: string } }) {
     this.cookieService.set('lang', selectedValue.detail.value);
     this.translate.use(selectedValue.detail.value);
   }

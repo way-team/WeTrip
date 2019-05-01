@@ -101,11 +101,11 @@ export class LoginPage implements OnInit {
 
   // // //
   goToRegister() {
-    this.navCtrl.navigateRoot('/register');
+    this.navCtrl.navigateRoot('/userForm');
   }
 
   onKeydown(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       console.log(event);
     }
   }
@@ -139,8 +139,7 @@ export class LoginPage implements OnInit {
           this.alertCtrl
             .create({
               header: 'Error',
-              message:
-                translation,
+              message: translation,
               buttons: [
                 {
                   text: 'Ok',
@@ -185,8 +184,7 @@ export class LoginPage implements OnInit {
     this.dm.turnOnDjangoServer();
   }
 
-  changeLanguage(selectedValue: { detail: { value: string; }; }) {
-
+  changeLanguage(selectedValue: { detail: { value: string } }) {
     this.cookieService.set('lang', selectedValue.detail.value);
     this.translate.use(selectedValue.detail.value);
   }

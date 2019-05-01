@@ -1160,7 +1160,142 @@ class RegisterUser(APIView):
         finally:
             return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
 
+class EditUser(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    
+    def post(self, request):
+       
+        email = request.data.get('email', '')
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        description = request.data.get('description', '')
+        birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
 
+        gender = request.data.get('gender', '')
+        nationality = request.data.get('nationality', '')
+        city = request.data.get('city', '')
+        profesion = request.data.get('profesion', '')
+        civilStatus = request.data.get('civilStatus', '')
+        status = 'A'
+        
+        languages = json.loads(request.data.get('languages'))
+        interests = json.loads(request.data.get('interests'))
+
+        user = get_user_by_token(request)
+        for i in user.languages.all():
+            user.languages.remove(i)
+        for i in user.interests.all():
+            user.interests.remove(i)
+
+        try:
+            photo = request.data['photo']
+            discoverPhoto = request.data['discoverPhoto']
+
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.description = description
+            user.birthdate = birthdate
+            user.gender = gender
+            user.nationality = nationality
+            user.city = city
+            user.status = status
+            user.profesion = profesion
+            user.civilStatus = civilStatus
+            user.photo = photo
+            user.discoverPhoto = discoverPhoto
+
+            user.save()
+            for i in languages:
+                lang = Language.objects.get(name=i)
+                user.languages.add(lang)
+            for i in interests:
+                inter = Interest.objects.get(name=i)
+                inter.users.add(user)
+        except:
+
+            try:
+                photo = request.data['photo']
+
+                user.email = email
+                user.first_name = first_name
+                user.last_name = last_name
+                user.description = description
+                user.birthdate = birthdate
+                user.gender = gender
+                user.nationality = nationality
+                user.city = city
+                user.status = status
+                user.profesion = profesion
+                user.civilStatus = civilStatus
+                user.photo = photo
+
+                user.save()
+                for i in languages:
+                    lang = Language.objects.get(name=i)
+                    user.languages.add(lang)
+                for i in interests:
+                    inter = Interest.objects.get(name=i)
+                    inter.users.add(user)
+            
+            except:
+                try:
+                    discoverPhoto = request.data['discoverPhoto']
+
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+                    user.discoverPhoto = discoverPhoto
+
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+                except:
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+
+                    
+                    
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+            
+
+        finally:
+            return JsonResponse({'message':'Edit performed successfuly'}, status=201)
 
 class DeleteUser(APIView):
     """

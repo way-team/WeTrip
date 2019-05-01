@@ -59,6 +59,7 @@ urlpatterns = [
     path('messages/', views.message_list, name='message-list'),
     path('paid/', views.SetUserToPremium.as_view()),
     path('register/', views.RegisterUser.as_view()),
+    path('editUser/', views.EditUser.as_view()),
     path('list-languages/', views.ListLanguages.as_view(), name='list_languages'),
     path('list-interests/', views.ListInterest.as_view(), name='list_interest'),
     path('backend-wakeup/', views.backendWakeUp, name='backend-wakeup'),
