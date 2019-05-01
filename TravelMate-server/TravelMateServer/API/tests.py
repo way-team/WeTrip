@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
-from .models import Trip, UserProfile, Language, City, Country, Interest, Application
+from .models import Trip, UserProfile, Language, City, Country, Interest, Application, Invitation, Rate
 from .serializers import TripSerializer
 
 
@@ -34,7 +34,7 @@ class TravelMateTests(APITestCase):
         cls.userprofile3 = UserProfile.objects.create(user=cls.user3, email='user3@gmail.com', first_name='user3', last_name='user3', birthdate='1979-05-15', nationality='english', avarageRate=3, numRate=1, isPremium=False, gender='W', status='A', civilStatus='W')
         cls.userprofile4 = UserProfile.objects.create(user=cls.user4, email='user4@gmail.com', first_name='user4', last_name='user4', birthdate='1978-11-04', nationality='spanish', avarageRate=2, numRate=1, isPremium=False, gender='M', status='A', civilStatus='M')
         cls.userprofile5 = UserProfile.objects.create(user=cls.user5, email='user5@gmail.com', first_name='user5', last_name='user5', birthdate='1993-12-04', nationality='french', avarageRate=2, numRate=1, isPremium=True, gender='M', status='A', civilStatus='R')
-        cls.userprofile6 = UserProfile.objects.create(user=cls.user6, email='user6@gmail.com', first_name='user6', last_name='user6', birthdate='1990-08-23', nationality='chinese', avarageRate=5, numRate=1, isPremium=True, gender='W', status='D', civilStatus='S')
+        cls.userprofile6 = UserProfile.objects.create(user=cls.user6, email='user6@gmail.com', first_name='user6', last_name='user6', birthdate='1990-08-23', nationality='chinese', avarageRate=0, numRate=0, isPremium=True, gender='W', status='D', civilStatus='S')
         
         cls.userprofile1.languages.add(cls.lang1, cls.lang2)
         cls.userprofile2.languages.add(cls.lang2)
@@ -96,8 +96,25 @@ class TravelMateTests(APITestCase):
 
         cls.application1 = Application.objects.create(applicant=cls.userprofile1, trip=cls.trip9, status='A')
         cls.application2 = Application.objects.create(applicant=cls.userprofile2, trip=cls.trip11, status='P')
-        cls.application3 = Application.objects.create(applicant=cls.userprofile3, trip=cls.trip8, status='R')
-        cls.application4 = Application.objects.create(applicant=cls.userprofile3, trip=cls.trip9, status='A')
+        cls.application3 = Application.objects.create(applicant=cls.userprofile5, trip=cls.trip8, status='R')
+        cls.application4 = Application.objects.create(applicant=cls.userprofile5, trip=cls.trip9, status='A')
+
+        cls.invitation1 = Invitation.objects.create(sender=cls.userprofile1, receiver=cls.userprofile2, status='A')
+        cls.invitation2 = Invitation.objects.create(sender=cls.userprofile2, receiver=cls.userprofile4, status='P')
+        cls.invitation3 = Invitation.objects.create(sender=cls.userprofile3, receiver=cls.userprofile4, status='R')
+        cls.invitation4 = Invitation.objects.create(sender=cls.userprofile5, receiver=cls.userprofile1, status='P')
+        cls.invitation5 = Invitation.objects.create(sender=cls.userprofile5, receiver=cls.userprofile2, status='A')
+        cls.invitation6 = Invitation.objects.create(sender=cls.userprofile2, receiver=cls.userprofile3, status='A')
+        cls.invitation7 = Invitation.objects.create(sender=cls.userprofile4, receiver=cls.userprofile1, status='A')
+
+        cls.rate1 = Rate.objects.create(voter=cls.userprofile1, voted=cls.userprofile2, value=3)
+        cls.rate2 = Rate.objects.create(voter=cls.userprofile2, voted=cls.userprofile1, value=4)
+        cls.rate3 = Rate.objects.create(voter=cls.userprofile2, voted=cls.userprofile3, value=3)
+        cls.rate4 = Rate.objects.create(voter=cls.userprofile1, voted=cls.userprofile4, value=2)
+        cls.rate5 = Rate.objects.create(voter=cls.userprofile4, voted=cls.userprofile1, value=4)
+        cls.rate6 = Rate.objects.create(voter=cls.userprofile2, voted=cls.userprofile5, value=2)
+  
+
 
         
         
@@ -188,6 +205,317 @@ class TravelMateTests(APITestCase):
         myTrips.append(self.trip10)
         serializer = TripSerializer(myTrips, many=True)
         self.assertEqual(jsonResponse['results'], serializer.data)
+        
+
+    def test_apply_trip(self):
+       
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        numApplicationsBefore = Application.objects.count()
+
+        data = {"token":self.token.key, "trip_id": "11"}
+        
+        with self.assertRaisesMessage(ValueError, 'You have already applied to this trip'):
+            response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
+             
+        numApplicationsAfter = Application.objects.count()
+        self.assertEqual(numApplicationsBefore, numApplicationsAfter)
+        
+
+        data = {"token":self.token.key, "trip_id": "6"}
+        response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        numApplicationsAfter = Application.objects.count()
+        self.assertEqual(numApplicationsBefore+1, numApplicationsAfter)
+
+    def test_accept_application(self):
+        
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"token":self.token.key, "application_id": "2"}
+        statusBefore = Application.objects.get(pk=2).status
+        self.assertEqual(statusBefore, 'P')
+
+        with self.assertRaisesMessage(ValueError, "You are not the creator of the application's trip"):
+            response = self.client.post(reverse('accept_application'), data=json.dumps(data), content_type='application/json')
+
+        statusAfter = Application.objects.get(pk=2).status
+        self.assertEqual(statusAfter, 'P')
+
+        self.user = self.user3
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"token":self.token.key, "application_id": "3"}
+        statusBefore = Application.objects.get(pk=3).status
+        self.assertEqual(statusBefore, 'R')
+
+        with self.assertRaisesMessage(ValueError, "The application has just accepted or rejected"):
+            response = self.client.post(reverse('accept_application'), data=json.dumps(data), content_type='application/json')
+
+        statusAfter = Application.objects.get(pk=3).status
+        self.assertEqual(statusAfter, 'R')
+
+        self.user = self.user5
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        data = {"token":self.token.key, "application_id": "2"}
+        statusBefore = Application.objects.get(pk=2).status
+        self.assertEqual(statusBefore, 'P')
+
+        response = self.client.post(reverse('accept_application'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        statusAfter = Application.objects.get(pk=2).status
+        self.assertEqual(statusAfter, 'A')
+
+
+    def test_reject_application(self):
+        
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"token":self.token.key, "application_id": "2"}
+        statusBefore = Application.objects.get(pk=2).status
+        self.assertEqual(statusBefore, 'P')
+
+        with self.assertRaisesMessage(ValueError, "You are not the creator of the application's trip"):
+            response = self.client.post(reverse('reject_application'), data=json.dumps(data), content_type='application/json')
+
+        statusAfter = Application.objects.get(pk=2).status
+        self.assertEqual(statusAfter, 'P')
+
+        self.user = self.user4
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"token":self.token.key, "application_id": "1"}
+        statusBefore = Application.objects.get(pk=1).status
+        self.assertEqual(statusBefore, 'A')
+
+        with self.assertRaisesMessage(ValueError, "The application has just accepted or rejected"):
+            response = self.client.post(reverse('reject_application'), data=json.dumps(data), content_type='application/json')
+
+        statusAfter = Application.objects.get(pk=1).status
+        self.assertEqual(statusAfter, 'A')
+
+        self.user = self.user5
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        data = {"token":self.token.key, "application_id": "2"}
+        statusBefore = Application.objects.get(pk=2).status
+        self.assertEqual(statusBefore, 'P')
+
+        response = self.client.post(reverse('reject_application'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        statusAfter = Application.objects.get(pk=2).status
+        self.assertEqual(statusAfter, 'R')
+
+
+
+    def test_send_invitation(self):
+       
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        numInvitationsBefore = Invitation.objects.count()
+
+        data = {"token":self.token.key, "username": "user5"}
+        
+        with self.assertRaisesMessage(ValueError, 'This person has sent you a friend request before'):
+            response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
+             
+        numInvitationsAfter = Invitation.objects.count()
+        self.assertEqual(numInvitationsBefore, numInvitationsAfter)
+
+
+        self.user = self.user3
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        numInvitationsBefore = Invitation.objects.count()
+
+        data = {"token":self.token.key, "username": "user4"}
+        
+        with self.assertRaisesMessage(ValueError, 'This person has rejected you'):
+            response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
+             
+        numInvitationsAfter = Invitation.objects.count()
+        self.assertEqual(numInvitationsBefore, numInvitationsAfter)
+
+
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        numInvitationsBefore = Invitation.objects.count()
+
+        data = {"token":self.token.key, "username": "user1"}
+        
+        with self.assertRaisesMessage(ValueError, 'You are already friends'):
+            response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
+             
+        numInvitationsAfter = Invitation.objects.count()
+        self.assertEqual(numInvitationsBefore, numInvitationsAfter)
+        
+
+        self.user = self.user4
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        numInvitationsBefore = Invitation.objects.count()
+
+        data = {"token":self.token.key, "username": "user5"}
+        response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        numInvitationsAfter = Invitation.objects.count()
+        self.assertEqual(numInvitationsBefore+1, numInvitationsAfter)
+
+
+    def test_accept_friend(self):
+        
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"token":self.token.key, "sendername": "user4"}
+        statusBefore = Invitation.objects.get(pk=2).status
+        self.assertEqual(statusBefore, 'P')
+
+        with self.assertRaisesMessage(ValueError, "There is no pending invitation for that two users"):
+            response = self.client.post(reverse('accept_friend'), data=json.dumps(data), content_type='application/json')
+
+        statusAfter = Invitation.objects.get(pk=2).status
+        self.assertEqual(statusAfter, 'P')
+
+   
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        data = {"token":self.token.key, "sendername": "user5"}
+        statusBefore = Invitation.objects.get(pk=4).status
+        self.assertEqual(statusBefore, 'P')
+
+        response = self.client.post(reverse('accept_friend'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        statusAfter = Invitation.objects.get(pk=4).status
+        self.assertEqual(statusAfter, 'A')
+
+    def test_reject_friend(self):
+        
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"token":self.token.key, "sendername": "user1"}
+        statusBefore = Invitation.objects.get(pk=1).status
+        self.assertEqual(statusBefore, 'A')
+
+        with self.assertRaisesMessage(ValueError, "There is no pending invitation for that two users"):
+            response = self.client.post(reverse('reject_friend'), data=json.dumps(data), content_type='application/json')
+
+        statusAfter = Invitation.objects.get(pk=1).status
+        self.assertEqual(statusAfter, 'A')
+
+   
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        data = {"token":self.token.key, "sendername": "user5"}
+        statusBefore = Invitation.objects.get(pk=4).status
+        self.assertEqual(statusBefore, 'P')
+
+        response = self.client.post(reverse('reject_friend'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        statusAfter = Invitation.objects.get(pk=4).status
+        self.assertEqual(statusAfter, 'R')
+
+
+       
+    def test_rate_user(self):
+       
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"rating": "1", "voted": "user4"}
+
+        numRatesBefore = Rate.objects.count()
+        self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
+        self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 2)
+
+        with self.assertRaisesMessage(ValueError, "You can not rate this user"):
+            response = self.client.post(reverse('rate_user'), data=json.dumps(data), content_type='application/json')
+       
+        
+        numRatesAfter = Rate.objects.count()
+        self.assertEqual(numRatesBefore, numRatesAfter)
+        self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
+        self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 2)
+       
+        self.user = self.user3
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"rating": "5", "voted": "user2"}
+
+        numRatesBefore = Rate.objects.count()
+        self.assertTrue(UserProfile.objects.get(pk=2).numRate == 1)
+        self.assertTrue(UserProfile.objects.get(pk=2).avarageRate == 3)
+
+        response = self.client.post(reverse('rate_user'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        numRatesAfter = Rate.objects.count()
+        self.assertEqual(numRatesBefore+1, numRatesAfter)
+        self.assertTrue(UserProfile.objects.get(pk=2).numRate == 2)
+        self.assertTrue(UserProfile.objects.get(pk=2).avarageRate == 4)
+
+
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        data = {"rating": "4", "voted": "user4"}
+
+        numRatesBefore = Rate.objects.count()
+        self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
+        self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 2)
+
+        response = self.client.post(reverse('rate_user'), data=json.dumps(data), content_type='application/json')
+       
+        self.assertEqual(200, response.status_code)
+
+        numRatesAfter = Rate.objects.count()
+        self.assertEqual(numRatesBefore, numRatesAfter)
+        self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
+        self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 4)
+
+
+
+   
     
         
 
