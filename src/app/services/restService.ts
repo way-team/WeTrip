@@ -188,7 +188,7 @@ export class RestWS extends AbstractWS {
     const token = this.cookieService.get('token');
     const fd = new FormData();
     fd.append('token', token);
-    return this.makePostRequest(this.path + 'getYouWantToMeet/', fd, token)
+    return this.makePostRequest(this.path + 'getPendingInvitations/', fd, token)
       .then(res => {
         return Promise.resolve(res);
       })
@@ -322,7 +322,8 @@ export class RestWS extends AbstractWS {
     end_date: String,
     trip_type: string,
     city: Number,
-    userImage
+    userImage,
+    price
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -331,6 +332,7 @@ export class RestWS extends AbstractWS {
     return this.getUserLogged(token)
       .then(res => {
         fd.append('title', title);
+        fd.append('price', price);
         fd.append('description', description);
         fd.append('start_date', String(start_date));
         fd.append('end_date', String(end_date));
@@ -366,7 +368,8 @@ export class RestWS extends AbstractWS {
     endDate: String,
     tripType: string,
     city: Number,
-    userImage
+    userImage,
+    price
   ): Promise<any> {
     const fd = new FormData();
     let user: User;
@@ -374,6 +377,7 @@ export class RestWS extends AbstractWS {
     token = this.cookieService.get('token');
     fd.append('tripId', String(tripId));
     fd.append('title', title);
+    fd.append('price', price);
     fd.append('description', description);
     fd.append('startDate', String(startDate));
     fd.append('endDate', String(endDate));
@@ -386,7 +390,7 @@ export class RestWS extends AbstractWS {
 
     return this.makePostRequest(this.path + 'editTrip/', fd, token)
       .then(res2 => {
-        console.log('Se ha creado exitosamente');
+        console.log('Se ha editado exitosamente');
         return Promise.resolve(res2);
       })
       .catch(error => {

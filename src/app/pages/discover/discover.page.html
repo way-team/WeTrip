@@ -4,7 +4,7 @@
       <ion-menu-button color="secondary"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      <ion-text color="light">{{ 'DISCOVER.DISCOVER' | translate}}
+      <ion-text color="light" id="top">{{ 'DISCOVER.DISCOVER' | translate}}
       </ion-text>
     </ion-title>
   </ion-toolbar>
@@ -38,8 +38,13 @@
   </ion-grid>
 
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
 </ion-content>
+   <a href ="#top">
+           <ion-fab vertical="bottom" horizontal="end" >
+  <ion-icon name="arrow-dropup-circle"  class="larger" color="tertiary" shape="round" ></ion-icon>
+           </ion-fab></a>

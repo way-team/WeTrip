@@ -23,6 +23,7 @@ export class CreateTripPage implements OnInit {
   start_date: string;
   end_date: string;
   trip_type: string = 'PUBLIC';
+  price: Number;
   city: City;
   image: File = null;
   error: string;
@@ -43,41 +44,13 @@ export class CreateTripPage implements OnInit {
     private loadingCtrl: LoadingController
   ) {
     this.listCities();
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (this.id) {
-      const translation2: string = this.translate.instant('LOGIN.WAIT');
-      this.loadingCtrl
-        .create({
-          message: translation2,
-          showBackdrop: true,
-          duration: 1000
-        })
-        .then(loadingEl => {
-          loadingEl.present();
-        });
-
-      this.dm
-        .getTripById(this.id)
-        .then(response => {
-          this.title = response['trip'].title;
-          this.description = response['trip'].description;
-          this.start_date = response['trip'].startDate;
-          this.end_date = response['trip'].endDate;
-          this.trip_type = response['trip'].tripType;
-          this.city = new City();
-          this.city.name = response['trip'].cities[0];
-          this.city.id = this.cities.find(x => x.name == this.city.name)[0].id;
-          this.userImage = response['trip'].userImage;
-          loadingCtrl.dismiss();
-        })
-        .catch(_ => {});
-    }
   }
 
   ngOnInit() {
     this.onCreateForm = this.formBuilder.group({
       title: [null, Validators.compose([Validators.required])],
       start_date: [null, Validators.compose([Validators.required])],
+      price: [null, Validators.compose([Validators.required])],
       end_date: [null, Validators.compose([Validators.required])],
       city: [null, Validators.compose([Validators.required])],
       userImage: [null, null]
@@ -94,7 +67,8 @@ export class CreateTripPage implements OnInit {
         this.end_date.split('T')[0],
         this.trip_type,
         this.city.id,
-        this.userImage
+        this.userImage,
+        this.price
       )
       .then(data => {
         this.navCtrl.navigateForward('/trips');
@@ -118,7 +92,7 @@ export class CreateTripPage implements OnInit {
   }
 
   public editTrip() {
-    console.log(typeof this.userImage);
+    console.log(this.city);
     const translation: string = this.translate.instant('TRIPS.ERROR');
     this.dm
       .editTrip(
@@ -129,7 +103,8 @@ export class CreateTripPage implements OnInit {
         this.end_date.split('T')[0],
         this.trip_type,
         this.city.id,
-        this.userImage
+        this.userImage,
+        this.price
       )
       .then(data => {
         this.navCtrl.navigateForward('/trips');
@@ -157,6 +132,36 @@ export class CreateTripPage implements OnInit {
       .listCities()
       .then(data => {
         this.cities = data;
+        this.id = this.activatedRoute.snapshot.paramMap.get('id');
+        if (this.id) {
+          const translation2: string = this.translate.instant('LOGIN.WAIT');
+          this.loadingCtrl
+            .create({
+              message: translation2,
+              showBackdrop: true,
+              duration: 1000
+            })
+            .then(loadingEl => {
+              loadingEl.present();
+            });
+
+          this.dm
+            .getTripById(this.id)
+            .then(response => {
+              this.price = response['trip'].price;
+              this.title = response['trip'].title;
+              this.description = response['trip'].description;
+              this.start_date = response['trip'].startDate;
+              this.end_date = response['trip'].endDate;
+              this.trip_type = response['trip'].tripType;
+              this.city = new City();
+              this.city.name = response['trip'].cities[0];
+              this.city.id = this.cities.find(x => x.name == this.city.name).id;
+
+              this.loadingCtrl.dismiss();
+            })
+            .catch(_ => {});
+        }
       })
       .catch(error => {
         console.log(error);

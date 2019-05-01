@@ -44,7 +44,8 @@
     "TYPE": "Tipo",
     "UPLOAD_AN_IMAGE": "Subir una imagen",
     "WARNING_DATE": "La fecha de finalización no puede ser anterior a la fecha de comienzo",
-    "WARNING_DATE_MIN": "No se puede establecer una fecha pasada"
+    "WARNING_DATE_MIN": "No se puede establecer una fecha pasada",
+    "PRICE": "Precio estimado (€)"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Usuarios: activos VS. inactivos",
@@ -183,7 +184,7 @@
     "LOGOUT": "Cerrar sesión",
     "MENU": "Menú",
     "PREMIUM": "Premium",
-    "PRIVACY_POLICY": "política de privacidad",
+    "PRIVACY_POLICY": "Política de privacidad",
     "PROFILE": "Perfil",
     "TRIPS": "Viajes"
   },
@@ -284,7 +285,7 @@
     "MARRIED": "Casado",
     "WIDOW": "Viudo",
     "WIDOWER": "Viuda",
-    "DIVORCED": "Divorciado",
+    "DIVORCED": "Divorciado"
   },
   "SEARCH": {
     "MY_TRIPS": "Acceder a Mis viajes creados",
@@ -328,6 +329,7 @@
     "START_DATE": "Fecha de comienzo",
     "TO": "a",
     "TRIP_DETAILS": "Detalles del viaje",
-    "CITIES": "Ciudades"
+    "CITIES": "Ciudades",
+    "PRICE": "Coste estimado"
   }
 }

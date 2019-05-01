@@ -44,7 +44,8 @@
     "TYPE": "Type",
     "UPLOAD_AN_IMAGE": "Upload an image",
     "WARNING_DATE": "End date can not been set before the start date",
-    "WARNING_DATE_MIN": "Can not set a past date"
+    "WARNING_DATE_MIN": "Can not set a past date",
+    "PRICE": "Estimated price (€)"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Users: active VS. inactive",
@@ -183,7 +184,7 @@
     "LOGOUT": "Logout",
     "MENU": "Menu",
     "PREMIUM": "Premium",
-    "PRIVACY_POLICY": "privacy policy",
+    "PRIVACY_POLICY": "Privacy policy",
     "PROFILE": "Profile",
     "TRIPS": "Trips"
   },
@@ -328,6 +329,7 @@
     "START_DATE": "Start date",
     "TO": "to",
     "TRIP_DETAILS": "Trip details",
-    "CITIES": "Cities"
+    "CITIES": "Cities",
+    "PRICE": "Estimated price"
   }
 }
