@@ -237,13 +237,13 @@ export class RegisterPage implements OnInit {
       if (picture == 'profPic') {
         this.profilePic = null;
         // Aunque de fallo de compilación, funciona
-        document.getElementById('procPic').value = "";
+        (<HTMLInputElement>document.getElementById('procPic')).value = "";
       }
 
       if (picture == 'dicPic') {
         this.discoverPic = null;
         // Aunque de fallo de compilación, funciona
-        document.getElementById('dicoverPic').value = "";
+        (<HTMLInputElement>document.getElementById('dicoverPic')).value = "";
       }
     }
 
