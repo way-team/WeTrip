@@ -68,6 +68,17 @@ export class DiscoverPage {
     this.limitString = '' + limit;
     this.dM
       .getData(this.offsetString, this.limitString)
+      .then((data: UserProfile[]) => {
+        this.newData = data;
+      })
+      .catch(error => {});
+  }
+
+ getInit(offset: Number, limit: Number){
+ this.offsetString= "" + offset;
+ this.limitString="" + limit;
+ this.dM
+      .getData(this.offsetString, this.limitString)
       .then((data: any) => {
         this.discover = data;
       })
