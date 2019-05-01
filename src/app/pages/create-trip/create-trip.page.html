@@ -87,13 +87,13 @@
               </ion-label>
             </ion-item>
 
-            <ion-item lines="none">
+            <ion-item lines="none" (click)="showNotificationAboutPublicTrip()">
               <ion-label>{{ 'CREATE_TRIP.PUBLIC' | translate}}</ion-label>
-              <ion-radio value="PUBLIC" checked></ion-radio>
+              <ion-radio value="PUBLIC"></ion-radio>
             </ion-item>
             <ion-item>
               <ion-label>{{ 'CREATE_TRIP.PRIVATE' | translate}}</ion-label>
-              <ion-radio value="PRIVATE"></ion-radio>
+              <ion-radio value="PRIVATE" checked></ion-radio>
             </ion-item>
           </ion-radio-group>
 

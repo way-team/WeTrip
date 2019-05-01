@@ -22,7 +22,7 @@ export class CreateTripPage implements OnInit {
   description: string;
   start_date: string;
   end_date: string;
-  trip_type: string = 'PUBLIC';
+  trip_type: string = 'PRIVATE';
   price: Number;
   city: City;
   image: File = null;
@@ -213,5 +213,26 @@ export class CreateTripPage implements OnInit {
         // Aunque de fallo de compilación, funciona
         (<HTMLInputElement>document.getElementById('image')).value = "";
     }
+  }
+
+  showNotificationAboutPublicTrip() {
+    let translation1: string = this.translate.instant('CREATE_TRIP.PUBLIC_ALERT');
+    let translation2: string = this.translate.instant('CREATE_TRIP.PUBLIC_ALERT_M');
+    
+    
+    this.alertCtrl
+      .create({
+        header: translation1,
+        message: translation2,
+        buttons: [
+          {
+            text: 'Ok',
+            role: 'ok'
+          }
+        ]
+      })
+      .then(alertEl => {
+        alertEl.present();
+      });
   }
 }
