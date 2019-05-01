@@ -1,7 +1,16 @@
 <ion-content padding class="animated fadeIn login auth-page" (keypress)="keypress($event)">
   <div class="theme-bg"></div>
   <div class="auth-content altoCompleto">
-
+    <div class="arriba">
+      <ion-item style="width:350px; float: right;">
+        <ion-icon name="md-globe" slot="start" color="light"></ion-icon>
+        <ion-label color="light">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
+        <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
+          <ion-select-option value="es">Español</ion-select-option>
+          <ion-select-option value="en">English</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
     <!-- Logo -->
     <div padding-horizontal text-center class="animated fadeInDown">
       <div class="logoCircle"></div>
@@ -67,16 +76,6 @@
           {{ 'LOGIN.NEW_HERE' | translate}} <strong>{{ 'LOGIN.SIGN_UP' | translate}}</strong>
         </ion-text>
       </span>
-    </div>
-    <div class="final">
-      <ion-item style="width:350px;">
-        <ion-icon name="md-globe" slot="start" color="light"></ion-icon>
-        <ion-label color="light">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
-        <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
-          <ion-select-option value="es">Español</ion-select-option>
-          <ion-select-option value="en">English</ion-select-option>
-        </ion-select>
-      </ion-item>
     </div>
   </div>
 

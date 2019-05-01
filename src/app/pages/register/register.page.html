@@ -2,6 +2,16 @@
 
   <div class="auth-content">
     <!-- Logo -->
+    <div class="arriba">
+      <ion-item style="width:350px; float: right;">
+        <ion-icon name="md-globe" slot="start" color="light"></ion-icon>
+        <ion-label color="light">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
+        <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
+          <ion-select-option value="es">Español</ion-select-option>
+          <ion-select-option value="en">English</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
     <div padding-horizontal text-center>
       <div class="logo"></div>
       <h3 no-margin>

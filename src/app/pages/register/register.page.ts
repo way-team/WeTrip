@@ -14,6 +14,7 @@ import {
 import { Language, Interest } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { TranslateService } from '@ngx-translate/core';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-register',
@@ -49,6 +50,7 @@ export class RegisterPage implements OnInit {
     private formBuilder: FormBuilder,
     public dm: DataManagement,
     private translate: TranslateService,
+    private cookieService: CookieService,
     public alertCtrl: AlertController
   ) {
     this.listLanguages();
@@ -318,5 +320,11 @@ export class RegisterPage implements OnInit {
     }
 
     return edad > 18;
+  }
+  
+  changeLanguage(selectedValue: { detail: { value: string; }; }){
+    
+    this.cookieService.set('lang', selectedValue.detail.value);
+    this.translate.use(selectedValue.detail.value);
   }
 }

@@ -74,26 +74,31 @@ export class ContactsPage implements OnInit {
           {
             text: translationConfirm,
             handler: () => {
-              this.dM.block(userToBlock).then(res => {
-                this.showLoading();
-                setTimeout(() => {
-                  this.alertCtrl
-                    .create({
-                      header: translationHeader,
-                      message: translationSuccessMessage,
-                      buttons: [
-                        {
-                          text: 'Ok',
-                          role: 'ok'
-                        }
-                      ]
-                    })
-                    .then(alertEl => {
-                      alertEl.present();
-                    });
-                }, 750);
-                this.listFriends();
-              });
+              this.dM
+                .block(userToBlock)
+                .then(res => {
+                  this.showLoading();
+                  setTimeout(() => {
+                    this.alertCtrl
+                      .create({
+                        header: translationHeader,
+                        message: translationSuccessMessage,
+                        buttons: [
+                          {
+                            text: 'Ok',
+                            role: 'ok'
+                          }
+                        ]
+                      })
+                      .then(alertEl => {
+                        alertEl.present();
+                      });
+                  }, 750);
+                  this.listFriends();
+                })
+                .catch(err => {
+                  this.listFriends();
+                });
             }
           },
           {

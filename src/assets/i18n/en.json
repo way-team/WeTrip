@@ -18,11 +18,11 @@
     "CONTACTS": "Contacts",
     "THEY_WANT_TO_MEET_YOU": "They want to meet you",
     "YOU_WANT_TO_MEET": "you want to meet (pending acceptance)",
-    "ALERT_MESSAGE_HEADER": "Block user",
+    "ALERT_MESSAGE_HEADER": "Remove friend",
     "ALERT_MESSAGE_CONFIRM": "Confirm",
     "ALERT_MESSAGE_CANCEL": "Cancel",
-    "ALERT_MESSAGE_SUCCESS": "User blocked successfully!",
-    "ALERT_MESSAGE_MESSAGE": "Are you sure of blocking this user? You won't see this user anymore so please, remember to rate him to preserve Travelmate's community safety"
+    "ALERT_MESSAGE_SUCCESS": "Friend deleted successfully!",
+    "ALERT_MESSAGE_MESSAGE": "Are you sure of removing this user? Remember to rate him to preserve Travelmate's community safety"
   },
   "CREATE_TRIP": {
     "CITY": "Cities",
