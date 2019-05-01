@@ -34,6 +34,7 @@ export class CreateTripPage implements OnInit {
   validateDatesBeforeToday: boolean = true;
   minDate: Date = new Date();
   isReady: boolean;
+  priceRegex: RegExp;
 
   constructor(
     public navCtrl: NavController,
@@ -48,10 +49,11 @@ export class CreateTripPage implements OnInit {
   }
 
   ngOnInit() {
+    this.priceRegex = new RegExp('^[1-9][0-9]{0,7}$');
     this.onCreateForm = this.formBuilder.group({
       title: [null, Validators.compose([Validators.required])],
       start_date: [null, Validators.compose([Validators.required])],
-      price: [null, Validators.compose([Validators.required])],
+      price: [null, Validators.compose([Validators.maxLength(8), Validators.pattern(this.priceRegex), Validators.required])],
       end_date: [null, Validators.compose([Validators.required])],
       citiesSelected: [null, Validators.compose([Validators.required])],
       userImage: [null, null]
