@@ -35,13 +35,15 @@ class TripSerializer(serializers.ModelSerializer):
     userImage = serializers.SerializerMethodField()
     applications_count = serializers.SerializerMethodField()
     cities_count = serializers.SerializerMethodField()
+    cities = serializers.SlugRelatedField(
+        many=True, queryset=City.objects.all(), slug_field='name')
 
     class Meta:
         model = Trip
         fields = [
-            'id', 'creator', 'title', 'description', 'startDate', 'endDate',
-            'tripType', 'image', 'userImage', 'status', 'applications_count',
-            'cities_count'
+            'id', 'creator', 'title', 'description', 'price', 'startDate',
+            'endDate', 'tripType', 'image', 'userImage', 'status',
+            'applications_count', 'cities_count', 'cities'
         ]
 
     def get_creator(self, obj):
@@ -59,11 +61,11 @@ class TripSerializer(serializers.ModelSerializer):
         return obj.cities.count()
 
 
-
 class FullTripSerializer(serializers.Serializer):
     trip = TripSerializer(many=False)
     applicationsList = ApplicationSerializer(many=True)
     pendingsList = ApplicationSerializer(many=True)
+    rejectedList = ApplicationSerializer(many=True)
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -73,6 +75,7 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ['country', 'trips', 'name', 'id']
+
 
 class CityReducedSerializer(serializers.ModelSerializer):
     country = CountrySerializer()
@@ -100,16 +103,33 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     future_joined_trips = serializers.SerializerMethodField()
 
-    active_joined_trips = serializers.SerializerMethodField()
-
     class Meta:
         model = UserProfile
         fields = [
-            'user', 'email', 'first_name', 'last_name', 'description',
-            'birthdate', 'city', 'nationality', 'photo', 'discoverPhoto',
-            'avarageRate', 'numRate', 'isPremium', 'status', 'gender',
-            'languages', 'interests', 'created_trips', 'past_joined_trips',
-            'future_joined_trips', 'active_joined_trips'
+            'user',
+            'age',
+            'email',
+            'first_name',
+            'last_name',
+            'description',
+            'birthdate',
+            'city',
+            'nationality',
+            'photo',
+            'discoverPhoto',
+            'avarageRate',
+            'numRate',
+            'isPremium',
+            'datePremium',
+            'status',
+            'profesion',
+            'civilStatus',
+            'gender',
+            'languages',
+            'interests',
+            'created_trips',
+            'past_joined_trips',
+            'future_joined_trips',
         ]
 
     def get_created_trips(self, obj):
@@ -117,37 +137,58 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return TripSerializer(trip_queryset, many=True).data
 
     def get_past_joined_trips(self, obj):
-        now = datetime.datetime.now()
+        today = datetime.datetime.now().date()
 
-        trip_queryset = Trip.objects.filter(
-            applications__applicant=obj,
-            applications__status="A",
-            endDate__lte=now,
-            startDate__lte=now)
+        applicant = obj
+        myApplications = Application.objects.filter(
+            applicant=applicant, status='A')
+        myTrips = []
+        for app in myApplications:
+            if app.trip.startDate < today and app.trip.status == True and app.trip.tripType == "PUBLIC":
+                myTrips.append(app.trip)
 
-        return TripSerializer(trip_queryset, many=True).data
+        createdTrips = Trip.objects.filter(
+            user=applicant,
+            startDate__lt=today,
+            status=True,
+            tripType='PUBLIC')
+
+        for trip in createdTrips:
+            myTrips.append(trip)
+
+        myTrips.sort(key=lambda x: x.startDate, reverse=True)
+
+        return TripSerializer(myTrips, many=True).data
 
     def get_future_joined_trips(self, obj):
-        now = datetime.datetime.now()
+        today = datetime.datetime.now().date()
 
-        trip_queryset = Trip.objects.filter(
-            applications__applicant=obj,
-            applications__status="A",
-            endDate__gte=now,
-            startDate__gte=now)
+        applicant = obj
+        myApplications = Application.objects.filter(
+            applicant=applicant, status='A')
+        myTrips = []
+        for app in myApplications:
+            if app.trip.startDate > today and app.trip.status == True and app.trip.tripType == "PUBLIC":
+                myTrips.append(app.trip)
 
-        return TripSerializer(trip_queryset, many=True).data
+        createdTrips = Trip.objects.filter(
+            user=applicant,
+            startDate__gte=today,
+            status=True,
+            tripType='PUBLIC')
 
-    def get_active_joined_trips(self, obj):
-        now = datetime.datetime.now()
+        for trip in createdTrips:
+            myTrips.append(trip)
 
-        trip_queryset = Trip.objects.filter(
-            applications__applicant=obj,
-            applications__status="A",
-            endDate__lte=now,
-            startDate__gte=now)
+        myTrips.sort(key=lambda x: x.startDate, reverse=True)
 
-        return TripSerializer(trip_queryset, many=True).data
+        return TripSerializer(myTrips, many=True).data
+
+
+class FullUserProfileSerializer(serializers.Serializer):
+    user = UserProfileSerializer(many=False)
+    pastTrips = TripSerializer(many=True)
+    futureTrips = TripSerializer(many=True)
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -168,12 +209,12 @@ class InterestSerializer(serializers.ModelSerializer):
         model = Interest
         fields = ['name', 'users']
 
+
 class InterestNameSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         model = Interest
         fields = ['name']
+
 
 class InterestReducedSerializer(serializers.ModelSerializer):
     users_count = serializers.SerializerMethodField()
@@ -184,6 +225,7 @@ class InterestReducedSerializer(serializers.ModelSerializer):
 
     def get_users_count(self, obj):
         return obj.users.count()
+
 
 class InvitationSerializer(serializers.ModelSerializer):
     sender = UserProfileSerializer(many=False)

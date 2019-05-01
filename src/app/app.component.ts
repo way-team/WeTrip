@@ -90,6 +90,12 @@ export class AppComponent {
         url: '/dashboard',
         direct: 'forward',
         icon: 'stats'
+      },
+      {
+        title: 'Privacy Policy',
+        url: '/gdpr',
+        direct: 'forward',
+        icon: 'document'
       }
     ];
 
@@ -121,7 +127,7 @@ export class AppComponent {
           this.translateService.use('en');
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }
 
   logout() {

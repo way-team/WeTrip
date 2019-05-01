@@ -21,7 +21,7 @@ export class BannerComponent implements OnInit {
     public modalCtrl: ModalController
   ) {
     this.getUserPremium();
-    this.aleatorio(1, 5);
+    this.aleatorio(1, 9);
   }
 
   ngOnInit() {}
@@ -32,7 +32,11 @@ export class BannerComponent implements OnInit {
       'https://www.booking.com/index.es.html',
       'https://www.skyscanner.es/',
       'https://www.trivago.es/',
-      'https://www.expedia.es/'
+      'https://www.expedia.es/',
+      'https://www.tripadvisor.es/',
+      'https://www.gadventures.com/',
+      'https://www.edreams.es/',
+      'http://kalise.com/'
     ];
     this.bannerSrc = 'assets/img/banner/' + imagenId + '.jpg';
     this.bannerPath = urls[imagenId - 1];

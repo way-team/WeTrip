@@ -56,7 +56,7 @@
           </div>
         </ion-item>
         <div>
-          <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="rate()" tappable>
+          <ion-button [disabled]="!rating" icon-left size="medium" expand="full" shape="round" color="dark" (click)="rate()" tappable>
             <ion-icon name="rate"></ion-icon>
             {{ 'RATING.RATE' | translate}}
           </ion-button>

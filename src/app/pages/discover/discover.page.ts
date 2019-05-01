@@ -1,4 +1,3 @@
-import { Component } from '@angular/core';
 import { EditProfilePage } from '../../pages/edit-profile/edit-profile.page';
 import {
   NavController,
@@ -19,18 +18,23 @@ import { TranslateService } from '@ngx-translate/core';
 import { User, UserProfile } from '../../app.data.model';
 import { DataManagement } from '../../services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
-
+import { Component, ViewChild } from '@angular/core';
+import { IonInfiniteScroll } from '@ionic/angular';
 @Component({
   selector: 'app-discover',
   templateUrl: './discover.page.html',
   styleUrls: ['./discover.page.scss']
 })
 export class DiscoverPage {
+  offsetString = '';
+  limitString = '';
   searchKey = '';
   yourLocation = '123 Test Street';
   themeCover = 'assets/img/ionic4-Start-Theme-cover.jpg';
   discover: UserProfile[] = [];
-
+  newData: UserProfile[] = [];
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild('content') private content: any;
   constructor(
     public navCtrl: NavController,
     public menuCtrl: MenuController,
@@ -43,9 +47,54 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.listDiscover();
+    this.getInit(6, 0);
+    this.getData(6, 6);
   }
 
+  scrollToTop() {
+    this.content.scrollToTop(300);
+  }
+  loadData(event) {
+    setTimeout(() => {
+      console.log('Done');
+
+      this.getData(6, this.discover.length + 6);
+
+      this.newData.forEach(x => this.discover.push(x));
+
+      event.target.complete();
+      // App logic to determine if all data is loaded
+      // and disable the infinite scroll
+      if (this.discover.length == 200) {
+        event.target.disabled = true;
+      }
+    }, 500);
+  }
+  getData(offset: Number, limit: Number) {
+    this.offsetString = '' + offset;
+    this.limitString = '' + limit;
+    this.dM
+      .getData(this.offsetString, this.limitString)
+      .then((data: UserProfile[]) => {
+        this.newData = data;
+      })
+      .catch(error => {});
+  }
+
+  getInit(offset: Number, limit: Number) {
+    this.offsetString = '' + offset;
+    this.limitString = '' + limit;
+    this.dM
+      .getData(this.offsetString, this.limitString)
+      .then((data: any) => {
+        this.discover = data;
+      })
+      .catch(error => {});
+  }
+
+  ionViewWillEnter() {
+    this.menuCtrl.enable(true);
+  }
   contact(id) {
     this.navCtrl.navigateForward('/');
   }
@@ -62,9 +111,6 @@ export class DiscoverPage {
         this.discover = data;
       })
       .catch(error => {});
-  }
-  ionViewWillEnter() {
-    this.menuCtrl.enable(true);
   }
 
   settings() {
@@ -162,10 +208,10 @@ export class DiscoverPage {
               alertEl.present();
             });
         }, 1500);
-        this.listDiscover();
+        this.getInit(6, 0);
       })
       .catch(err => {
-        this.listDiscover();
+        this.getInit(6, 0);
       });
   }
 

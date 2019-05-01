@@ -2,6 +2,16 @@
 
   <div class="auth-content">
     <!-- Logo -->
+    <div class="arriba">
+      <ion-item style="width:350px; float: right;">
+        <ion-icon name="md-globe" slot="start" color="light"></ion-icon>
+        <ion-label color="light">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
+        <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
+          <ion-select-option value="es">Español</ion-select-option>
+          <ion-select-option value="en">English</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
     <div padding-horizontal text-center>
       <div class="logo"></div>
       <h3 no-margin>
@@ -142,6 +152,15 @@
               {{ 'REGISTER.FUTURE_BIRTHDATE' | translate}}
             </ion-text>
           </p>
+          <ion-item no-padding>
+            <ion-label position="floating">
+              <ion-icon name="briefcase" item-start></ion-icon>
+              {{ 'REGISTER.PROFESION' | translate}}
+            </ion-label>
+            <ion-input color="secondary" type="text" formControlName="profesion" [(ngModel)]="profesion" maxlength="50"> 
+            </ion-input>
+          </ion-item>
+
 
           <ion-item>
             <ion-label position="floating">
@@ -175,12 +194,32 @@
             </ion-text>
           </p>
 
+          <ion-item>
+            <ion-label>
+              <ion-icon name="happy" item-start></ion-icon>
+              {{ 'REGISTER.CIVILSTATUS' | translate}}
+            </ion-label>
+            <ion-select [(ngModel)]="civilStatus" placeholder="Select One" formControlName="civilStatus">
+              <ion-select-option value="M">{{ 'REGISTER.MARRIED' | translate}}</ion-select-option>
+              <ion-select-option value="S">{{ 'REGISTER.SINGLE' | translate}}</ion-select-option>
+              <ion-select-option value="R">{{ 'REGISTER.WIDOWER' | translate}}</ion-select-option>
+              <ion-select-option value="W">{{ 'REGISTER.WIDOW' | translate}}</ion-select-option>
+              <ion-select-option value="D">{{ 'REGISTER.DIVORCED' | translate}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <p ion-text color="warning" class="text08"
+            *ngIf="onRegisterForm.get('civilStatus').touched && onRegisterForm.get('civilStatus').hasError('required')">
+            <ion-text color="warning">
+              {{ 'REGISTER.REQUIRED_FIELD' | translate}}
+            </ion-text>
+          </p>
+
           <ion-item no-padding>
             <ion-label position="floating">
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.NATIONALITY' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="nationality" [(ngModel)]="nationality">
+            <ion-input color="secondary" type="text" formControlName="nationality" [(ngModel)]="nationality" maxlength="50">
             </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
@@ -195,7 +234,7 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.CITY' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="city" [(ngModel)]="city"></ion-input>
+            <ion-input color="secondary" type="text" formControlName="city" [(ngModel)]="city" maxlength="50"></ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('city').touched && onRegisterForm.get('city').hasError('required')">
@@ -250,10 +289,9 @@
               </ion-card-header>
               <ion-card-content>
                 <br>
-                <div><input type='file' (change)="onProfilePicInputChange($event.target.files)" /></div>
+                <div><input type='file' id="procPic" (change)="onProfilePicInputChange($event.target.files)" /></div>
               </ion-card-content>
             </ion-card>
-
           </ion-item>
           <ion-item lines="none"></ion-item>
 
@@ -267,7 +305,7 @@
               </ion-card-header>
               <ion-card-content>
                 <br>
-                <div><input type='file' (change)="onDiscoverPicInputChange($event.target.files)" /></div>
+                <div><input type='file' id="dicoverPic" (change)="onDiscoverPicInputChange($event.target.files)" /></div>
               </ion-card-content>
             </ion-card>
 
