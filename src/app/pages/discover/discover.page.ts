@@ -199,10 +199,10 @@ export class DiscoverPage {
               alertEl.present();
             });
         }, 1500);
-        this.listDiscover();
+        this.getData(6, 0);
       })
       .catch(err => {
-        this.listDiscover();
+        this.getData(6, 0);
       });
   }
 
