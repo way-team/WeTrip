@@ -48,17 +48,22 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getData(9,1);
+    this.getInit(9,1);
 
-  }
+      }
+
+
 
  loadData(event) {
     setTimeout(() => {
       console.log('Done');
-      this.getData(9 + this.discover.length, 1);
-      this.discover.concat(this.newData);
-      event.target.complete();
 
+      this.getData(9,  this.discover.length+10);
+
+      this.newData.forEach( x=> this.discover.push(x));
+
+
+      event.target.complete();
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
       if (this.discover.length == 200) {
@@ -67,6 +72,17 @@ export class DiscoverPage {
     }, 500);
   }
  getData(offset: Number, limit: Number){
+ this.offsetString= "" + offset;
+ this.limitString="" + limit;
+ this.dM
+      .getData(this.offsetString, this.limitString)
+      .then((data: UserProfile[]) => {
+        this.newData = data;
+      })
+      .catch(error => {});
+  }
+
+ getInit(offset: Number, limit: Number){
  this.offsetString= "" + offset;
  this.limitString="" + limit;
  this.dM
