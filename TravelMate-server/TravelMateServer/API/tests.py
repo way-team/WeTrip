@@ -148,6 +148,7 @@ class TravelMateTests(APITestCase):
         serializer = TripSerializer(myTrips, many=True)
         self.assertEqual(jsonResponse['results'], serializer.data)
     
+        #------------------------------------------------------------------------------------------
 
         # We log in as 'user3'
         self.user = self.user3
@@ -208,65 +209,94 @@ class TravelMateTests(APITestCase):
         
 
     def test_apply_trip(self):
-       
+        """ The method 'apply_trip' allows user to apply for available trips."""
+        
+        #We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
+        #Let's see the current number of applications
         numApplicationsBefore = Application.objects.count()
 
         data = {"token":self.token.key, "trip_id": "11"}
+        #user2 has already applied for trip11.
         
         with self.assertRaisesMessage(ValueError, 'You have already applied to this trip'):
             response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
-             
+        
+        # We see that nothing has changed
         numApplicationsAfter = Application.objects.count()
         self.assertEqual(numApplicationsBefore, numApplicationsAfter)
         
+        #------------------------------------------------------------------------------------------
 
+        # We are still logged as user2
         data = {"token":self.token.key, "trip_id": "6"}
+
+        #user2 can apply for trip6
         response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
        
         self.assertEqual(200, response.status_code)
 
+        #We see that now there is a new application in the system.
         numApplicationsAfter = Application.objects.count()
         self.assertEqual(numApplicationsBefore+1, numApplicationsAfter)
 
     def test_accept_application(self):
+        """ The method 'accept_application' is used to accept an application sent from another user for a trip."""
         
+        #We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         data = {"token":self.token.key, "application_id": "2"}
+        # application2 is an application for trip11. user2 is not the creator of this trip.
+
+        # Let's check the current status of the application
         statusBefore = Application.objects.get(pk=2).status
         self.assertEqual(statusBefore, 'P')
 
         with self.assertRaisesMessage(ValueError, "You are not the creator of the application's trip"):
             response = self.client.post(reverse('accept_application'), data=json.dumps(data), content_type='application/json')
 
+        # We see that the status hasn't changed.
         statusAfter = Application.objects.get(pk=2).status
         self.assertEqual(statusAfter, 'P')
 
+        #------------------------------------------------------------------------------------------
+
+        # We log in as user3
         self.user = self.user3
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         data = {"token":self.token.key, "application_id": "3"}
+        # application3 has already been rejected. It cannot be accepted anymore.
+
+        # Let's check the current status of the application
         statusBefore = Application.objects.get(pk=3).status
         self.assertEqual(statusBefore, 'R')
 
         with self.assertRaisesMessage(ValueError, "The application has just accepted or rejected"):
             response = self.client.post(reverse('accept_application'), data=json.dumps(data), content_type='application/json')
 
+        # We see that the status hasn't changed.
         statusAfter = Application.objects.get(pk=3).status
         self.assertEqual(statusAfter, 'R')
 
+        #------------------------------------------------------------------------------------------
+
+        # We log in as user5
         self.user = self.user5
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
         data = {"token":self.token.key, "application_id": "2"}
+        #application2 is an application for trip11. user5 is the creator of this trip. He/she should be able to accept the application
+
+        # Let's check the current status of the application
         statusBefore = Application.objects.get(pk=2).status
         self.assertEqual(statusBefore, 'P')
 
@@ -274,45 +304,65 @@ class TravelMateTests(APITestCase):
        
         self.assertEqual(200, response.status_code)
 
+        #The application has been accepted.
         statusAfter = Application.objects.get(pk=2).status
         self.assertEqual(statusAfter, 'A')
 
 
     def test_reject_application(self):
+        """ The method 'reject_application' is used to reject a application sent from another user for a trip."""
         
+        # We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         data = {"token":self.token.key, "application_id": "2"}
+        # application2 is an application for trip11. user2 is not the creator of this trip.
+
+        # Let's check the current status of the application
         statusBefore = Application.objects.get(pk=2).status
         self.assertEqual(statusBefore, 'P')
 
         with self.assertRaisesMessage(ValueError, "You are not the creator of the application's trip"):
             response = self.client.post(reverse('reject_application'), data=json.dumps(data), content_type='application/json')
 
+        # We see that the status hasn't changed.
         statusAfter = Application.objects.get(pk=2).status
         self.assertEqual(statusAfter, 'P')
 
+        #------------------------------------------------------------------------------------------
+
+        #We log in as user4
         self.user = self.user4
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         data = {"token":self.token.key, "application_id": "1"}
+        #application1 has already been accepted
+
+        # Let's check the current status of the application
         statusBefore = Application.objects.get(pk=1).status
         self.assertEqual(statusBefore, 'A')
 
         with self.assertRaisesMessage(ValueError, "The application has just accepted or rejected"):
             response = self.client.post(reverse('reject_application'), data=json.dumps(data), content_type='application/json')
 
+         # We see that the status hasn't changed.
         statusAfter = Application.objects.get(pk=1).status
         self.assertEqual(statusAfter, 'A')
 
+        #------------------------------------------------------------------------------------------
+
+        # We log in as user5
         self.user = self.user5
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
         data = {"token":self.token.key, "application_id": "2"}
+        #application2 is an application for trip11. user5 is the creator of this trip. He/she should be able to reject the application
+
+        # Let's check the current status of the application
         statusBefore = Application.objects.get(pk=2).status
         self.assertEqual(statusBefore, 'P')
 
@@ -320,95 +370,128 @@ class TravelMateTests(APITestCase):
        
         self.assertEqual(200, response.status_code)
 
+        # We see that the application has been rejected successfully.
         statusAfter = Application.objects.get(pk=2).status
         self.assertEqual(statusAfter, 'R')
 
 
 
     def test_send_invitation(self):
+        """The method 'send_invitation' allows users to send a friend request to another user"""
        
+        # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
+        # Let's check the current number of friend requests
         numInvitationsBefore = Invitation.objects.count()
-
+        
+        # user1 wants to send a friend request to user5. However, user5 has already sent a friend request to user1 (with PENDING status)
         data = {"token":self.token.key, "username": "user5"}
         
         with self.assertRaisesMessage(ValueError, 'This person has sent you a friend request before'):
             response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
-             
+        
+        # We see that nothing has changed
         numInvitationsAfter = Invitation.objects.count()
         self.assertEqual(numInvitationsBefore, numInvitationsAfter)
 
+        #------------------------------------------------------------------------------------------
 
+        # We log in as us user3
         self.user = self.user3
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
+        # Let's check the current number of friend requests
         numInvitationsBefore = Invitation.objects.count()
 
+        #User3 wants to send a friend request to user4. But user4 has already rejected a friend request from user3.
         data = {"token":self.token.key, "username": "user4"}
         
         with self.assertRaisesMessage(ValueError, 'This person has rejected you'):
             response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
              
+        # We see that nothing has changed 
         numInvitationsAfter = Invitation.objects.count()
         self.assertEqual(numInvitationsBefore, numInvitationsAfter)
 
+        #------------------------------------------------------------------------------------------
 
+        #We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
+        # Let's check the current number of friend requests
         numInvitationsBefore = Invitation.objects.count()
 
+        # user2 wants to send a friend request to user1. But they are already friends.
         data = {"token":self.token.key, "username": "user1"}
         
         with self.assertRaisesMessage(ValueError, 'You are already friends'):
             response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
-             
+
+        # Let's see that nothing has changed 
         numInvitationsAfter = Invitation.objects.count()
         self.assertEqual(numInvitationsBefore, numInvitationsAfter)
         
+        #------------------------------------------------------------------------------------------
 
+        # Wee log in as user4
         self.user = self.user4
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
+        # Let's check the current number of friend requests
         numInvitationsBefore = Invitation.objects.count()
 
+        # User4 wants to send a friend request to user5.
         data = {"token":self.token.key, "username": "user5"}
         response = self.client.post(reverse('send_invitation'), data=json.dumps(data), content_type='application/json')
-       
+
+        # Let's check the status of the HTTP request.
         self.assertEqual(200, response.status_code)
 
+        # We see that a new friend request has been added.
         numInvitationsAfter = Invitation.objects.count()
         self.assertEqual(numInvitationsBefore+1, numInvitationsAfter)
 
 
     def test_accept_friend(self):
+        """ The method 'accept_friend' is used to accept a friend request sent from another user."""
         
+        # We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         data = {"token":self.token.key, "sendername": "user4"}
+        # user2 was the one who sent the friend request to user4. user2 should not be able to accept the request.
+        
+        # Let's check the current status of the request
         statusBefore = Invitation.objects.get(pk=2).status
         self.assertEqual(statusBefore, 'P')
+        
 
         with self.assertRaisesMessage(ValueError, "There is no pending invitation for that two users"):
             response = self.client.post(reverse('accept_friend'), data=json.dumps(data), content_type='application/json')
 
+        # We see that the status hasn't changed
         statusAfter = Invitation.objects.get(pk=2).status
         self.assertEqual(statusAfter, 'P')
 
-   
+        #------------------------------------------------------------------------------------------
+
+        #We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
         data = {"token":self.token.key, "sendername": "user5"}
+        #user5 has sent a friend request to user1. Now, user1 should be able to accept it.
+
         statusBefore = Invitation.objects.get(pk=4).status
         self.assertEqual(statusBefore, 'P')
 
@@ -416,31 +499,45 @@ class TravelMateTests(APITestCase):
        
         self.assertEqual(200, response.status_code)
 
+        # We see that the friend request now has an "ACCEPTED" status
         statusAfter = Invitation.objects.get(pk=4).status
         self.assertEqual(statusAfter, 'A')
 
+
+
     def test_reject_friend(self):
+        """ The method 'reject_friend' is used to reject a friend request sent from another user."""
         
+        # We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
         data = {"token":self.token.key, "sendername": "user1"}
+        # user2 has already acceped the friend request from user1. Once accepted, it cannot be rejected.
+        
+        # Let's check the current status of the request
         statusBefore = Invitation.objects.get(pk=1).status
         self.assertEqual(statusBefore, 'A')
 
         with self.assertRaisesMessage(ValueError, "There is no pending invitation for that two users"):
             response = self.client.post(reverse('reject_friend'), data=json.dumps(data), content_type='application/json')
 
+        # We see that the status hasn't changed
         statusAfter = Invitation.objects.get(pk=1).status
         self.assertEqual(statusAfter, 'A')
 
-   
+        #------------------------------------------------------------------------------------------
+
+        # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
         
         data = {"token":self.token.key, "sendername": "user5"}
+        #user5 has sent a friend request to user1. Now, user1 should be able to reject it.
+
+        # Let's check the current status of the request
         statusBefore = Invitation.objects.get(pk=4).status
         self.assertEqual(statusBefore, 'P')
 
@@ -448,59 +545,88 @@ class TravelMateTests(APITestCase):
        
         self.assertEqual(200, response.status_code)
 
+        # We see that the status of the friend request is now 'REJECTED'.
         statusAfter = Invitation.objects.get(pk=4).status
         self.assertEqual(statusAfter, 'R')
 
 
        
     def test_rate_user(self):
-       
+        """The method 'rate_user' makes it possible for a user to rate a friend of his/hers"""
+
+        #We log in as user2
         self.user = self.user2
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
+        # user2 and user4 are not friends yet. The application have a PENDING status. Therefore, user2 cannot rate user4.
         data = {"rating": "1", "voted": "user4"}
 
+        # This is the total number of rates:
         numRatesBefore = Rate.objects.count()
+
+        # And this is the rating of user4
         self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 2)
 
         with self.assertRaisesMessage(ValueError, "You can not rate this user"):
             response = self.client.post(reverse('rate_user'), data=json.dumps(data), content_type='application/json')
        
-        
+        # We check that nothing has changed
         numRatesAfter = Rate.objects.count()
         self.assertEqual(numRatesBefore, numRatesAfter)
         self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 2)
        
+
+        #------------------------------------------------------------------------------------------
+
+        # We log in as user3       
         self.user = self.user3
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
+        # user3 wants to rate user2. They are friends. users3 hasn't voted user2 yet.
         data = {"rating": "5", "voted": "user2"}
 
+        # This is the the total number of rates:
         numRatesBefore = Rate.objects.count()
+
+        # user2 has only one rate
         self.assertTrue(UserProfile.objects.get(pk=2).numRate == 1)
+        # user2 has a rating of 3
         self.assertTrue(UserProfile.objects.get(pk=2).avarageRate == 3)
 
-        response = self.client.post(reverse('rate_user'), data=json.dumps(data), content_type='application/json')
-       
+
+        response = self.client.post(reverse('rate_user'), data=json.dumps(data), content_type='application/json')       
         self.assertEqual(200, response.status_code)
 
+        # There is a new vote
         numRatesAfter = Rate.objects.count()
         self.assertEqual(numRatesBefore+1, numRatesAfter)
+
+        # user2 now has 2 rates
         self.assertTrue(UserProfile.objects.get(pk=2).numRate == 2)
+
+        #The rating has been updated successfully
         self.assertTrue(UserProfile.objects.get(pk=2).avarageRate == 4)
 
 
+        #------------------------------------------------------------------------------------------
+
+        # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
+        # user1 has already rated user4. But user1 wants to change his/her vote.
         data = {"rating": "4", "voted": "user4"}
 
+
+        # This is the the total number of rates:
         numRatesBefore = Rate.objects.count()
+
+        # This is the number of rates and the average rating of user4
         self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 2)
 
@@ -508,9 +634,14 @@ class TravelMateTests(APITestCase):
        
         self.assertEqual(200, response.status_code)
 
+        # We see that the number of rates remains the same
         numRatesAfter = Rate.objects.count()
         self.assertEqual(numRatesBefore, numRatesAfter)
+
+        # user4 still has only 1 rate
         self.assertTrue(UserProfile.objects.get(pk=4).numRate == 1)
+
+        # But his/her average rating has been updated
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 4)
 
 
