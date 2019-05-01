@@ -187,6 +187,31 @@ export class CreateTripPage implements OnInit {
     }
   }
   onFileInputChange(file: File) {
+    this.checkFileIsImage(file[0]);
     this.userImage = file[0];
+  }
+
+  private checkFileIsImage(file: File) {
+    if (!(file.type.split('/')[0] == 'image')) {
+      let translation1: string = this.translate.instant('REGISTER.IMAGE_ERROR');
+
+      this.alertCtrl
+        .create({
+          header: translation1,
+          buttons: [
+            {
+              text: 'Ok',
+              role: 'ok'
+            }
+          ]
+        })
+        .then(alertEl => {
+          alertEl.present();
+        });
+
+        this.userImage = null;
+        // Aunque de fallo de compilación, funciona
+        (<HTMLInputElement>document.getElementById('image')).value = "";
+    }
   }
 }
