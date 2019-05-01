@@ -47,6 +47,11 @@
         <ion-icon *ngIf="user.avarageRate<3" name="star-outline"></ion-icon>
         <ion-icon *ngIf="user.avarageRate<4" name="star-outline"></ion-icon>
         <ion-icon *ngIf="user.avarageRate<5" name="star-outline"></ion-icon>
+        <br>
+        <ion-button *ngIf="myProfile" shape="round" color="dark" [routerLink]="'/userForm/edit'"
+          routerDirection="forward">
+          {{ 'PROFILE.EDIT_PROFILE' | translate }}
+        </ion-button>
       </ion-card-content>
 
       <ion-grid fixed no-padding>
@@ -60,7 +65,7 @@
               <ion-item>
                 <ion-label color="dark">{{ 'PROFILE.GENDER' | translate }}</ion-label>
                 <ion-text *ngIf="user.gender == 'M'">{{ 'PROFILE.MALE' | translate }}</ion-text>
-                <ion-text *ngIf="user.gender == 'F'">{{ 'PROFILE.GEMALE' | translate }}</ion-text>
+                <ion-text *ngIf="user.gender == 'F'">{{ 'PROFILE.FEMALE' | translate }}</ion-text>
                 <ion-text *ngIf="user.gender == 'N'">{{ 'PROFILE.NON-BINARY' | translate }}</ion-text>
               </ion-item>
 

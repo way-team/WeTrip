@@ -18,11 +18,11 @@
     "CONTACTS": "Contactos",
     "THEY_WANT_TO_MEET_YOU": "Quieren conocerte",
     "YOU_WANT_TO_MEET": "Quieres conocer (Pendiente de aceptación)",
-    "ALERT_MESSAGE_HEADER": "Bloquear usuario",
+    "ALERT_MESSAGE_HEADER": "Eliminar amigo",
     "ALERT_MESSAGE_CONFIRM": "Confirmar",
     "ALERT_MESSAGE_CANCEL": "Cancelar",
-    "ALERT_MESSAGE_SUCCESS": "¡Usuario bloqueado correctamente!",
-    "ALERT_MESSAGE_MESSAGE": "¿Está seguro de bloquear a este usuario? No volverá a ver a este usuario así que por favor, recuerde puntuarlo para preservar la seguridad de la comunidad Travelmate"
+    "ALERT_MESSAGE_SUCCESS": "¡Amigo eliminado correctamente!",
+    "ALERT_MESSAGE_MESSAGE": "¿Está seguro de eliminar a este usuario? Recuerde puntuarlo para preservar la seguridad de la comunidad Travelmate"
   },
   "CREATE_TRIP": {
     "CITY": "Ciudades",
@@ -251,7 +251,8 @@
     "MALE": "Hombre",
     "FEMALE": "Mujer",
     "NON-BINARY": "No-Binario",
-    "LANGUAGES": "Idiomas"
+    "LANGUAGES": "Idiomas",
+    "EDIT_PROFILE": "Editar perfil"
   },
   "RATING": {
     "RATE": "valora",
@@ -296,7 +297,11 @@
     "WIDOW": "Viudo",
     "WIDOWER": "Viuda",
     "DIVORCED": "Divorciado",
-    "IMAGE_ERROR": "Tienes que seleccionar una imagen"
+    "IMAGE_ERROR": "Tienes que seleccionar una imagen",
+    "EDITUSER": "Editar perfil",
+    "EDIT": "Editar",
+    "HEADER_SUCCESS_EDIT": "Éxito al editar perfil",
+    "SUCCESS_EDIT": "¡Sus datos personales han sido editados!"
   },
   "SEARCH": {
     "MY_TRIPS": "Acceder a Mis viajes creados",

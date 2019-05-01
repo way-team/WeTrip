@@ -16,7 +16,15 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from collections import namedtuple
 from django.contrib.auth.hashers import make_password
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from string import Template
+import smtplib
+import re
 import json
+from io import BytesIO
+#from reportlab.pdfgen import canvas
 
 
 def get_user_by_token(request):
@@ -688,7 +696,6 @@ class EditTripView(APIView):
         
         trip = Trip.objects.get(pk=request.data["tripId"])
         for i in trip.cities.all():
-            print(i)
             i.trips.remove(trip)
         
         if trip.tripType == "PUBLIC": 
@@ -709,9 +716,10 @@ class EditTripView(APIView):
 
         if(len(cities) == 1):
             city = City.objects.get(pk=cities[0])
-            trip.image_name = city.country.name + '.jpg'
+            trip.image = city.country.name + '.jpg'
+            
         else:
-            trip.image_name = 'World.jpg'
+            trip.image = 'World.jpg'
 
         title = data.get('title')
         description = data.get('description')
@@ -1151,6 +1159,313 @@ class RegisterUser(APIView):
 
         finally:
             return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
+
+class EditUser(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    
+    def post(self, request):
+       
+        email = request.data.get('email', '')
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        description = request.data.get('description', '')
+        birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
+
+        gender = request.data.get('gender', '')
+        nationality = request.data.get('nationality', '')
+        city = request.data.get('city', '')
+        profesion = request.data.get('profesion', '')
+        civilStatus = request.data.get('civilStatus', '')
+        status = 'A'
+        
+        languages = json.loads(request.data.get('languages'))
+        interests = json.loads(request.data.get('interests'))
+
+        user = get_user_by_token(request)
+        for i in user.languages.all():
+            user.languages.remove(i)
+        for i in user.interests.all():
+            user.interests.remove(i)
+
+        try:
+            photo = request.data['photo']
+            discoverPhoto = request.data['discoverPhoto']
+
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.description = description
+            user.birthdate = birthdate
+            user.gender = gender
+            user.nationality = nationality
+            user.city = city
+            user.status = status
+            user.profesion = profesion
+            user.civilStatus = civilStatus
+            user.photo = photo
+            user.discoverPhoto = discoverPhoto
+
+            user.save()
+            for i in languages:
+                lang = Language.objects.get(name=i)
+                user.languages.add(lang)
+            for i in interests:
+                inter = Interest.objects.get(name=i)
+                inter.users.add(user)
+        except:
+
+            try:
+                photo = request.data['photo']
+
+                user.email = email
+                user.first_name = first_name
+                user.last_name = last_name
+                user.description = description
+                user.birthdate = birthdate
+                user.gender = gender
+                user.nationality = nationality
+                user.city = city
+                user.status = status
+                user.profesion = profesion
+                user.civilStatus = civilStatus
+                user.photo = photo
+
+                user.save()
+                for i in languages:
+                    lang = Language.objects.get(name=i)
+                    user.languages.add(lang)
+                for i in interests:
+                    inter = Interest.objects.get(name=i)
+                    inter.users.add(user)
+            
+            except:
+                try:
+                    discoverPhoto = request.data['discoverPhoto']
+
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+                    user.discoverPhoto = discoverPhoto
+
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+                except:
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+
+                    
+                    
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+            
+
+        finally:
+            return JsonResponse({'message':'Edit performed successfuly'}, status=201)
+
+class DeleteUser(APIView):
+    """
+    Change the user's status to deleted
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user_id = request.data.get("user_id", "")
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+
+        user.is_active = False
+        user.save()
+
+        userprofile.languages.clear()
+        userprofile.email = "-"
+        userprofile.first_name = "-"
+        userprofile.last_name = "-"
+        userprofile.description = "-"
+        userprofile.birthdate = "1900-01-01"
+        userprofile.city = "-"
+        userprofile.nationality = "-"
+        userprofile.photo = "-"
+        userprofile.discoverPhoto = "-"
+        userprofile.averageRate = 0
+        userprofile.numRate = 0
+        userprofile.isPremium = False
+        userprofile.datePremium = "2019-04-09"
+        userprofile.profesion = "-"
+        userprofile.status = "D"
+        userprofile.save()
+
+        return Response(UserProfileSerializer(userprofile, many=False).data)
+
+
+def send_mail(subject, body, email, attachment):
+    server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    server.starttls()
+    server.login("way.team.soft@gmail.com", "wayteam2019")
+
+    msg = MIMEMultipart()
+
+    msg['From'] = "integrity.system.cad@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    if attachment != None:
+        part = MIMEApplication(open(attachment, "rb").read())
+        namePattern = re.compile(r"exported_data_.*")
+        name = namePattern.search(attachment).group(0)
+        part.add_header('Content-Disposition', 'attachment', filename=name)
+        msg.attach(part)
+
+    server.send_message(msg)
+    del msg
+
+    server.quit()
+
+# En desarrollo
+class ExportUserData(APIView):
+    """
+    Export the user's data and send it to his email
+    """
+    def header(self, pdf):
+        #Utilizamos el archivo logo_django.png que está guardado en la carpeta media/imagenes
+        archivo_imagen = settings.MEDIA_ROOT+'/imagenes/logo_django.png'
+        #Definimos el tamaño de la imagen a cargar y las coordenadas correspondientes
+        pdf.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True)
+        #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
+        pdf.setFont("Helvetica", 16)
+        #Dibujamos una cadena en la ubicación X,Y especificada
+        pdf.drawString(230, 790, u"PYTHON PIURA")
+        pdf.setFont("Helvetica", 14)
+        pdf.drawString(200, 770, u"REPORTE DE PERSONAS")
+
+    def table(self, pdf, y):
+        #Creamos una tupla de encabezados para neustra tabla
+        encabezados = ('DNI', 'Nombre', 'Apellido Paterno', 'Apellido Materno')
+        #Creamos una lista de tuplas que van a contener a las personas
+        detalles = [(persona.dni, persona.nombre, persona.apellido_paterno, persona.apellido_materno) for persona in Persona.objects.all()]
+        #Establecemos el tamaño de cada una de las columnas de la tabla
+        detalle_orden = Table([encabezados] + detalles, colWidths=[2 * cm, 5 * cm, 5 * cm, 5 * cm])
+        #Aplicamos estilos a las celdas de la tabla
+        detalle_orden.setStyle(TableStyle(
+            [
+                #La primera fila(encabezados) va a estar centrada
+                ('ALIGN',(0,0),(3,0),'CENTER'),
+                #Los bordes de todas las celdas serán de color negro y con un grosor de 1
+                ('GRID', (0, 0), (-1, -1), 1, colors.black), 
+                #El tamaño de las letras de cada una de las celdas será de 10
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ]
+        ))
+        #Establecemos el tamaño de la hoja que ocupará la tabla 
+        detalle_orden.wrapOn(pdf, 800, 600)
+        #Definimos la coordenada donde se dibujará la tabla
+        detalle_orden.drawOn(pdf, 60, y)
+
+    def get(self, request, *args, **kwargs):
+        #Indicamos el tipo de contenido a devolver, en este caso un pdf
+        response = HttpResponse(content_type='application/pdf')
+        #La clase io.BytesIO permite tratar un array de bytes como un fichero binario, se utiliza como almacenamiento temporal
+        buffer = BytesIO()
+        #Canvas nos permite hacer el reporte con coordenadas X y Y
+        pdf = canvas.Canvas(buffer)
+        #Llamo al método cabecera donde están definidos los datos que aparecen en la cabecera del reporte.
+        self.cabecera(pdf)
+        y = 600
+        self.tabla(pdf, y)
+        #Con show page hacemos un corte de página para pasar a la siguiente
+        pdf.showPage()
+        pdf.save()
+        pdf = buffer.getvalue()
+        buffer.close()
+        response.write(pdf)
+        return response
+
+"""
+    def post(self, request):
+        user_id = request.data.get("user_id", "")
+        email = request.data.get("email", "")
+
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+
+        # date = time.strftime("%d-%m-%y_%H-%M-%S")
+
+        tableData = [("NOMBRE", userprofile.first_name)]
+        tableData.append([("APELLIDOS", userprofile.last_name)])
+        tableData.append([("USERNAME", user.username)])
+        tableData.append([("DESCRIPCIÓN", userprofile.description)])
+        tableData.append([("GÉNERO", userprofile.gender)])
+        tableData.append([("CUMPLEAÑOS", userprofile.birthdate)])
+        tableData.append([("CIUDAD", userprofile.city)])
+        tableData.append([("NACIONALIDAD", userprofile.nationality)])
+        tableData.append([("URL DE FOTO", userprofile.photo)])
+        tableData.append([("URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto)])
+        tableData.append([("VALORACIÓN MEDIA", userprofile.averageRate)])
+        tableData.append([("NÚMERO DE VALORACIONES", userprofile.numRate)])
+        if userprofile.isPremium is True:
+            tableData.append([("FECHA DE PREMIUM", userprofile.datePremium)])
+
+        estiloHoja = getSampleStyleSheet()
+        story = []
+
+        # TODO: Cambiar estilo de la tabla y añadir cabeceras, fechas, nombre de la compañia, etc
+        tabla = Table(data=tableData)
+        tabla.setStyle(TableStyle([('ALIGN', (1, 1), (-2, -2), 'RIGHT'),
+                                   ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+
+        story.append(tabla)
+        
+        # Problema actual: el doc se tendria que guardar en alguna carpeta del proyecto antes de enviarlo
+        doc = SimpleDocTemplate("exported_data_" + user.username + ".pdf", pagesize=A4, leftMargin=1, rightMargin=1, topMargin=2, bottomMargin=2)
+        doc.build(story)
+        
+        send_mail("Exported data", "This is the exported data of " + user.username, email, "exported_data_" + user.username + ".pdf")
+
+        os.remove("exported_data_" + user.username + ".pdf")
+"""
 
 
 def backendWakeUp(request):

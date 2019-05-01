@@ -86,6 +86,55 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public editUser(
+    email: string,
+    first_name: string,
+    last_name: string,
+    description: string,
+    birthdate: string,
+    profesion: string,
+    civilStatus: string,
+    gender: string,
+    nationality: string,
+    city: string,
+    languages: string[],
+    interests: string[],
+    profilePic,
+    discoverPic
+  ) {
+    let token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('email', email);
+    fd.append('first_name', first_name);
+    fd.append('last_name', last_name);
+    fd.append('description', description);
+    fd.append('birthdate', String(birthdate));
+    fd.append('profesion', profesion);
+    fd.append('civilStatus', civilStatus);
+    fd.append('nationality', nationality);
+    fd.append('city', city);
+    fd.append('gender', gender);
+    fd.append('languages', JSON.stringify(languages));
+    fd.append('interests', JSON.stringify(interests));
+    fd.append('token', token);
+    if (profilePic !== null) {
+      fd.append('photo', profilePic, profilePic.name);
+    }
+    if (discoverPic !== null) {
+      fd.append('discoverPhoto', discoverPic, discoverPic.name);
+    }
+
+    return this.makePostRequest(this.path + 'editUser/', fd, token)
+      .then(res => {
+        console.log('Sign up successfully');
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
   public test(): Promise<any> {
     const requestParams = {
       text: 'texto'

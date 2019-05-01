@@ -59,8 +59,11 @@ urlpatterns = [
     path('messages/', views.message_list, name='message-list'),
     path('paid/', views.SetUserToPremium.as_view(), name='set_user_to_premium'),
     path('register/', views.RegisterUser.as_view(), name='register_user'),
-    path('list-languages/', views.ListLanguages.as_view(), name='list_languages' ),
+    path('list-languages/', views.ListLanguages.as_view(), name='list_languages'),
+    path('editUser/', views.EditUser.as_view()),
     path('list-interests/', views.ListInterest.as_view(), name='list_interest'),
-    path('backend-wakeup/',views.backendWakeUp, name='backend-wakeup'),
+    path('backend-wakeup/', views.backendWakeUp, name='backend-wakeup'),
+    path('deleteUser/', views.DeleteUser.as_view()),
+    path('exportData/', views.ExportUserData.as_view()),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)
