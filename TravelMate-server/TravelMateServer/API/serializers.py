@@ -120,6 +120,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'avarageRate',
             'numRate',
             'isPremium',
+            'datePremium',
             'status',
             'profesion',
             'civilStatus',
