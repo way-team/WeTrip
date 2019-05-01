@@ -1171,6 +1171,23 @@ class DeleteUser(APIView):
         user.is_active = False
         user.save()
 
+        userprofile.languages.clear()
+        userprofile.email = "-"
+        userprofile.first_name = "-"
+        userprofile.last_name = "-"
+        userprofile.description = "-"
+        userprofile.birthdate = "1900-01-01"
+        userprofile.city = "-"
+        userprofile.nationality = "-"
+        userprofile.photo = "-"
+        userprofile.discoverPhoto = "-"
+        userprofile.averageRate = 0
+        userprofile.numRate = 0
+        userprofile.isPremium = False
+        userprofile.datePremium = "2019-04-09"
+        userprofile.gender = "N"
+        userprofile.profesion = "-"
+        userprofile.civilStatus = "S"
         userprofile.status = "D"
         userprofile.save()
 
@@ -1180,7 +1197,7 @@ class DeleteUser(APIView):
 def send_mail(subject, body, email, attachment):
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
-    server.login("integrity.system.cad@gmail.com", "SeguridadUS2019!")
+    server.login("way.team.soft@gmail.com", "wayteam2019")
 
     msg = MIMEMultipart()
 
