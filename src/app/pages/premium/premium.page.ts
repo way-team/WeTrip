@@ -18,6 +18,7 @@ export class PremiumPage implements OnInit {
    public premium: boolean;
    public logged: UserProfile;
    private username: string;
+   public expiration: Date;
 
 
 
@@ -40,6 +41,8 @@ export class PremiumPage implements OnInit {
         this.logged = res;
         this.premium=res.isPremium;
         this.username=res.user.username;
+        var options={weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}
+        this.expiration=res.datePremium;
       })
       .catch(err => {
         console.log('Error: ' + err);
