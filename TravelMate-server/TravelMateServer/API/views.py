@@ -1185,9 +1185,7 @@ class DeleteUser(APIView):
         userprofile.numRate = 0
         userprofile.isPremium = False
         userprofile.datePremium = "2019-04-09"
-        userprofile.gender = "N"
         userprofile.profesion = "-"
-        userprofile.civilStatus = "S"
         userprofile.status = "D"
         userprofile.save()
 
