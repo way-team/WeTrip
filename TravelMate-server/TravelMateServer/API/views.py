@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from django.db.models import Q, Count, StdDev, Avg, Sum, Case, When, IntegerField, Value
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
@@ -27,13 +28,11 @@ def get_user_by_token(request):
     if user_profile.isPremium:
         today = datetime.today().date()
         datePremium = user_profile.datePremium
-        diff = today - datePremium
-        if diff.days >= 365:
+        if today > datePremium:
             user_profile.isPremium = False
             user_profile.save()
 
     return user_profile
-
 
 
 class GetUserView(APIView):
@@ -934,10 +933,15 @@ class SetUserToPremium(APIView):
 
     def post(self, request):
         usernamepaid = request.user.username
-
         userpaid = User.objects.get(username=usernamepaid)
         userprofilepaid = UserProfile.objects.get(user=userpaid)
-        userprofilepaid.isPremium = True
+
+        if not userprofilepaid.isPremium:
+            userprofilepaid.isPremium = True
+            userprofilepaid.datePremium = datetime.today() + relativedelta(years=1)
+        else:
+            userprofilepaid.datePremium += relativedelta(years=1)
+
         userprofilepaid.save()
 
         return Response(
