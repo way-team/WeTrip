@@ -13,7 +13,7 @@
 
 
 
-<ion-content>
+<ion-content #content>
   <app-banner></app-banner>
 
 
@@ -44,7 +44,7 @@
   </ion-infinite-scroll>
 
 </ion-content>
-   <a href ="#top">
-           <ion-fab vertical="bottom" horizontal="end" >
+
+           <ion-fab vertical="bottom" horizontal="end"  (click)="scrollToTop()" >
   <ion-icon name="arrow-dropup-circle"  class="larger" color="tertiary" shape="round" ></ion-icon>
-           </ion-fab></a>
+           </ion-fab>

@@ -34,6 +34,7 @@ export class DiscoverPage {
   discover: UserProfile[] = [];
   newData: UserProfile[] = [];
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild('content') private content: any;
   constructor(
     public navCtrl: NavController,
     public menuCtrl: MenuController,
@@ -46,16 +47,22 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getData(6, 0);
-    this.getDataReload(6, 6);
+    this.getInit(6, 0);
+    this.getData(6, 6);
+  }
+
+  scrollToTop() {
+    this.content.scrollToTop(300);
   }
   loadData(event) {
-    setTimeout(async () => {
+    setTimeout(() => {
       console.log('Done');
-      await this.getDataReload(6, 6 + this.discover.length);
-      await this.newData.forEach(x => this.discover.push(x));
-      await event.target.complete();
 
+      this.getData(6, this.discover.length + 6);
+
+      this.newData.forEach(x => this.discover.push(x));
+
+      event.target.complete();
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
       if (this.discover.length == 200) {
@@ -74,26 +81,17 @@ export class DiscoverPage {
       .catch(error => {});
   }
 
- getInit(offset: Number, limit: Number){
- this.offsetString= "" + offset;
- this.limitString="" + limit;
- this.dM
+  getInit(offset: Number, limit: Number) {
+    this.offsetString = '' + offset;
+    this.limitString = '' + limit;
+    this.dM
       .getData(this.offsetString, this.limitString)
       .then((data: any) => {
         this.discover = data;
       })
       .catch(error => {});
   }
-  getDataReload(offset: Number, limit: Number) {
-    this.offsetString = '' + offset;
-    this.limitString = '' + limit;
-    this.dM
-      .getData(this.offsetString, this.limitString)
-      .then((data: any) => {
-        this.newData = data;
-      })
-      .catch(error => {});
-  }
+
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
   }
@@ -210,10 +208,10 @@ export class DiscoverPage {
               alertEl.present();
             });
         }, 1500);
-        this.getData(6, 0);
+        this.getInit(6, 0);
       })
       .catch(err => {
-        this.getData(6, 0);
+        this.getInit(6, 0);
       });
   }
 

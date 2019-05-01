@@ -13,6 +13,7 @@ export class UserProfile {
   avarageRate: Number;
   numRate: Number;
   isPremium: boolean;
+  datePremium: Date;
   status: string;
   profesion: string;
   civilStatus: string;

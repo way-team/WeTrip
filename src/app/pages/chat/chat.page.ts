@@ -26,7 +26,7 @@ export class ChatPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private dm: DataManagement,
     private cookieService: CookieService
-  ) {}
+  ) { }
   public intervallTimer = interval(1000);
   private subscription;
 
@@ -61,6 +61,18 @@ export class ChatPage implements OnInit {
       attributes: true,
       subtree: true
     });
+  }
+
+  keypress($event) {
+    if ($event.keyCode == 13) {
+      this.sendMessage();
+    }
+  }
+
+  onKeydown(event) {
+    if (event.key === "Enter") {
+      console.log(event);
+    }
   }
 
   stopInterval() {

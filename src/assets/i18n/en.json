@@ -25,7 +25,7 @@
     "ALERT_MESSAGE_MESSAGE": "Are you sure of blocking this user? You won't see this user anymore so please, remember to rate him to preserve Travelmate's community safety"
   },
   "CREATE_TRIP": {
-    "CITY": "City",
+    "CITY": "Cities",
     "CREATE_NEW_TRIP": "Create a new trip",
     "EDIT_TRIP": "Edit trip",
     "DESCRIPTION": "Description",
@@ -45,7 +45,9 @@
     "UPLOAD_AN_IMAGE": "Upload an image",
     "WARNING_DATE": "End date can not been set before the start date",
     "WARNING_DATE_MIN": "Can not set a past date",
-    "PRICE": "Estimated price (€)"
+    "PRICE": "Estimated price (€)",
+    "PUBLIC_ALERT": "You've selected Public",
+    "PUBLIC_ALERT_M": "If you save this mode, you will not be able to edit this trip and people could start applying it"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Users: active VS. inactive",
@@ -117,7 +119,7 @@
     "PRIVACY_INFORMATION": "Privacy information",
     "TEXT_1": "About us",
     "TEXT_10": ". The photos you add will be stored in ",
-    "TEXT_10B":". All the data will de showed to others users for them to join.",
+    "TEXT_10B": ". All the data will de showed to others users for them to join.",
     "TEXT_11": "What happens when you are premium?",
     "TEXT_12": "In this case we will only and exclusively store if a payment has been made and the date. The rest of the information such as card number and passwords to access payment accounts, will be stored by Paypal, a third party to whom you send your data from your browser. If you need more information, you can read Paypal's privacy policy ",
     "TEXT_13": ".",
@@ -161,7 +163,7 @@
     "TEXT_9": "We will keep all the data you provide us on our server and in ",
     "TEXT_9B": "to show them to other users.",
     "TITLE": "General Data Protection Regulation",
-    "HERE":"here"
+    "HERE": "here"
   },
   "IMAGE": {
     "CLOSE": "Close"
@@ -205,7 +207,8 @@
     "NEW_PREMIUM": "Congratulations! You are a member of our Premium club",
     "PREMIUM": "Premium",
     "TEXT_1": "With the premium version, you will enjoy our app without ads and your trips will have preferential location.",
-    "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease."
+    "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease.",
+    "EXPIRATION": "Expiration date: "
   },
   "PROFILE": {
     "ADMIN": "Admin",

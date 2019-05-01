@@ -25,7 +25,7 @@
     "ALERT_MESSAGE_MESSAGE": "¿Está seguro de bloquear a este usuario? No volverá a ver a este usuario así que por favor, recuerde puntuarlo para preservar la seguridad de la comunidad Travelmate"
   },
   "CREATE_TRIP": {
-    "CITY": "Ciudad",
+    "CITY": "Ciudades",
     "CREATE_NEW_TRIP": "Crear un viaje nuevo",
     "EDIT_TRIP": "Editar viaje",
     "DESCRIPTION": "Descripción",
@@ -45,7 +45,9 @@
     "UPLOAD_AN_IMAGE": "Subir una imagen",
     "WARNING_DATE": "La fecha de finalización no puede ser anterior a la fecha de comienzo",
     "WARNING_DATE_MIN": "No se puede establecer una fecha pasada",
-    "PRICE": "Precio estimado (€)"
+    "PRICE": "Precio estimado (€)",
+    "PUBLIC_ALERT": "Has seleccionado Público",
+    "PUBLIC_ALERT_M": "Si guardas en este modo no podrás editar el viaje y las personas podrán apuntarse"
   },
   "DASHBOARD": {
     "ACTIVE_VS_INACTIVE": "Usuarios: activos VS. inactivos",
@@ -117,7 +119,7 @@
     "PRIVACY_INFORMATION": "Política de privacidad",
     "TEXT_1": "¿Quiénes somos?",
     "TEXT_10": " . Las fotos que añadas se almacenarán en ",
-    "TEXT_10B":". Los datos los utilizaremos para mostrarlos a otros usuarios para que se puedan unir al viaje.",
+    "TEXT_10B": ". Los datos los utilizaremos para mostrarlos a otros usuarios para que se puedan unir al viaje.",
     "TEXT_11": "¿Qué ocurre cuando te haces premium?",
     "TEXT_12": " En este caso nosotros sólo y exclusivamente almacenaremos si se ha efectuado un pago y la fecha. El resto de información como número de tarjeta y claves de accesos a cuentas de pago, la almacenará Paypal, un tercero al que le envías tus datos desde tu navegador. Y si quieres estar más informado, puedes leer la política de privacidad de Paypal ",
     "TEXT_13": "(por ejemplo, mediante la contratación para manejar un asunto o mediante una suscripción consensual o una solicitud de contacto).",
@@ -161,7 +163,7 @@
     "TEXT_9": " Guardaremos todos los datos que nos suministras en nuestro servidor y en Heroku https://www.salesforce.com/company/privacy/full_privacy.jsp#nav_info ",
     "TEXT_9B": "para mostralos al resto de usuarios.",
     "TITLE": "Reglamento general de protección de datos",
-    "HERE":"aquí"
+    "HERE": "aquí"
 
   },
   "IMAGE": {
@@ -206,7 +208,8 @@
     "NEW_PREMIUM": "¡Enhorabuena! Eres miembro de nuestro club Premium",
     "PREMIUM": "Premium",
     "TEXT_1": "Con la versión premium, disfrutará de nuestra aplicación sin anuncios y sus viajes tendrán una ubicación preferencial.",
-    "TEXT_2": "Además, garantiza su identidad y sus compañeros de viaje se sentirán a gusto."
+    "TEXT_2": "Además, garantiza su identidad y sus compañeros de viaje se sentirán a gusto.",
+    "EXPIRATION": "Vencimiento: "
   },
   "PROFILE": {
     "ADMIN": "Administrador",
@@ -270,7 +273,7 @@
     "GENDER": "Género",
     "HEADER_SUCCESS": "Realizado",
     "INTERESTS": "Intereses",
-    "INTRUDUCE_INFORMATION": "",
+    "INTRUDUCE_INFORMATION": "Introduce tu datos personales",
     "I_HAVE_AN_ACCOUNT": "¡Tengo una cuenta!",
     "LANGUAGES": "Idiomas",
     "LAST_NAME": "Apellidos",
