@@ -11,7 +11,8 @@ const routes: Routes = [
   },
   {
     path: 'userForm/:edit',
-    loadChildren: './pages/register/register.module#RegisterPageModule'
+    loadChildren: './pages/register/register.module#RegisterPageModule',
+    canLoad: [AuthGuard]
   },
   {
     path: 'about',
