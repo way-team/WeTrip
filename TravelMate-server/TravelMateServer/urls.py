@@ -36,10 +36,10 @@ urlpatterns = [
     path('trips/', views.AvailableTripsList.as_view(), name='available_trips_list'),
     path('trips/myTrips/', views.MyTripsList.as_view(), name='my_trips_list'),
     path('trips/search/', views.AvailableTripsSearch.as_view(), name='available_trips_search'),
-    path('list-cities/', views.ListCities.as_view()),
+    path('list-cities/', views.ListCities.as_view(), name='list_cities'),
     path('createTrip/', views.CreateTrip.as_view()),
-    path('getFriends/', views.GetFriendsView.as_view()),
-    path('getPending/', views.GetPendingView.as_view()),
+    path('getFriends/', views.GetFriendsView.as_view(), name='get_friends'),
+    path('getPending/', views.GetPendingView.as_view(), name='get_pending' ),
     path('getPendingInvitations/', views.GetPendingInvitationsView.as_view()),
     path('sendInvitation/', views.SendInvitation.as_view(), name='send_invitation'),
     path('acceptFriend/', views.AcceptFriend.as_view(), name='accept_friend'),
@@ -60,7 +60,7 @@ urlpatterns = [
     path('paid/', views.SetUserToPremium.as_view()),
     path('register/', views.RegisterUser.as_view()),
     path('list-languages/', views.ListLanguages.as_view(), name='list_languages' ),
-    path('list-interests/', views.ListInterest.as_view()),
+    path('list-interests/', views.ListInterest.as_view(), name='list_interest'),
     path('backend-wakeup/',views.backendWakeUp, name='backend-wakeup'),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)

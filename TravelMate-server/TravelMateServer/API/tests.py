@@ -118,10 +118,6 @@ class TravelMateTests(APITestCase):
         cls.rate5 = Rate.objects.create(voter=cls.userprofile4, voted=cls.userprofile1, value=4)
         cls.rate6 = Rate.objects.create(voter=cls.userprofile2, voted=cls.userprofile5, value=2)
   
-
-
-        cls.invitation=Invitation.objects.create(sender=cls.userprofile1, receiver=cls.userprofile2, status='A')
-        
         
 
     def api_authentication(self):
@@ -649,10 +645,6 @@ class TravelMateTests(APITestCase):
         # But his/her average rating has been updated
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 4)
 
-
-
-   
-    
     def test_list_languages(self):
         """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
 
@@ -668,49 +660,119 @@ class TravelMateTests(APITestCase):
 
         # user1 has salected 2 languages. Let's check this:
         jsonResponse = response.json()
-        self.assertTrue(jsonResponse['count'] == 2)
-
-        # The 2 languages that user1 has selected are 'lang1' and 'lang2'. 'trip1'. Let's check this: 
-        languages = []
-        languages.append(self.lang1)
-        languages.append(self.lang2)
-        serializer = LanguageSerializer(languages, many=True)
-        self.assertEqual(jsonResponse['results'], serializer.data)
     
-        # We log in as 'user3'
-        self.user = self.user3
+        self.assertTrue(len(jsonResponse) == 5)
+           
+
+    def test_list_cities(self):
+        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+
+        # We log in as 'user1'
+        self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
-
-        response = self.client.get(reverse('list_languages'))
+        
+        response = self.client.get(reverse('list_cities'))
 
         # We check the status code of the request
         self.assertEqual(200, response.status_code)
 
-        # user3 has selected 2 languages. Let's check this:
+        # There are 6 cities on the system. Let's check this:
         jsonResponse = response.json()
-        self.assertTrue(jsonResponse['count'] == 2)
 
-        # The 2 languages that user3 has selected are 'lang1'and'lang5'. Let's check this:
-        languages = []
-        languages.append(self.lang1)
-        languages.append(self.lang5)
-        serializer = LanguageSerializer(languages, many=True)
-        self.assertEqual(jsonResponse['results'], serializer.data)
+        self.assertTrue(len(jsonResponse) == 6)
+
+    
+       # We log in as 'user2'
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
         
+        response = self.client.get(reverse('list_cities'))
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # There are 6 cities on the system. Let's check this:
+        jsonResponse = response.json()
+        self.assertTrue(len(jsonResponse) == 6)
+
+    def test_list_interest(self):
+        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+
+        # We log in as 'user1'
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        response = self.client.get(reverse('list_interest'))
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # There are 6 cities on the system. Let's check this:
+        jsonResponse = response.json()
+        self.assertTrue(len(jsonResponse) == 8)
+
+    
+       # We log in as 'user2'
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+        
+        response = self.client.get(reverse('list_interest'))
+
+        # We check the status code of the request
+        self.assertEqual(200, response.status_code)
+
+        # There are 6 cities on the system. Let's check this:
+        jsonResponse = response.json()
+        self.assertTrue(len(jsonResponse) == 8)
+
     def test_get_friends(self):
-       
-        user = {' user': 'user1', ' email': 'user1@gmail.com', ' first_name': 'user1', ' last_name': 'user1', ' birthdate': '1991-03-30', ' nationality': 'spanish', ' avarageRate': '4', ' numRate': '2', ' isPremium': 'False', ' gender': 'M', ' status': 'A', ' civilStatus': 'S'}
+        
+        # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
 
-        response = self.client.post('/getFriends/', user, format='json')
-        self.assertEqual(response.status_code, 200)
+        # We are still logged as user1
+        data = {"token":self.token.key}
 
-        friends = response.json()
-        self.assertEqual(friends['invitation'].STATUS_OPTION, 'A')
+        # user 1 have an accepted invitation with the user 2 and other with the user 4
+        response = self.client.post(reverse('get_friends'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
 
+        jsonResponse = response.json()
+        #Check that there are 2 friends
+        self.assertTrue(len(jsonResponse)== 2)
+        
+        #Check they are user2 and user4
+        self.assertEqual(jsonResponse[0]['user']['id'], self.user2.id)
+        self.assertEqual(jsonResponse[1]['user']['id'], self.user4.id)
+
+    def test_get_pending(self):
+        
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        # We are still logged as user1
+        data = {"token":self.token.key}
+
+        # user 1 have an accepted invitation with the user 2 and other with the user 4
+        response = self.client.post(reverse('get_pending'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
+
+        jsonResponse = response.json()
+        #Check that there are 1 pendings
+        self.assertTrue(len(jsonResponse)== 1)
+        
+        #Check they are user2 and user4
+        self.assertEqual(jsonResponse[0]['user']['id'], self.user5.id)
        
     
 
