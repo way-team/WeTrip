@@ -116,13 +116,13 @@
               <ion-icon name="map" item-start></ion-icon>
               {{ 'CREATE_TRIP.CITY' | translate}}
             </ion-label>
-            <ionic-selectable formControlName="city" [(ngModel)]="city" [items]="cities" itemValueField="id"
-              itemTextField="name" [canSearch]="true">
+            <ionic-selectable [isMultiple]="true" formControlName="citiesSelected" [(ngModel)]="citiesSelected"
+              [items]="cities" itemValueField="id" itemTextField="name" [canSearch]="true">
             </ionic-selectable>
 
           </ion-item>
           <p ion-text class="text08"
-            *ngIf="onCreateForm.get('city').touched && onCreateForm.get('city').hasError('required')">
+            *ngIf="onCreateForm.get('citiesSelected').touched && onCreateForm.get('citiesSelected').hasError('required')">
             <ion-text color="warning">
               {{ 'CREATE_TRIP.REQUIRED_FIELD' | translate}}
             </ion-text>
