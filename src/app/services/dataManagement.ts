@@ -209,7 +209,7 @@ export class DataManagement {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price: Number
   ): Promise<any> {
@@ -220,7 +220,7 @@ export class DataManagement {
         start_date,
         end_date,
         trip_type,
-        city,
+        cities,
         userImage,
         price
       )
@@ -239,7 +239,7 @@ export class DataManagement {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price: Number
   ): Promise<any> {
@@ -251,7 +251,7 @@ export class DataManagement {
         start_date,
         end_date,
         trip_type,
-        city,
+        cities,
         userImage,
         price
       )
