@@ -47,6 +47,11 @@
         <ion-icon *ngIf="user.avarageRate<3" name="star-outline"></ion-icon>
         <ion-icon *ngIf="user.avarageRate<4" name="star-outline"></ion-icon>
         <ion-icon *ngIf="user.avarageRate<5" name="star-outline"></ion-icon>
+        <br>
+        <ion-button *ngIf="myProfile" shape="round" color="dark" [routerLink]="'/userForm/edit'"
+          routerDirection="forward">
+          {{ 'PROFILE.EDIT_PROFILE' | translate }}
+        </ion-button>
       </ion-card-content>
 
       <ion-grid fixed no-padding>
@@ -60,7 +65,7 @@
               <ion-item>
                 <ion-label color="dark">{{ 'PROFILE.GENDER' | translate }}</ion-label>
                 <ion-text *ngIf="user.gender == 'M'">{{ 'PROFILE.MALE' | translate }}</ion-text>
-                <ion-text *ngIf="user.gender == 'F'">{{ 'PROFILE.GEMALE' | translate }}</ion-text>
+                <ion-text *ngIf="user.gender == 'F'">{{ 'PROFILE.FEMALE' | translate }}</ion-text>
                 <ion-text *ngIf="user.gender == 'N'">{{ 'PROFILE.NON-BINARY' | translate }}</ion-text>
               </ion-item>
 
@@ -139,18 +144,24 @@
                 <ion-list-header color="light">
                   <ion-label class="fw700">{{ 'PROFILE.HAS_VISITED' | translate }}</ion-label>
                 </ion-list-header>
-                <ion-item *ngFor="let i of past_joined_trips">
-                  <div *ngIf=""></div>
+                <ion-item *ngFor="let i of creatorsAndPastTrips">
                   <ion-label color="primary">
-                    {{ i.title }}
+                    {{ i.trip.title }}
                   </ion-label>
                   <ion-label>
                     {{ 'PROFILE.CREATOR' | translate }}
-                    <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.creator)">
-                      <ion-text color="tertiary">
-                        {{ i.creator }}
+                    <div *ngIf="i.status=='D'">
+                      <ion-text color="medium">
+                        {{ 'PROFILE.CREATOR_DELETED' | translate }}
                       </ion-text>
-                    </a>
+                    </div>
+                    <div *ngIf="i.status=='A'">
+                      <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.trip.creator)">
+                        <ion-text color="tertiary">
+                          {{ i.trip.creator }}
+                        </ion-text>
+                      </a>
+                    </div>
                   </ion-label>
                 </ion-item>
               </ion-radio-group>
@@ -161,16 +172,25 @@
                 <ion-list-header color="light">
                   <ion-label class="fw700">{{ 'PROFILE.FUTURE_VISIT' | translate }}</ion-label>
                 </ion-list-header>
-                <ion-item *ngFor="let i of user.future_joined_trips">
+                <ion-item *ngFor="let i of creatorsAndFutureTrips">
                   <div *ngIf=""></div>
                   <ion-label color="primary">
-                    {{ i.title }}
+                    {{ i.trip.title }}
                   </ion-label>
                   <ion-label>
                     {{ 'PROFILE.CREATOR' | translate }}
-                    <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.creator)">
-                      <ion-text color="tertiary"> {{ i.creator }} </ion-text>
-                    </a>
+                    <div *ngIf="i.status=='D'">
+                      <ion-text color="medium">
+                        {{ 'PROFILE.CREATOR_DELETED' | translate }}
+                      </ion-text>
+                    </div>
+                    <div *ngIf="i.status=='A'">
+                      <a class="creator" style="cursor: pointer" (click)="goTo('user-profile/', i.trip.creator)">
+                        <ion-text color="tertiary">
+                          {{ i.trip.creator }}
+                        </ion-text>
+                      </a>
+                    </div>
                   </ion-label>
                 </ion-item>
               </ion-radio-group>

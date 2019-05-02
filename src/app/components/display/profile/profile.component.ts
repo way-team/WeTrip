@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserProfile, Trip } from 'src/app/app.data.model';
-import { NavController, LoadingController, AlertController } from '@ionic/angular';
+import { UserProfile, Trip, CreatorAndTrip } from 'src/app/app.data.model';
+import {
+  NavController,
+  LoadingController,
+  AlertController
+} from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { DataManagement } from '../../../services/dataManagement';
@@ -8,10 +12,9 @@ import { DataManagement } from '../../../services/dataManagement';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss'],
+  styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-
   @Input()
   public user: UserProfile;
 
@@ -19,8 +22,12 @@ export class ProfileComponent implements OnInit {
   public interests: string[];
   public today: Date;
 
+  private creator: UserProfile;
+  private creatorAndTrip: CreatorAndTrip;
   private userLogged: UserProfile;
   private userProfile: UserProfile;
+  public creatorsAndPastTrips: CreatorAndTrip[];
+  public creatorsAndFutureTrips: CreatorAndTrip[];
   public past_joined_trips: Trip[];
   public active_joined_trips: Trip[];
 
@@ -30,56 +37,76 @@ export class ProfileComponent implements OnInit {
     private translate: TranslateService,
     private cookieService: CookieService,
     public dm: DataManagement,
-    public loadingCtrl: LoadingController,
-  ) {
-
-  }
+    public loadingCtrl: LoadingController
+  ) {}
 
   ngOnInit() {
     this.isMyProfile();
-    console.log(this.user);
-    this.past_joined_trips = this.user.past_joined_trips;
-    this.active_joined_trips = this.user.active_joined_trips;
 
-    this.past_joined_trips.filter(x => {
-      x.creator == "deleted";
-    });
+    this.creatorsAndPastTrips = this.createAndTripFunction(this.user.past_joined_trips);
+    this.creatorsAndFutureTrips = this.createAndTripFunction(this.user.future_joined_trips);
+  }
+
+  createAndTripFunction(listTrip: Trip[]){
+    var creatorsAndTrips: CreatorAndTrip[] = [];
+    for(let trip of listTrip){
+      this.dm
+      .getUserBy(trip.creator, this.cookieService.get('token'))
+      .then(userProfile => {
+        this.creator = userProfile;
+        this.creatorAndTrip = new CreatorAndTrip;
+        this.creatorAndTrip.status = this.creator.status;
+        this.creatorAndTrip.trip = trip;
+        creatorsAndTrips.push(this.creatorAndTrip);
+      });
+    }
+
+    return creatorsAndTrips;
   }
 
   goTo(destination: string, username: string) {
     let translationAlert: string = this.translate.instant('PROFILE.SORRY');
-    let translationDelete1: string = this.translate.instant('PROFILE.ELIMINATED');
+    let translationDelete1: string = this.translate.instant(
+      'PROFILE.ELIMINATED'
+    );
     const dest: string = destination + username;
 
-    this.dm.getUserBy(username, this.cookieService.get('token')).then(userProfile => {
-      this.userProfile = userProfile;
-      if (this.userProfile.status == 'D') {
-        this.alertCtrl
-          .create({
-            header: translationAlert,
-            subHeader: translationDelete1,
-            buttons: [
-              {
-                text: 'OK',
-                role: 'ok',
-              }
-            ]
-          })
-          .then(alertEl => {
-            alertEl.present();
-          });
-      } else {
-        this.navCtrl.navigateForward(dest);
-      }
-    });
-
+    this.dm
+      .getUserBy(username, this.cookieService.get('token'))
+      .then(userProfile => {
+        this.userProfile = userProfile;
+        if (this.userProfile.status == 'D') {
+          this.alertCtrl
+            .create({
+              header: translationAlert,
+              subHeader: translationDelete1,
+              buttons: [
+                {
+                  text: 'OK',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+        } else {
+          this.navCtrl.navigateForward(dest);
+        }
+      });
   }
 
   delete() {
     let translationAlert: string = this.translate.instant('PROFILE.ALERT');
-    let translationDelete1: string = this.translate.instant('PROFILE.DELETE_USER_1');
-    let translationDelete2: string = this.translate.instant('PROFILE.DELETE_USER_2');
-    let translationDelete3: string = this.translate.instant('PROFILE.DELETE_USER_3');
+    let translationDelete1: string = this.translate.instant(
+      'PROFILE.DELETE_USER_1'
+    );
+    let translationDelete2: string = this.translate.instant(
+      'PROFILE.DELETE_USER_2'
+    );
+    let translationDelete3: string = this.translate.instant(
+      'PROFILE.DELETE_USER_3'
+    );
     let translationYes: string = this.translate.instant('PROFILE.YES');
 
     setTimeout(() => {
@@ -88,7 +115,10 @@ export class ProfileComponent implements OnInit {
           header: translationAlert,
           subHeader: translationDelete1,
           message:
-            translationDelete2 + "<br \><br \><strong>" + translationDelete3 + "</strong>",
+            translationDelete2 +
+            '<br ><br ><strong>' +
+            translationDelete3 +
+            '</strong>',
           buttons: [
             {
               text: translationYes,
@@ -98,7 +128,7 @@ export class ProfileComponent implements OnInit {
               }
             },
             {
-              text: "NO"
+              text: 'NO'
             }
           ]
         })
@@ -109,19 +139,24 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteUser() {
-    let translationError1: string = this.translate.instant('PROFILE.DELETE_ERROR_1');
-    let translationError2: string = this.translate.instant('PROFILE.DELETE_ERROR_2');
+    let translationError1: string = this.translate.instant(
+      'PROFILE.DELETE_ERROR_1'
+    );
+    let translationError2: string = this.translate.instant(
+      'PROFILE.DELETE_ERROR_2'
+    );
     this.dm
-      .deleteUser()
+      .deleteUser(this.user.user.id)
       .then(data => {
         this.deleteToken();
-      }).catch(error => {
+      })
+      .catch(error => {
         this.showLoading();
         setTimeout(() => {
           this.alertCtrl
             .create({
               header: 'Error',
-              message: translationError1 + "<br \><br \>" + translationError2,
+              message: translationError1 + '<br ><br >' + translationError2,
               buttons: [
                 {
                   text: 'Ok',
@@ -140,7 +175,6 @@ export class ProfileComponent implements OnInit {
     this.cookieService.delete('token');
     this.navCtrl.navigateRoot('/');
   }
-
 
   showLoading() {
     let translation2: string = this.translate.instant('LOGIN.WAIT');
@@ -164,5 +198,10 @@ export class ProfileComponent implements OnInit {
         this.myProfile = false;
       }
     });
+  }
+
+  funcionPrueba(nombre: string){
+    console.log('accediendo a funcionPrueba');
+    return true;
   }
 }

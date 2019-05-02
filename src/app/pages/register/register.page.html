@@ -1,8 +1,16 @@
-<ion-content padding class="login auth-page">
+<ion-header *ngIf="edit === 'edit'">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title color="light">{{ 'REGISTER.EDITUSER' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="isReady" padding class="login auth-page">
 
   <div class="auth-content">
     <!-- Logo -->
-    <div class="arriba">
+    <div *ngIf="edit !== 'edit'" class="arriba">
       <ion-item style="width:350px; float: right;">
         <ion-icon name="md-globe" slot="start" color="light"></ion-icon>
         <ion-label color="light">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
@@ -12,7 +20,7 @@
         </ion-select>
       </ion-item>
     </div>
-    <div padding-horizontal text-center>
+    <div *ngIf="edit !== 'edit'" padding-horizontal text-center>
       <div class="logo"></div>
       <h3 no-margin>
         <ion-text color="light" class="fw700">
@@ -29,56 +37,57 @@
       </ion-card-header>
       <ion-card-content>
         <form [formGroup]="onRegisterForm">
-          <ion-item>
-            <ion-label position="floating">
-              <ion-icon name="person" item-start></ion-icon>
-              {{ 'REGISTER.USERNAME' | translate}}
-            </ion-label>
-            <ion-input color="secondary" type="text" maxlength="30" formControlName="username" [(ngModel)]="username">
-            </ion-input>
-          </ion-item>
-          <p ion-text color="warning" class="text08"
-            *ngIf="onRegisterForm.get('username').touched && onRegisterForm.get('username').hasError('required')">
-            <ion-text color="warning">
-              {{ 'REGISTER.REQUIRED_FIELD' | translate}}
-            </ion-text>
-          </p>
+          <div *ngIf="edit !== 'edit'">
+            <ion-item>
+              <ion-label position="floating">
+                <ion-icon name="person" item-start></ion-icon>{{ 'REGISTER.USERNAME' | translate}}
+              </ion-label>
+              <ion-input color="secondary" type="text" maxlength="30" formControlName="username" [(ngModel)]="username">
+              </ion-input>
+            </ion-item>
+            <p ion-text color="warning" class="text08"
+              *ngIf="onRegisterForm.get('username').touched && onRegisterForm.get('username').hasError('required')">
+              <ion-text color="warning">
+                {{ 'REGISTER.REQUIRED_FIELD' | translate}}
+              </ion-text>
+            </p>
 
-          <ion-item no-padding>
-            <ion-label position="floating">
-              <ion-icon name="lock" item-start></ion-icon>
-              {{ 'REGISTER.PASSWORD' | translate}}
-            </ion-label>
-            <ion-input [(ngModel)]="password" color="secondary" maxlength="30" type="password"
-              formControlName="password"></ion-input>
-          </ion-item>
-          <p ion-text color="warning" class="text08"
-            *ngIf="onRegisterForm.get('password').touched && onRegisterForm.get('password').hasError('required')">
-            <ion-text color="warning">
-              {{ 'REGISTER.REQUIRED_FIELD' | translate}}
-            </ion-text>
-          </p>
+            <ion-item no-padding>
+              <ion-label position="floating">
+                <ion-icon name="lock" item-start></ion-icon>
+                {{ 'REGISTER.PASSWORD' | translate}}
+              </ion-label>
+              <ion-input [(ngModel)]="password" color="secondary" maxlength="30" type="password"
+                formControlName="password"></ion-input>
+            </ion-item>
+            <p ion-text color="warning" class="text08"
+              *ngIf="onRegisterForm.get('password').touched && onRegisterForm.get('password').hasError('required')">
+              <ion-text color="warning">
+                {{ 'REGISTER.REQUIRED_FIELD' | translate}}
+              </ion-text>
+            </p>
 
-          <ion-item no-padding>
-            <ion-label position="floating">
-              <ion-icon name="lock" item-start></ion-icon>
-              {{ 'REGISTER.CONFIRM_PASSWORD' | translate}}
-            </ion-label>
-            <ion-input (change)="confirmPasswordValidation()" maxlength="30" [(ngModel)]="confirmPassword"
-              color="secondary" type="password" formControlName="confirmPassword">
-            </ion-input>
-          </ion-item>
-          <p ion-text color="warning" class="text08"
-            *ngIf="onRegisterForm.get('confirmPassword').touched && onRegisterForm.get('confirmPassword').hasError('required')">
-            <ion-text color="warning">
-              {{ 'REGISTER.REQUIRED_FIELD' | translate}}
-            </ion-text>
-          </p>
-          <p ion-text color="warning" class="text08" *ngIf="!confirmPasswordValidation()">
-            <ion-text color="warning">
-              {{ 'REGISTER.PASSWORD_VALIDATION_FALSE' | translate}}
-            </ion-text>
-          </p>
+            <ion-item no-padding>
+              <ion-label position="floating">
+                <ion-icon name="lock" item-start></ion-icon>
+                {{ 'REGISTER.CONFIRM_PASSWORD' | translate}}
+              </ion-label>
+              <ion-input (change)="confirmPasswordValidation()" maxlength="30" [(ngModel)]="confirmPassword"
+                color="secondary" type="password" formControlName="confirmPassword">
+              </ion-input>
+            </ion-item>
+            <p ion-text color="warning" class="text08"
+              *ngIf="onRegisterForm.get('confirmPassword').touched && onRegisterForm.get('confirmPassword').hasError('required')">
+              <ion-text color="warning">
+                {{ 'REGISTER.REQUIRED_FIELD' | translate}}
+              </ion-text>
+            </p>
+            <p ion-text color="warning" class="text08" *ngIf="!confirmPasswordValidation()">
+              <ion-text color="warning">
+                {{ 'REGISTER.PASSWORD_VALIDATION_FALSE' | translate}}
+              </ion-text>
+            </p>
+          </div>
 
           <ion-item no-padding>
             <ion-label position="floating">
@@ -157,7 +166,7 @@
               <ion-icon name="briefcase" item-start></ion-icon>
               {{ 'REGISTER.PROFESION' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="profesion" [(ngModel)]="profesion" maxlength="50"> 
+            <ion-input color="secondary" type="text" formControlName="profesion" [(ngModel)]="profesion" maxlength="50">
             </ion-input>
           </ion-item>
 
@@ -219,7 +228,8 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.NATIONALITY' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="nationality" [(ngModel)]="nationality" maxlength="50">
+            <ion-input color="secondary" type="text" formControlName="nationality" [(ngModel)]="nationality"
+              maxlength="50">
             </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
@@ -234,7 +244,8 @@
               <ion-icon name="create" item-start></ion-icon>
               {{ 'REGISTER.CITY' | translate}}
             </ion-label>
-            <ion-input color="secondary" type="text" formControlName="city" [(ngModel)]="city" maxlength="50"></ion-input>
+            <ion-input color="secondary" type="text" formControlName="city" [(ngModel)]="city" maxlength="50">
+            </ion-input>
           </ion-item>
           <p ion-text color="warning" class="text08"
             *ngIf="onRegisterForm.get('city').touched && onRegisterForm.get('city').hasError('required')">
@@ -305,7 +316,8 @@
               </ion-card-header>
               <ion-card-content>
                 <br>
-                <div><input type='file' id="dicoverPic" (change)="onDiscoverPicInputChange($event.target.files)" /></div>
+                <div><input type='file' id="dicoverPic" (change)="onDiscoverPicInputChange($event.target.files)" />
+                </div>
               </ion-card-content>
             </ion-card>
 
@@ -318,16 +330,25 @@
     <br>
     <br>
     <div margin-top>
-      <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="signUp()"
-        [disabled]="!onRegisterForm.valid || !confirmPasswordValidation() || !validateBirthdate()" tappable>
+      <ion-button *ngIf="edit !== 'edit'" icon-left size="medium" expand="full" shape="round" color="dark"
+        (click)="signUp()" [disabled]="!onRegisterForm.valid || !confirmPasswordValidation() || !validateBirthdate()"
+        tappable>
         <ion-icon name="log-in"></ion-icon>
         {{ 'REGISTER.SIGN_UP' | translate}}
       </ion-button>
 
     </div>
+    <div margin-top>
+      <ion-button *ngIf="edit === 'edit'" icon-left size="medium" expand="full" shape="round" color="dark"
+        (click)="editUser()" [disabled]="!onRegisterForm.valid  || !validateBirthdate()" tappable>
+        <ion-icon name="log-in"></ion-icon>
+        {{ 'REGISTER.EDIT' | translate}}
+      </ion-button>
+
+    </div>
 
     <!-- Other links -->
-    <div text-center margin-top>
+    <div *ngIf="edit !== 'edit'" text-center margin-top>
       <span (click)="goToLogin()" tappable>
         <ion-text color="light">
           <strong>{{ 'REGISTER.I_HAVE_AN_ACCOUNT' | translate}}</strong>

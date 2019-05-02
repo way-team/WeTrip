@@ -6,8 +6,13 @@ import { AdminGuard } from './guards/admin/admin.guard';
 const routes: Routes = [
   { path: '', loadChildren: './pages/login/login.module#LoginPageModule' },
   {
-    path: 'register',
+    path: 'userForm',
     loadChildren: './pages/register/register.module#RegisterPageModule'
+  },
+  {
+    path: 'userForm/:edit',
+    loadChildren: './pages/register/register.module#RegisterPageModule',
+    canLoad: [AuthGuard]
   },
   {
     path: 'about',
@@ -97,7 +102,8 @@ const routes: Routes = [
     loadChildren: './pages/rating/rating.module#RatingPageModule',
     canLoad: [AuthGuard]
   },
-  { path: 'dashboard',
+  {
+    path: 'dashboard',
     canLoad: [AdminGuard],
     children: [
       {
@@ -107,42 +113,50 @@ const routes: Routes = [
       },
       {
         path: 'tripsByMonth',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'publicVsPrivate',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'applicationsPerTrip',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'visitedCities',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'usersByGender',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'premiumUsers',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'activeVsInactive',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       },
       {
         path: 'usersMetrics',
-        loadChildren: './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule' ,
+        loadChildren:
+          './pages/dashboard/dashboard-detail/dashboard-detail.module#DashboardDetailPageModule',
         canLoad: [AdminGuard]
       }
     ]
@@ -153,4 +167,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

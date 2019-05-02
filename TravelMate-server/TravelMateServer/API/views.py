@@ -465,44 +465,68 @@ class DiscoverPeopleView(APIView):
         offset = int(request.data.get("offset",""))
         discover_people = []
         interests = user.interests.all()
-
         # First, we obtain the people with the same interests
-        #for interest in interests:
         ranking = []
         for interest in interests:
-            l = []
-            l.append(interest)
-            aux = UserProfile.objects.filter(interests__in=l)
-            for person in aux:
+            usersWithInterest = interest.users.all()
+            for person in usersWithInterest:
                 ranking.append(person)
+
+        
+        #Now, we get friends of the user's friends
+        for friend in friends:
+            friendsOfFriend, pendingOfFriend, rejectedOfFriend = get_friends(friend, False)
+
+            for f in friendsOfFriend:
+                ranking.append(f)
+        
+
+        #We get users who are going (or went) on the same trips as the user
+        userApps = Application.objects.filter(applicant= user, status='A')
+        for a in userApps:
+            applications = Application.objects.filter(trip=a.trip, status="A")
+
+
+            for appOfFriend in applications:
+                ranking.append(appOfFriend.applicant)
+
+        #Now the list is sorted by the number of times a user appears in it
         import collections
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
-        discover_people = set(discover_people)
 
-        # After, we obtain the people without the same interests
-        # and append them at the end of the discover list
-        all_users = list(UserProfile.objects.all())
+        
+        #This line gets rid of duplicated users in the list
+        discover_people = list(dict.fromkeys(discover_people))
+        
+
+        '''all_users = list(UserProfile.objects.all())
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.add(person)
+            discover_people.add(person)'''
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
         for person in friends:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         for person in pending:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         for person in rejected:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         # who are the deleted users and remove them
         deleted_users = get_deleted_users()
         for person in deleted_users:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
 
-        discover_people.discard(user)
-        discover_people = list(discover_people)
+
+        if(user in discover_people):
+                discover_people.remove(user)
+
         return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
 
@@ -991,7 +1015,7 @@ class SetUserToPremium(APIView):
 
         if not userprofilepaid.isPremium:
             userprofilepaid.isPremium = True
-            userprofilepaid.datePremium = datetime.today() + relativedelta(years=1)
+            userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
         else:
             userprofilepaid.datePremium += relativedelta(years=1)
 
@@ -1168,6 +1192,142 @@ class RegisterUser(APIView):
         finally:
             return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
 
+class EditUser(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    
+    def post(self, request):
+       
+        email = request.data.get('email', '')
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        description = request.data.get('description', '')
+        birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
+
+        gender = request.data.get('gender', '')
+        nationality = request.data.get('nationality', '')
+        city = request.data.get('city', '')
+        profesion = request.data.get('profesion', '')
+        civilStatus = request.data.get('civilStatus', '')
+        status = 'A'
+        
+        languages = json.loads(request.data.get('languages'))
+        interests = json.loads(request.data.get('interests'))
+
+        user = get_user_by_token(request)
+        for i in user.languages.all():
+            user.languages.remove(i)
+        for i in user.interests.all():
+            user.interests.remove(i)
+
+        try:
+            photo = request.data['photo']
+            discoverPhoto = request.data['discoverPhoto']
+
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.description = description
+            user.birthdate = birthdate
+            user.gender = gender
+            user.nationality = nationality
+            user.city = city
+            user.status = status
+            user.profesion = profesion
+            user.civilStatus = civilStatus
+            user.photo = photo
+            user.discoverPhoto = discoverPhoto
+
+            user.save()
+            for i in languages:
+                lang = Language.objects.get(name=i)
+                user.languages.add(lang)
+            for i in interests:
+                inter = Interest.objects.get(name=i)
+                inter.users.add(user)
+        except:
+
+            try:
+                photo = request.data['photo']
+
+                user.email = email
+                user.first_name = first_name
+                user.last_name = last_name
+                user.description = description
+                user.birthdate = birthdate
+                user.gender = gender
+                user.nationality = nationality
+                user.city = city
+                user.status = status
+                user.profesion = profesion
+                user.civilStatus = civilStatus
+                user.photo = photo
+
+                user.save()
+                for i in languages:
+                    lang = Language.objects.get(name=i)
+                    user.languages.add(lang)
+                for i in interests:
+                    inter = Interest.objects.get(name=i)
+                    inter.users.add(user)
+            
+            except:
+                try:
+                    discoverPhoto = request.data['discoverPhoto']
+
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+                    user.discoverPhoto = discoverPhoto
+
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+                except:
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+
+                    
+                    
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+            
+
+        finally:
+            return JsonResponse({'message':'Edit performed successfuly'}, status=201)
 
 class DeleteUser(APIView):
     """
@@ -1192,15 +1352,13 @@ class DeleteUser(APIView):
         userprofile.first_name = "-"
         userprofile.last_name = "-"
         userprofile.description = "-"
-        userprofile.birthdate = "1900-01-01"
         userprofile.city = "-"
         userprofile.nationality = "-"
-        userprofile.photo = "-"
-        userprofile.discoverPhoto = "-"
+        userprofile.photo = "user/profile/default.jpg"
+        userprofile.discoverPhoto = "user/discover/d_default.jpg"
         userprofile.averageRate = 0
         userprofile.numRate = 0
         userprofile.isPremium = False
-        userprofile.datePremium = "2019-04-09"
         userprofile.profesion = "-"
         userprofile.status = "D"
         userprofile.save()

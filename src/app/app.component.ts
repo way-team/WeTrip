@@ -34,6 +34,13 @@ export class AppComponent {
       this.userLogged = user;
       this.isUserAdmin = user.user.is_staff;
     });
+    events.subscribe('user:edited', () => {
+      this.dm.getUserLogged(this.cookieService.get('token')).then(res => {
+        this.userLogged = res;
+        this.events.publish('user:updateDiscover');
+        this.navCtrl.navigateForward('/discover');
+      });
+    });
     if (!this.cookieService.check('token')) {
       this.userLogged = null;
     } else {
@@ -127,7 +134,7 @@ export class AppComponent {
           this.translateService.use('en');
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }
 
   logout() {
