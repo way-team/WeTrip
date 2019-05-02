@@ -618,6 +618,7 @@ class CreateTrip(APIView):
 
     def post(self, request):
 
+        data = request.data
         #GET TRIP DATA
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
@@ -629,6 +630,10 @@ class CreateTrip(APIView):
         startDate = request.data.get('start_date', '')
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
+
+        if data.get["startDate"] > data.get["endDate"]:
+            raise ValueError("The start date must be before the end date")
+
 
         #GET CITY DATA
         cities = json.loads(request.data.get('cities'))
