@@ -26,11 +26,9 @@ import re
 import os
 import json
 import time
-from io import BytesIO
 from django.conf import settings
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
-from reportlab.lib.units import cm
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 
@@ -197,7 +195,7 @@ def get_friends(user, discover):
         sended_pending = Invitation.objects.filter(sender=user, status="P")
         if sended_pending:
             for j in sended_pending:
-                    pending.append(j.receiver)
+                pending.append(j.receiver)
 
 
     return (friends, pending, rejected)
@@ -1329,6 +1327,7 @@ class EditUser(APIView):
         finally:
             return JsonResponse({'message':'Edit performed successfuly'}, status=201)
 
+
 class DeleteUser(APIView):
     """
     Change the user's status to deleted
@@ -1369,15 +1368,18 @@ class DeleteUser(APIView):
 
         return Response(UserProfileSerializer(userprofile, many=False).data)
 
-"""
+
 def send_mail(subject, body, email, attachment):
+    """
+    Send an email with an attachment
+    """
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
     server.login("way.team.soft@gmail.com", "wayteam2019")
 
     msg = MIMEMultipart()
 
-    msg['From'] = "integrity.system.cad@gmail.com"
+    msg['From'] = "way.team.soft@gmail.com"
     msg['To'] = email
     msg['Subject'] = subject
 
@@ -1394,76 +1396,230 @@ def send_mail(subject, body, email, attachment):
     del msg
 
     server.quit()
-"""
 
 
-# TODO: Cambiar el idioma de los textos según el idioma seleccionado -> Recibir el idioma en el POST
-# TODO: Lista de viajes creados
-# TODO: Lista de viajes a los que está apuntado -> Devolver las applicants, nos los viajes en sí
-# TODO: Lista de amigos agregados
-# TODO: Poner una leyenda antes de cada tabla
 class ExportUserData(APIView):
     """
-    Export the user's data as PDF
+    Export the user's data as PDF and send it by email
     """
-    #permission_classes = (IsAuthenticated, )
-    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
 
-    def header(self, pdf):
+    def header(self, pdf, language):
         logo_img = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\img\logo.png'
         pdf.drawImage(logo_img, 40, 740, 120, 90, preserveAspectRatio=True)
         pdf.setFont("Helvetica", 16)
         pdf.drawString(230, 790, u"TRAVEL MATE")
         pdf.setFont("Helvetica", 14)
-        pdf.drawString(227, 770, u"User data exported")
-        date = str(time.strftime("%d/%m/%y %H:%M:%S"))
-        pdf.setFont("Helvetica", 12)
-        pdf.drawString(440, 780, date)
+        
+        if language == "es":
+            pdf.drawString(227, 770, u"Sus datos exportados")
+            date = str(time.strftime("%d/%m/%y %H:%M:%S"))
+            pdf.setFont("Helvetica", 12)
+            pdf.drawString(420, 780, date)
 
-    def table(self, pdf, user, userprofile):
-        tableData = [["NOMBRE", userprofile.first_name]]
-        tableData.append(["APELLIDOS", userprofile.last_name])
-        tableData.append(["USERNAME", user.username])
-        tableData.append(["DESCRIPCIÓN", userprofile.description])
-        tableData.append(["GÉNERO", userprofile.gender])
-        tableData.append(["CUMPLEAÑOS", userprofile.birthdate])
-        tableData.append(["CIUDAD", userprofile.city])
-        tableData.append(["NACIONALIDAD", userprofile.nationality])
-        tableData.append(["URL DE FOTO", userprofile.photo])
-        tableData.append(["URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto])
-        tableData.append(["VALORACIÓN MEDIA", userprofile.avarageRate])
-        tableData.append(["NÚMERO DE VALORACIONES", userprofile.numRate])
-        if userprofile.isPremium is True:
-            tableData.append(["FECHA DE PREMIUM", userprofile.datePremium])
+        if language == "en":
+            pdf.drawString(227, 770, u"User data exported")
+            date = str(time.strftime("%y-%m-%d %H:%M:%S"))
+            pdf.setFont("Helvetica", 12)
+            pdf.drawString(440, 780, date)
+
+    def personal_table(self, user, userprofile, language):
+        if language == "es":
+            tableData = [["NOMBRE", userprofile.first_name]]
+            tableData.append(["APELLIDOS", userprofile.last_name])
+            tableData.append(["USERNAME", user.username])
+            tableData.append(["DESCRIPCIÓN", userprofile.description])
+            tableData.append(["GÉNERO", userprofile.gender])
+            tableData.append(["CUMPLEAÑOS", userprofile.birthdate])
+            tableData.append(["CIUDAD", userprofile.city])
+            tableData.append(["NACIONALIDAD", userprofile.nationality])
+            tableData.append(["URL DE FOTO", userprofile.photo])
+            tableData.append(["URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto])
+            tableData.append(["VALORACIÓN MEDIA", userprofile.avarageRate])
+            tableData.append(["NÚMERO DE VALORACIONES", userprofile.numRate])
+            if userprofile.isPremium is True:
+                tableData.append(["FECHA DE PREMIUM", userprofile.datePremium])
+
+        if language == "en":
+            tableData = [["NAME", userprofile.first_name]]
+            tableData.append(["LAST NAME", userprofile.last_name])
+            tableData.append(["USERNAME", user.username])
+            tableData.append(["DESCRIPTION", userprofile.description])
+            tableData.append(["GENDER", userprofile.gender])
+            tableData.append(["BIRTHDATE", userprofile.birthdate])
+            tableData.append(["CITY", userprofile.city])
+            tableData.append(["NATIONALITY", userprofile.nationality])
+            tableData.append(["PHOTO'S URL", userprofile.photo])
+            tableData.append(["DISCOVER PHOTO'S URL", userprofile.discoverPhoto])
+            tableData.append(["AVERAGE RATE", userprofile.avarageRate])
+            tableData.append(["RATES NUMBER", userprofile.numRate])
+            if userprofile.isPremium is True:
+                tableData.append(["PREMIUM DATE", userprofile.datePremium])
        
-        table = Table(data=tableData)   #colWidths=[2*cm, 5*cm, 5*cm, 5*cm]
+        table = Table(data=tableData)
         table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                                    ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
                                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
                                    ('FONTSIZE', (0, 0), (-1, -1), 10),
                                    ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
-        table.wrapOn(pdf, 800, 600)
-        table.drawOn(pdf, 60, 500)
-    
+        return table
+
+    def created_trips_table(self, trips, language):
+        if language == "es":
+            tableData = [["TÍTULO", "TIPO", "ESTADO"]]
+            
+        if language == "en":
+            tableData = [["TITLE", "TYPE", "STATUS"]]
+
+        for trip in trips:
+            tableData.append([trip.title, trip.tripType, trip.status])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def invitations_table(self, sended, received, language):
+        if language == "es":
+            tableData = [["REMITENTE", "RECEPTOR", "ESTADO"]]
+            
+        if language == "en":
+            tableData = [["SENDER", "RECEIVER", "STATUS"]]
+
+        for sen in sended:
+            tableData.append([sen.sender.get_full_name(), sen.receiver.first_name, sen.status])
+
+        for rec in received:
+            tableData.append([rec.sender.first_name, rec.receiver.get_full_name(), rec.status])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def applications_table(self, applications, language):
+        if language == "es":
+            tableData = [["VIAJE", "ESTADO"]]
+            
+        if language == "en":
+            tableData = [["TRIP", "STATUS"]]
+
+        for app in applications:
+            tableData.append([app.trip.title, app.status])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def general_table(self, pdf, personal_table, created_trips_table, invitations_table, applications_table, language):
+        if language == "es":
+            data = [["Datos personales"]]
+            data.append([personal_table])
+            data.append([" "])
+            if created_trips_table != "":
+                data.append(["Datos de trips creados"])
+                data.append([created_trips_table])
+                data.append([" "])
+            if created_trips_table == "":
+                data.append(["Datos de viajes creados"])
+                data.append(["No ha creado ningún viaje"])
+                data.append([" "])
+            if invitations_table != "":
+                data.append(["Datos de peticiones"])
+                data.append([invitations_table])
+                data.append([" "])
+            if invitations_table == "":
+                data.append(["Datos de peticiones"])
+                data.append(["No ha contactado con ninguna persona"])
+                data.append([" "])
+            if applications_table != "":
+                data.append(["Datos de solicitudes"])
+                data.append([applications_table])
+            if applications_table == "":
+                data.append(["Datos de solicitudes"])
+                data.append(["No se ha apuntado a ningún viaje"])
+            general_table = Table(data)
+
+        if language == "en":
+            data = [["Personal data"]]
+            data.append([personal_table])
+            data.append([" "])
+            if created_trips_table != "":
+                data.append(["Created trips data"])
+                data.append([created_trips_table])
+                data.append([" "])
+            if created_trips_table == "":
+                data.append(["Created trips data"])
+                data.append(["You have not created any trip"])
+                data.append([" "])
+            if invitations_table != "":
+                data.append(["Invitations data"])
+                data.append([invitations_table])
+                data.append([" "])
+            if invitations_table == "":
+                data.append(["Invitations data"])
+                data.append(["You have not contacted with any person"])
+                data.append([" "])
+            if applications_table != "":
+                data.append(["Applications data"])
+                data.append([applications_table])
+            if applications_table == "":
+                data.append(["Applications data"])
+                data.append(["You have not apply to any trip"])
+            general_table = Table(data)
+
+        general_table.wrapOn(pdf, 800, 600)
+        general_table.drawOn(pdf, 170, 200)
+        
     def post(self, request):
         user_id = request.data.get("user_id", "")
+        language = request.data.get("language", "")
 
         user = User.objects.get(pk=user_id)
         userprofile = user.userprofile
+
+        trips = Trip.objects.filter(user=userprofile)
+        sended = Invitation.objects.filter(sender=userprofile)
+        received = Invitation.objects.filter(receiver=userprofile)
+        applications = Application.objects.filter(applicant=userprofile)
         
         response = HttpResponse(content_type='application/pdf')
-        buffer = BytesIO()
-        pdf = canvas.Canvas(buffer, pagesize=A4)
-        self.header(pdf)
-        self.table(pdf, user, userprofile)
+        name = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\exported_data_' + userprofile.get_full_name() + '.pdf'
+        pdf = canvas.Canvas(name, pagesize=A4)
+
+        self.header(pdf, language)
+        personal_table = self.personal_table(user, userprofile, language)
+        created_trips_table = ""
+        invitations_table = ""
+        applications_table = ""
+        if trips:
+            created_trips_table = self.created_trips_table(trips, language)
+        if sended or received:
+            invitations_table = self.invitations_table(sended, received, language)
+        if applications:
+            applications_table = self.applications_table(applications, language)
+        self.general_table(pdf, personal_table, created_trips_table, invitations_table, applications_table, language)
+
         pdf.showPage()
-        pdf.save()
-        pdf = buffer.getvalue()
-        buffer.close()
-        response.write(pdf)
-        return response
-        #return FileResponse(buffer, as_attachment=True, filename='exported_data.pdf')
+        pdf.save()  
+        send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
+        os.remove(name)
+        return Response(status=200)
 
 
 def backendWakeUp(request):
