@@ -47,8 +47,8 @@ export class DiscoverPage {
     public cookieService: CookieService,
     public loadingCtrl: LoadingController
   ) {
-    this.getInit(6, 0);
-    this.getData(6, 6);
+    this.getInit(12, 0);
+    this.getData(12, 12);
   }
 
   scrollToTop() {
@@ -58,7 +58,7 @@ export class DiscoverPage {
     setTimeout(() => {
       console.log('Done');
 
-      this.getData(6, this.discover.length + 6);
+      this.getData(12, this.discover.length + 12);
 
       this.newData.forEach(x => this.discover.push(x));
 
@@ -208,10 +208,10 @@ export class DiscoverPage {
               alertEl.present();
             });
         }, 1500);
-        this.getInit(6, 0);
+        this.getInit(12, 0);
       })
       .catch(err => {
-        this.getInit(6, 0);
+        this.getInit(12, 0);
       });
   }
 

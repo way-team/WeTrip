@@ -491,9 +491,9 @@ export class DataManagement {
     });
   }
 
-  public deleteUser(): Promise<any> {
+  public deleteUser(id: Number): Promise<any> {
     return this.restService
-      .deleteUser()
+      .deleteUser(id)
       .then(res => {
         return Promise.resolve(res);
       })
