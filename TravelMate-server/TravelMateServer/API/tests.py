@@ -875,39 +875,37 @@ class TravelMateTests(APITestCase):
 
 
 
-    #def test_edit_trip(self):
-    #    """The method 'editTrip' is used to edit a trip self made and  in private mode."""
+    def test_edit_trip(self):
+        """The method 'editTrip' is used to edit a trip self made and  in private mode."""
       
         # We log in as user2
-    #    self.user = self.user2
-    #    self.token = Token.objects.create(user=self.user)
-    #    self.api_authentication()
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
 
         # Let's check the current name of the title trip
-    #    data = {"token":self.token.key, "tripId": "4" , "username": "user2" , "title": "tripEdited", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC"}
-    #    self.assertEqual(self.trip4.title, 'trip4')
+        data = {"token":self.token.key, "tripId": "4" , "cities":["Sofía"], "username": "user2" , "title": "tripEdited", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC"}
+        self.assertEqual(self.trip4.title, 'trip4')
         
 
-    #    response = self.client.post(reverse('edit_trip'), data, format='json')
+        response = self.client.post(reverse('edit_trip'), data, format='json')
        
-    #    self.assertEqual(200, response.status_code)
+        self.assertEqual(200, response.status_code)
 
         # Let's see how the title has been changed
-    #    self.assertEqual(self.trip4.title, 'tripEdited')
+        self.assertEqual(self.trip4.title, 'tripEdited')
         
-    #def test_register_user(self):
-    #   The method 'registerUser' is used to regist an user on the application.
-    #   
-    #   data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"language1":"english"}, "interests": {"interest1":"cooking"}}
 
-    #   response = self.client.post(reverse('register_user'), data, format='json')
+    def test_register_user(self):
+        """The method 'registerUser' is used to regist an user."""
+      
+        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"english"}, "interests":{"cooking"}}
+
+        response = self.client.post(reverse('register_user'), data, format='json')
        
-    #   self.assertEqual(200, response.status_code)
-
+        self.assertEqual(201, response.status_code)
         #The user has been registed.
-    #   statusAfter = UserProfile.objects
-    #   self.assertIn(self.userprofile7 ,statusAfter)
-    
+        self.assertEqual(UserProfile.objects.get(pk=7).user.username, 'user7')  
 
 
 

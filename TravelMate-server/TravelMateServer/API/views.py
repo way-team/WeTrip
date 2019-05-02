@@ -743,7 +743,7 @@ class EditTripView(APIView):
 
         if data.get('file'):
             trip.userImage = data.get('file')
-            
+    
         cities = json.loads(data.get('cities'))
 
         if(len(cities) == 1):
@@ -1079,9 +1079,12 @@ class RegisterUser(APIView):
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
         status = 'A'
-        
-        languages = json.loads(request.data.get('languages'))
-        interests = json.loads(request.data.get('interests'))
+
+
+        languages_dumps = json.dumps(request.data.get('languages'))
+        languages=json.loads(languages_dumps)
+        interests = json.dumps(request.data.get('interests'))
+        interests=json.loads(interests)
 
         user = User(username=username, password=password)
         user.save()
