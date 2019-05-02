@@ -467,7 +467,7 @@ class DiscoverPeopleView(APIView):
         
         #Now, we get friends of the user's friends
         for friend in friends:
-            friendsOfFriend, pending, rejected = get_friends(friend, False)
+            friendsOfFriend, pendingOfFriend, rejectedOfFriend = get_friends(friend, False)
 
             for f in friendsOfFriend:
                 ranking.append(f)
@@ -476,7 +476,6 @@ class DiscoverPeopleView(APIView):
         #We get users who are going (or went) on the same trips as the user
         userApps = Application.objects.filter(applicant= user, status='A')
         for a in userApps:
-            print(a.trip)
             applications = Application.objects.filter(trip=a.trip, status="A")
 
 
@@ -488,9 +487,10 @@ class DiscoverPeopleView(APIView):
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
 
+        
         #This line gets rid of duplicated users in the list
         discover_people = list(dict.fromkeys(discover_people))
-
+        
 
         '''all_users = list(UserProfile.objects.all())
         for person in discover_people:
