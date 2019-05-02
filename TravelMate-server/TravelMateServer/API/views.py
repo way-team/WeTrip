@@ -457,44 +457,67 @@ class DiscoverPeopleView(APIView):
         offset = int(request.data.get("offset",""))
         discover_people = []
         interests = user.interests.all()
-
         # First, we obtain the people with the same interests
-        #for interest in interests:
         ranking = []
         for interest in interests:
-            l = []
-            l.append(interest)
-            aux = UserProfile.objects.filter(interests__in=l)
-            for person in aux:
+            usersWithInterest = interest.users.all()
+            for person in usersWithInterest:
                 ranking.append(person)
+
+        
+        #Now, we get friends of the user's friends
+        for friend in friends:
+            friendsOfFriend, pending, rejected = get_friends(friend, False)
+
+            for f in friendsOfFriend:
+                ranking.append(f)
+        
+
+        #We get users who are going (or went) on the same trips as the user
+        userApps = Application.objects.filter(applicant= user, status='A')
+        for a in userApps:
+            print(a.trip)
+            applications = Application.objects.filter(trip=a.trip, status="A")
+
+
+            for appOfFriend in applications:
+                ranking.append(appOfFriend.applicant)
+
+        #Now the list is sorted by the number of times a user appears in it
         import collections
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
-        discover_people = set(discover_people)
 
-        # After, we obtain the people without the same interests
-        # and append them at the end of the discover list
-        all_users = list(UserProfile.objects.all())
+        #This line gets rid of duplicated users in the list
+        discover_people = list(dict.fromkeys(discover_people))
+
+
+        '''all_users = list(UserProfile.objects.all())
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.add(person)
+            discover_people.add(person)'''
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
         for person in friends:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         for person in pending:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         for person in rejected:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         # who are the deleted users and remove them
         deleted_users = get_deleted_users()
         for person in deleted_users:
-            discover_people.discard(person)
+            discover_people.remove(person)
 
-        discover_people.discard(user)
-        discover_people = list(discover_people)
+
+        if(user in discover_people):
+                discover_people.remove(user)
+
         return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
 
