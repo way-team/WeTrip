@@ -1007,7 +1007,7 @@ class SetUserToPremium(APIView):
 
         if not userprofilepaid.isPremium:
             userprofilepaid.isPremium = True
-            userprofilepaid.datePremium = datetime.today() + relativedelta(years=1)
+            userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
         else:
             userprofilepaid.datePremium += relativedelta(years=1)
 

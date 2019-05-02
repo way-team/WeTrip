@@ -33,7 +33,7 @@ class TravelMateTests(APITestCase):
         cls.user5 = User.objects.create_user(username='user5', password='user5', email=None)
         cls.user6 = User.objects.create_user(username='user6', password='user6', email=None)
 
-        cls.userprofile1 = UserProfile.objects.create(user=cls.user1, email='user1@gmail.com', first_name='user1', last_name='user1', birthdate='1991-03-30', nationality='spanish', avarageRate=4, numRate=2, isPremium=False , datePremium=datetime.date().today(), gender='M', status='A', civilStatus='S')
+        cls.userprofile1 = UserProfile.objects.create(user=cls.user1, email='user1@gmail.com', first_name='user1', last_name='user1', birthdate='1991-03-30', nationality='spanish', avarageRate=4, numRate=2, isPremium=False , gender='M', status='A', civilStatus='S')
         cls.userprofile2 = UserProfile.objects.create(user=cls.user2, email='user2@gmail.com', first_name='user2', last_name='user2', birthdate='1983-06-11', nationality='spanish', avarageRate=3, numRate=1, isPremium=False, gender='W', status='A', civilStatus='D')
         cls.userprofile3 = UserProfile.objects.create(user=cls.user3, email='user3@gmail.com', first_name='user3', last_name='user3', birthdate='1979-05-15', nationality='english', avarageRate=3, numRate=1, isPremium=False, gender='W', status='A', civilStatus='W')
         cls.userprofile4 = UserProfile.objects.create(user=cls.user4, email='user4@gmail.com', first_name='user4', last_name='user4', birthdate='1978-11-04', nationality='spanish', avarageRate=2, numRate=1, isPremium=False, gender='M', status='A', civilStatus='M')
