@@ -1436,7 +1436,7 @@ class ExportUserData(APIView):
             if userprofile.isPremium is True:
                 tableData.append(["FECHA DE PREMIUM", userprofile.datePremium])
 
-        if language == "en" or language is None:
+        else:
             tableData = [["NAME", userprofile.first_name]]
             tableData.append(["LAST NAME", userprofile.last_name])
             tableData.append(["USERNAME", user.username])
@@ -1465,7 +1465,7 @@ class ExportUserData(APIView):
         if language == "es":
             tableData = [["TÍTULO", "TIPO", "ESTADO"]]
             
-        if language == "en" or language is None:
+        else:
             tableData = [["TITLE", "TYPE", "STATUS"]]
 
         for trip in trips:
@@ -1484,7 +1484,7 @@ class ExportUserData(APIView):
         if language == "es":
             tableData = [["REMITENTE", "RECEPTOR", "ESTADO"]]
             
-        if language == "en" or language is None:
+        else:
             tableData = [["SENDER", "RECEIVER", "STATUS"]]
 
         for sen in sended:
@@ -1506,7 +1506,7 @@ class ExportUserData(APIView):
         if language == "es":
             tableData = [["VIAJE", "ESTADO"]]
             
-        if language == "en" or language is None:
+        else:
             tableData = [["TRIP", "STATUS"]]
 
         for app in applications:
@@ -1554,7 +1554,7 @@ class ExportUserData(APIView):
                 story.append(Spacer(0, 5))
                 story.append(applications_table)
 
-        if language == "en" or language is None:
+        else:
             pa1 = Paragraph(u"Personal data", sp)
             story.append(pa1)
             story.append(Spacer(0, 5))
@@ -1614,7 +1614,7 @@ class ExportUserData(APIView):
                 canvas.setFont("Helvetica", 12)
                 canvas.drawString(440, 780, date)
 
-            if language == "en" or language is None:
+            else:
                 canvas.drawString(227, 770, u"User data exported")
                 date = str(time.strftime("%y-%m-%d %H:%M:%S"))
                 canvas.setFont("Helvetica", 12)
@@ -1640,10 +1640,10 @@ class ExportUserData(APIView):
         story = self.general_table(personal_table, created_trips_table, invitations_table, applications_table, language)
         doc.build(story)
 
-        if language == "en" or language is None:  
-            send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
         if language == "es":  
             send_mail("Datos exportados", "Estos son los datos exportados de " + userprofile.get_full_name(), userprofile.email, name)
+        else:  
+            send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
         os.remove(name)
         return Response(status=200)
 
