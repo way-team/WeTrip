@@ -94,7 +94,7 @@ class TravelMateTests(APITestCase):
         cls.interest3.users.add(cls.userprofile4)
         cls.interest4.users.add(cls.userprofile2)
         cls.interest5.users.add(cls.userprofile2)
-        cls.interest6.users.add(cls.userprofile5)
+        cls.interest6.users.add(cls.userprofile5,cls.userprofile2, cls.userprofile4,cls.userprofile1)
         cls.interest7.users.add(cls.userprofile3, cls.userprofile4, cls.userprofile5)
         cls.interest8.users.add(cls.userprofile1, cls.userprofile2)
 
@@ -680,7 +680,7 @@ class TravelMateTests(APITestCase):
         self.assertTrue(UserProfile.objects.get(pk=4).avarageRate == 4)
 
     def test_list_languages(self):
-        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+        """The method 'listLanguages' has to return a list with all laguages."""
 
         # We log in as 'user1'
         self.user = self.user1
@@ -699,7 +699,7 @@ class TravelMateTests(APITestCase):
            
 
     def test_list_cities(self):
-        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+        """The method 'listCities' has to return a list with all cities."""
 
         # We log in as 'user1'
         self.user = self.user1
@@ -732,7 +732,7 @@ class TravelMateTests(APITestCase):
         self.assertTrue(len(jsonResponse) == 6)
 
     def test_list_interest(self):
-        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+        """The method 'listInterest' has to return a list with all the interests."""
 
         # We log in as 'user1'
         self.user = self.user1
@@ -764,7 +764,8 @@ class TravelMateTests(APITestCase):
         self.assertTrue(len(jsonResponse) == 8)
 
     def test_get_friends(self):
-        
+        """The method 'getFriends' has to return a list with all the users with a invitation acepted by the 2 users."""
+
         # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
@@ -787,7 +788,8 @@ class TravelMateTests(APITestCase):
         self.assertEqual(jsonResponse[1]['user']['id'], self.user4.id)
 
     def test_get_pending(self):
-        
+        """The method 'getPending' has to return a list with all the users with a invitation pending by the 2 users."""
+
         # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
@@ -796,7 +798,7 @@ class TravelMateTests(APITestCase):
         # We are still logged as user1
         data = {"token":self.token.key}
 
-        # user 1 have an accepted invitation with the user 2 and other with the user 4
+        # user 1 have an pending invitation with the user 5
         response = self.client.post(reverse('get_pending'), data, format='json')
        
         self.assertEqual(200, response.status_code)
@@ -807,10 +809,32 @@ class TravelMateTests(APITestCase):
         
         #Check he is user5
         self.assertEqual(jsonResponse[0]['user']['id'], self.user5.id)
-    
+  
+  
+  
+    def test_get_discover_view(self):
+        """The method 'getPending' has to return a list with all the users with a few of interest same of yours."""
+
+        # We log in as user4
+        self.user = self.user4
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        # We are still logged as user4
+        data = {"token":self.token.key, "limit": "0", "offset": "3"}
+        response = self.client.post(reverse('get_discover'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
+
+        # will response wiht users with the same interest, atleast 1. user5 and 4 have the same interest 'shopping' and dont have an Invitation on pending, accepted or rejected
+        jsonResponse = response.json()
+        
+        # let's check it
+        self.assertEqual(jsonResponse[0]['interests'][0], self.interest6.name)
+
 
     #def test_create_trip(self):
-    #    """The method 'accept_application' is used to accept an application sent from another user for a trip."""
+    #    """The method 'createTrip' is used to create a trip related with the user logged."""
       
           # We log in as user1
     #    self.user = self.user1
@@ -819,17 +843,15 @@ class TravelMateTests(APITestCase):
         
     #    data = {"token":self.token.key, "username": self.user1.username , "title": "trip13", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC", "cities": self.city1.name}
 
-        # Let's check the current status of the premium
-
     #    response = self.client.post(reverse('create_trip'), data, format='json')
        
     #    self.assertEqual(200, response.status_code)
 
-    #    #The premium has been accepted.
+    #    #The trip has been created.
     #    self.assertIn(Trip.objects.get(title=trip13) , Trip.objects)
 
     def test_get_trip(self):
-        """The method 'get_trip' has to return a list with all laguages selected by the current user."""
+        """The method 'get_trip' has to return a trip selected by the current user."""
 
         # We log in as 'user1'
         self.user = self.user1
@@ -841,7 +863,7 @@ class TravelMateTests(APITestCase):
         # We check the status code of the request
         self.assertEqual(200, response.status_code)
 
-        # There are 8 interest on the system. Let's check this:
+        # There are 1 trip selected. Let's check this:
         jsonResponse = response.json()
 
         trip=self.trip1
@@ -851,25 +873,36 @@ class TravelMateTests(APITestCase):
 
 
 
+    def test_edit_trip(self):
+        """The method 'editTrip' is used to edit a trip self made and  in private mode."""
+      
+        # We log in as user2
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
 
-
-    #def test_register_user(self):
-    #    The method 'accept_application' is used to accept an application sent from another user for a trip.
-    #   
-          # We log in as user1
-    #   self.user = self.user1
-    #   self.token = Token.objects.create(user=self.user)
-    #   self.api_authentication()
+        # Let's check the current name of the title trip
+        data = {"token":self.token.key, "tripId": "4" , "username": "user2" , "title": "tripEdited", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC"}
+        self.assertEqual(self.trip4.title, 'trip4')
         
-    #   data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"language1":"english"}, "interests": {"interest1":"cooking"}}
 
-        # Let's check the current status of the premium
+        response = self.client.post(reverse('edit_trip'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
+
+        # Let's see how the title has been changed
+        self.assertEqual(self.trip4.title, 'tripEdited')
+        
+    #def test_register_user(self):
+    #   The method 'registerUser' is used to regist an user on the application.
+    #   
+    #   data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"language1":"english"}, "interests": {"interest1":"cooking"}}
 
     #   response = self.client.post(reverse('register_user'), data, format='json')
        
     #   self.assertEqual(200, response.status_code)
 
-        #The premium has been accepted.
+        #The user has been registed.
     #   statusAfter = UserProfile.objects
     #   self.assertIn(self.userprofile7 ,statusAfter)
     
@@ -877,10 +910,10 @@ class TravelMateTests(APITestCase):
 
 
     #def test_set_user_to_premium(self):
-    #    """The method 'accept_application' is used to accept an application sent from another user for a trip."""
+    #    """The method 'setUserToPremium' is used to make premium the users than have paid the premium."""
         
     #      # We log in as user1
-    #    self.user = self.user1
+    #   self.user = self.user1
     #   self.token = Token.objects.create(user=self.user)
     #   self.api_authentication()
     # 
@@ -899,7 +932,7 @@ class TravelMateTests(APITestCase):
     #   self.assertEqual(statusAfter, True)
 
     def test_get_user(self):
-        
+        """The method 'getUser' is used response with an user by a token."""
         # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
@@ -935,7 +968,8 @@ class TravelMateTests(APITestCase):
         self.assertEqual(jsonResponse['user']['id'], self.user2.id)
     
     def test_get_user_by_id(self):
-        
+        """The method 'getUser' is used response with an user by a id."""
+
         # We log in as user1
         self.user = self.user1
         self.token = Token.objects.create(user=self.user)
@@ -950,7 +984,7 @@ class TravelMateTests(APITestCase):
 
         jsonResponse = response.json()
 
-        #Check that we get user1 
+        #Check that we get user2 
         self.assertEqual(jsonResponse['user']['id'], self.user2.id)
         #----------------------------------------------------------------
         # We log in as user1
@@ -963,11 +997,11 @@ class TravelMateTests(APITestCase):
 
         jsonResponse = response.json()
 
-        #Check that we get user1 
+        #Check that we get user3 
         self.assertEqual(jsonResponse['user']['id'], self.user3.id)
 
     def test_user_list(self):
-        """The method 'listLanguages' has to return a list with all laguages selected by the current user."""
+        """The method 'userList' is used to get an user by his username."""
 
         # We log in as 'user1'
         self.user = self.user1
@@ -979,7 +1013,7 @@ class TravelMateTests(APITestCase):
         # We check the status code of the request
         self.assertEqual(200, response.status_code)
 
-        # There are 8 interest on the system. Let's check this:
+        # Should get the user1. Let's check this:
         jsonResponse = response.json()
 
         user=self.user1

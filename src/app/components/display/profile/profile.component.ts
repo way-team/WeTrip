@@ -129,7 +129,7 @@ export class ProfileComponent implements OnInit {
       'PROFILE.DELETE_ERROR_2'
     );
     this.dm
-      .deleteUser()
+      .deleteUser(this.user.user.id)
       .then(data => {
         this.deleteToken();
       })
