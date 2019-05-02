@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserProfile, Trip } from 'src/app/app.data.model';
+import { UserProfile, Trip, CreatorAndTrip } from 'src/app/app.data.model';
 import {
   NavController,
   LoadingController,
@@ -22,8 +22,12 @@ export class ProfileComponent implements OnInit {
   public interests: string[];
   public today: Date;
 
+  private creator: UserProfile;
+  private creatorAndTrip: CreatorAndTrip;
   private userLogged: UserProfile;
   private userProfile: UserProfile;
+  public creatorsAndPastTrips: CreatorAndTrip[];
+  public creatorsAndFutureTrips: CreatorAndTrip[];
   public past_joined_trips: Trip[];
   public active_joined_trips: Trip[];
 
@@ -38,13 +42,34 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.isMyProfile();
-    console.log(this.user);
-    this.past_joined_trips = this.user.past_joined_trips;
-    this.active_joined_trips = this.user.active_joined_trips;
 
-    this.past_joined_trips.filter(x => {
-      x.creator == 'deleted';
-    });
+    console.log("pasado");
+    this.creatorsAndPastTrips = this.createAndTripFunction(this.user.past_joined_trips);
+    console.log("futuro");
+    this.creatorsAndFutureTrips = this.createAndTripFunction(this.user.future_joined_trips);
+  }
+
+  createAndTripFunction(listTrip: Trip[]){
+    console.log("accediendo a funcion");
+    console.log(listTrip);
+    var creatorsAndTrips: CreatorAndTrip[] = [];
+    for(let trip of listTrip){
+      this.dm
+      .getUserBy(trip.creator, this.cookieService.get('token'))
+      .then(userProfile => {
+        console.log("insertando viaje");
+        this.creator = userProfile;
+        this.creatorAndTrip = new CreatorAndTrip;
+        this.creatorAndTrip.status = this.creator.status;
+        console.log(this.creatorAndTrip.status);
+        this.creatorAndTrip.trip = trip;
+        console.log(this.creatorAndTrip.trip);
+        creatorsAndTrips.push(this.creatorAndTrip);
+      });
+    }
+    console.log(creatorsAndTrips);
+
+    return creatorsAndTrips;
   }
 
   goTo(destination: string, username: string) {
@@ -181,5 +206,10 @@ export class ProfileComponent implements OnInit {
         this.myProfile = false;
       }
     });
+  }
+
+  funcionPrueba(nombre: string){
+    console.log('accediendo a funcionPrueba');
+    return true;
   }
 }

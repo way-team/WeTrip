@@ -88,3 +88,8 @@ export class application_user {
     this.applicationId = applicationId;
   }
 }
+
+export class CreatorAndTrip {
+  status: string;
+  trip: Trip;
+}
