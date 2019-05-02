@@ -1345,8 +1345,8 @@ class DeleteUser(APIView):
         userprofile.description = "-"
         userprofile.city = "-"
         userprofile.nationality = "-"
-        userprofile.photo = "-"
-        userprofile.discoverPhoto = "-"
+        userprofile.photo = "user/profile/default.jpg"
+        userprofile.discoverPhoto = "user/discover/d_default.jpg"
         userprofile.averageRate = 0
         userprofile.numRate = 0
         userprofile.isPremium = False
