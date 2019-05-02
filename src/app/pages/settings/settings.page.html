@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="userLogged">
   <ion-item class="bg-profile">
     <ion-avatar slot="start">
       <img src="{{userLogged.photo}}" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}">
@@ -46,6 +46,11 @@
       </ion-select>
     </ion-item>
 
+    <ion-item>
+      <div style="text-align:center;" (click)="exportData()">
+        <ion-button color="primary">{{ 'SETTINGS.EXPORT_DATA' | translate }}</ion-button>
+      </div>
+    </ion-item>
   </ion-list>
 
 

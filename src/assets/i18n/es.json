@@ -331,6 +331,9 @@
     "LOGOUT": "Cerrar sesión",
     "PROFILE": "Perfil"
   },
+  "SETTINGS": {
+    "EXPORT_DATA": "Exportar tus datos"
+  },
   "TRIPS": {
     "APPLICATION_SEND": "Su solicitud se ha enviado.",
     "CONGRATULATION": "¡Enhorabuena!",
