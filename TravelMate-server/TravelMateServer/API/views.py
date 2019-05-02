@@ -512,7 +512,8 @@ class DiscoverPeopleView(APIView):
         # who are the deleted users and remove them
         deleted_users = get_deleted_users()
         for person in deleted_users:
-            discover_people.remove(person)
+            if(person in discover_people):
+                discover_people.remove(person)
 
 
         if(user in discover_people):

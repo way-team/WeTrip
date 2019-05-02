@@ -33,7 +33,7 @@ class TravelMateTests(APITestCase):
         cls.user5 = User.objects.create_user(username='user5', password='user5', email=None)
         cls.user6 = User.objects.create_user(username='user6', password='user6', email=None)
 
-        cls.userprofile1 = UserProfile.objects.create(user=cls.user1, email='user1@gmail.com', first_name='user1', last_name='user1', birthdate='1991-03-30', nationality='spanish', avarageRate=4, numRate=2, isPremium=False, gender='M', status='A', civilStatus='S')
+        cls.userprofile1 = UserProfile.objects.create(user=cls.user1, email='user1@gmail.com', first_name='user1', last_name='user1', birthdate='1991-03-30', nationality='spanish', avarageRate=4, numRate=2, isPremium=False , datePremium=datetime.date().today(), gender='M', status='A', civilStatus='S')
         cls.userprofile2 = UserProfile.objects.create(user=cls.user2, email='user2@gmail.com', first_name='user2', last_name='user2', birthdate='1983-06-11', nationality='spanish', avarageRate=3, numRate=1, isPremium=False, gender='W', status='A', civilStatus='D')
         cls.userprofile3 = UserProfile.objects.create(user=cls.user3, email='user3@gmail.com', first_name='user3', last_name='user3', birthdate='1979-05-15', nationality='english', avarageRate=3, numRate=1, isPremium=False, gender='W', status='A', civilStatus='W')
         cls.userprofile4 = UserProfile.objects.create(user=cls.user4, email='user4@gmail.com', first_name='user4', last_name='user4', birthdate='1978-11-04', nationality='spanish', avarageRate=2, numRate=1, isPremium=False, gender='M', status='A', civilStatus='M')
@@ -813,7 +813,7 @@ class TravelMateTests(APITestCase):
   
   
     def test_get_discover_view(self):
-        """The method 'getPending' has to return a list with all the users with a few of interest same of yours."""
+        """The method 'getDiscover' has to return a list with all the users with a few of interest same of yours."""
 
         # We log in as user4
         self.user = self.user4
@@ -826,11 +826,11 @@ class TravelMateTests(APITestCase):
        
         self.assertEqual(200, response.status_code)
 
-        # will response wiht users with the same interest, atleast 1. user5 and 4 have the same interest 'shopping' and dont have an Invitation on pending, accepted or rejected
+        # will response wiht users with ordered for the number of coincidences on trips, friends and interest. user2 and 4 have the more coincidences and dont have an Invitation on pending, accepted or rejected
         jsonResponse = response.json()
-        
+    
         # let's check it
-        self.assertEqual(jsonResponse[0]['interests'][0], self.interest6.name)
+        self.assertEqual(jsonResponse[0]['user']['username'], self.user2.username)
 
 
     #def test_create_trip(self):
@@ -841,14 +841,16 @@ class TravelMateTests(APITestCase):
     #    self.token = Token.objects.create(user=self.user)
     #    self.api_authentication()
         
-    #    data = {"token":self.token.key, "username": "user1" , "title": "trip13", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC", "cities": self.city1.name}
+    #    data = {'username':'user1','file':'trip/default_trip.jpg', 'cities': ['Sofía'], 'end_date':'28-06-2019','start_date':'20-06-2019', 'price': 2000, 'description': 'new trip descrption','title':'new Trip', 'trip_type':'PUBLIC'}
 
-    #    response = self.client.post(reverse('create_trip'), data, format='json')
+    #    response = self.client.post(reverse('create_trip'), data=json.dumps(data), content_type='application/json')
        
     #    self.assertEqual(200, response.status_code)
 
-    #    #The trip has been created.
+        #The trip has been created.
     #    self.assertIn(Trip.objects.get(title=trip13) , Trip.objects)
+
+
 
     def test_get_trip(self):
         """The method 'get_trip' has to return a trip selected by the current user."""
@@ -909,27 +911,26 @@ class TravelMateTests(APITestCase):
 
 
 
-    #def test_set_user_to_premium(self):
-    #    """The method 'setUserToPremium' is used to make premium the users than have paid the premium."""
+    def test_set_user_to_premium(self):
+        """The method 'setUserToPremium' is used to make premium the users than have paid the premium."""
         
-    #      # We log in as user1
-    #   self.user = self.user1
-    #   self.token = Token.objects.create(user=self.user)
-    #   self.api_authentication()
-    # 
-    #   data = {"token":self.token.key, "user": "user1"}
-
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+     
+        data = {"token":self.token.key, "user": "user1"}
         # Let's check the current status of the premium
-    #   statusBefore = UserProfile.objects.get(pk=1).isPremium
-    #   self.assertEqual(statusBefore, False)
+        statusBefore = UserProfile.objects.get(pk=1).isPremium
+        self.assertEqual(statusBefore, False)
 
-    #   response = self.client.post(reverse('set_user_to_premium'), data, format='json')
+        response = self.client.post(reverse('set_user_to_premium'), data, format='json')
        
-    #   self.assertEqual(200, response.status_code)
+        self.assertEqual(200, response.status_code)
 
         #The premium has been accepted.
-    #   statusAfter = UserProfile.objects.get(pk=1).isPremium
-    #   self.assertEqual(statusAfter, True)
+        statusAfter = UserProfile.objects.get(pk=1).isPremium
+        self.assertEqual(statusAfter, True)
 
     def test_get_user(self):
         """The method 'getUser' is used response with an user by a token."""
