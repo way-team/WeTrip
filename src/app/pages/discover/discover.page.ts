@@ -194,6 +194,7 @@ export class DiscoverPage {
     const translation3: string = this._translate.instant(
       'DISCOVER.ALERT_TITLE'
     );
+    event.stopPropagation();
     this.dM
       .sendFriendInvitation(username)
       .then(res => {
