@@ -59,54 +59,52 @@ export class RegisterPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     public events: Events
   ) {
-    this.listLanguages();
-    this.listInterests();
-
-    this.edit = this.activatedRoute.snapshot.paramMap.get('edit');
-    if (this.edit === 'edit') {
-      this.dm.getUserLogged(this.cookieService.get('token')).then(res => {
-        this.email = res.email;
-        this.first_name = res.first_name;
-        this.last_name = res.last_name;
-        this.description = res.first_name;
-        this.birthdate = res.birthdate;
-        this.profesion = res.profesion;
-        this.civilStatus = res.civilStatus;
-        this.gender = res.gender;
-        this.nationality = res.nationality;
-        this.city = res.city;
-        res.languages.forEach(x => {
-          var newLanguage: string;
-          newLanguage = x;
-          this.languages.push(newLanguage);
-        });
-        res.interests.forEach(x => {
-          var newInterest: string;
-          newInterest = x;
-          this.interests.push(newInterest);
-        });
-        this.isReady = true;
-      });
-    } else {
-      this.isReady = true;
-    }
+    this.listLanguagesAndInterest();
   }
 
-  public listLanguages() {
+  public listLanguagesAndInterest() {
     this.dm
       .listLanguages()
       .then(data => {
         this.languagesOptions = data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-  public listInterests() {
-    this.dm
-      .listInterests()
-      .then(data => {
-        this.interestsOptions = data;
+        this.dm
+          .listInterests()
+          .then(data => {
+            this.interestsOptions = data;
+            this.edit = this.activatedRoute.snapshot.paramMap.get('edit');
+            if (this.edit === 'edit') {
+              this.dm
+                .getUserLogged(this.cookieService.get('token'))
+                .then(res => {
+                  this.email = res.email;
+                  this.first_name = res.first_name;
+                  this.last_name = res.last_name;
+                  this.description = res.first_name;
+                  this.birthdate = res.birthdate;
+                  this.profesion = res.profesion;
+                  this.civilStatus = res.civilStatus;
+                  this.gender = res.gender;
+                  this.nationality = res.nationality;
+                  this.city = res.city;
+                  res.languages.forEach(x => {
+                    var newLanguage: string;
+                    newLanguage = x;
+                    this.languages.push(newLanguage);
+                  });
+                  res.interests.forEach(x => {
+                    var newInterest: string;
+                    newInterest = x;
+                    this.interests.push(newInterest);
+                  });
+                  this.isReady = true;
+                });
+            } else {
+              this.isReady = true;
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       })
       .catch(error => {
         console.log(error);
