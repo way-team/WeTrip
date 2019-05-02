@@ -129,7 +129,6 @@ export class LoginPage implements OnInit {
           this.dm.getUserLogged(data.token).then(user => {
             this.events.publish('user:logged', user);
             this.navCtrl.navigateRoot('/discover');
-            this.navCtrl.navigateRoot('/discover');
           });
         }, 1500);
       })

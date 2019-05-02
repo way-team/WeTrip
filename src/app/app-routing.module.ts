@@ -94,6 +94,10 @@ const routes: Routes = [
     loadChildren: './pages/gdpr/gdpr.module#GdprPageModule'
   },
   {
+    path: 'gdpr2',
+    loadChildren: './pages/gdpr2/gdpr2.module#Gdpr2PageModule'
+  },
+  {
     path: 'search',
     loadChildren: './pages/search/search.module#SearchPageModule'
   },
@@ -167,4 +171,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
