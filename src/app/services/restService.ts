@@ -86,6 +86,55 @@ export class RestWS extends AbstractWS {
       });
   }
 
+  public editUser(
+    email: string,
+    first_name: string,
+    last_name: string,
+    description: string,
+    birthdate: string,
+    profesion: string,
+    civilStatus: string,
+    gender: string,
+    nationality: string,
+    city: string,
+    languages: string[],
+    interests: string[],
+    profilePic,
+    discoverPic
+  ) {
+    let token = this.cookieService.get('token');
+    const fd = new FormData();
+    fd.append('email', email);
+    fd.append('first_name', first_name);
+    fd.append('last_name', last_name);
+    fd.append('description', description);
+    fd.append('birthdate', String(birthdate));
+    fd.append('profesion', profesion);
+    fd.append('civilStatus', civilStatus);
+    fd.append('nationality', nationality);
+    fd.append('city', city);
+    fd.append('gender', gender);
+    fd.append('languages', JSON.stringify(languages));
+    fd.append('interests', JSON.stringify(interests));
+    fd.append('token', token);
+    if (profilePic !== null) {
+      fd.append('photo', profilePic, profilePic.name);
+    }
+    if (discoverPic !== null) {
+      fd.append('discoverPhoto', discoverPic, discoverPic.name);
+    }
+
+    return this.makePostRequest(this.path + 'editUser/', fd, token)
+      .then(res => {
+        console.log('Sign up successfully');
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        console.log('Error: ' + error);
+        return Promise.reject(error);
+      });
+  }
+
   public test(): Promise<any> {
     const requestParams = {
       text: 'texto'
@@ -321,7 +370,7 @@ export class RestWS extends AbstractWS {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price
   ): Promise<any> {
@@ -337,7 +386,7 @@ export class RestWS extends AbstractWS {
         fd.append('start_date', String(start_date));
         fd.append('end_date', String(end_date));
         fd.append('trip_type', trip_type);
-        fd.append('city', String(city));
+        fd.append('cities', JSON.stringify(cities));
         if (userImage !== null) {
           fd.append('file', userImage, userImage.name);
         }
@@ -367,7 +416,7 @@ export class RestWS extends AbstractWS {
     startDate: String,
     endDate: String,
     tripType: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price
   ): Promise<any> {
@@ -382,7 +431,7 @@ export class RestWS extends AbstractWS {
     fd.append('startDate', String(startDate));
     fd.append('endDate', String(endDate));
     fd.append('tripType', tripType);
-    fd.append('city', String(city));
+    fd.append('cities', JSON.stringify(cities));
     fd.append('token', token);
     if (userImage !== null) {
       fd.append('file', userImage, userImage.name);
@@ -580,11 +629,29 @@ export class RestWS extends AbstractWS {
       });
   }
 
-  public deleteUser() {
+  public deleteUser(id) {
     const fd = new FormData();
-    const Authorization = this.cookieService.get('token');
-    fd.append('token', Authorization);
-    return this.makePostRequest(this.path + 'deleteUser/', fd, Authorization)
+    const authorization = this.cookieService.get('token');
+    fd.append('token', authorization);
+    fd.append('user_id', id);
+    return this.makePostRequest(this.path + 'deleteUser/', fd, authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+        return Promise.reject(err);
+      });
+  }
+
+  public exportData(id) {
+    const fd = new FormData();
+    const authorization = this.cookieService.get('token');
+    const language = this.cookieService.get('lang');
+    fd.append('token', authorization);
+    fd.append('user_id', id);
+    fd.append('language', language);
+    return this.makePostRequest(this.path + 'exportData/', fd, authorization)
       .then(res => {
         return Promise.resolve(res);
       })

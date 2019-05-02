@@ -35,9 +35,9 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     public dm: DataManagement,
     private cookieService: CookieService,
-     private translate: TranslateService,
+    private translate: TranslateService,
     public events: Events
-  ) { 
+  ) {
     this.turnOnDjangoServer();
   }
 
@@ -101,11 +101,23 @@ export class LoginPage implements OnInit {
 
   // // //
   goToRegister() {
-    this.navCtrl.navigateRoot('/register');
+    this.navCtrl.navigateRoot('/userForm');
+  }
+
+  onKeydown(event) {
+    if (event.key === 'Enter') {
+      console.log(event);
+    }
+  }
+
+  keypress($event) {
+    if ($event.keyCode == 13) {
+      this.login();
+    }
   }
 
   login() {
-    let translation:string = this.translate.instant('LOGIN.FAIL');
+    let translation: string = this.translate.instant('LOGIN.FAIL');
 
     this.dm
       .login(this.registerCredentials)
@@ -117,7 +129,6 @@ export class LoginPage implements OnInit {
           this.dm.getUserLogged(data.token).then(user => {
             this.events.publish('user:logged', user);
             this.navCtrl.navigateRoot('/discover');
-            this.navCtrl.navigateRoot('/discover');
           });
         }, 1500);
       })
@@ -127,8 +138,7 @@ export class LoginPage implements OnInit {
           this.alertCtrl
             .create({
               header: 'Error',
-              message:
-                translation,
+              message: translation,
               buttons: [
                 {
                   text: 'Ok',
@@ -146,7 +156,7 @@ export class LoginPage implements OnInit {
   }
 
   showLoading() {
-    let translation2:string = this.translate.instant('LOGIN.WAIT');
+    let translation2: string = this.translate.instant('LOGIN.WAIT');
     this.loadingCtrl
       .create({
         message: translation2,
@@ -171,5 +181,10 @@ export class LoginPage implements OnInit {
 
   turnOnDjangoServer() {
     this.dm.turnOnDjangoServer();
+  }
+
+  changeLanguage(selectedValue: { detail: { value: string } }) {
+    this.cookieService.set('lang', selectedValue.detail.value);
+    this.translate.use(selectedValue.detail.value);
   }
 }

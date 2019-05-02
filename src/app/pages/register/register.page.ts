@@ -9,11 +9,14 @@ import {
   NavController,
   MenuController,
   LoadingController,
-  AlertController
+  AlertController,
+  Events
 } from '@ionic/angular';
-import { Language, Interest } from 'src/app/app.data.model';
+import { Language, Interest, UserProfile } from 'src/app/app.data.model';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { TranslateService } from '@ngx-translate/core';
+import { CookieService } from 'ngx-cookie-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -35,12 +38,14 @@ export class RegisterPage implements OnInit {
   city: string;
   profesion: string;
   civilStatus: string;
-  languages;
+  languages = [];
   languagesOptions: Language[];
-  interests;
+  interests = [];
   interestsOptions: Interest[];
   profilePic: File = null;
   discoverPic: File = null;
+  edit: string;
+  isReady: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -49,10 +54,42 @@ export class RegisterPage implements OnInit {
     private formBuilder: FormBuilder,
     public dm: DataManagement,
     private translate: TranslateService,
-    public alertCtrl: AlertController
+    private cookieService: CookieService,
+    public alertCtrl: AlertController,
+    private activatedRoute: ActivatedRoute,
+    public events: Events
   ) {
     this.listLanguages();
     this.listInterests();
+
+    this.edit = this.activatedRoute.snapshot.paramMap.get('edit');
+    if (this.edit === 'edit') {
+      this.dm.getUserLogged(this.cookieService.get('token')).then(res => {
+        this.email = res.email;
+        this.first_name = res.first_name;
+        this.last_name = res.last_name;
+        this.description = res.first_name;
+        this.birthdate = res.birthdate;
+        this.profesion = res.profesion;
+        this.civilStatus = res.civilStatus;
+        this.gender = res.gender;
+        this.nationality = res.nationality;
+        this.city = res.city;
+        res.languages.forEach(x => {
+          var newLanguage: string;
+          newLanguage = x;
+          this.languages.push(newLanguage);
+        });
+        res.interests.forEach(x => {
+          var newInterest: string;
+          newInterest = x;
+          this.interests.push(newInterest);
+        });
+        this.isReady = true;
+      });
+    } else {
+      this.isReady = true;
+    }
   }
 
   public listLanguages() {
@@ -65,6 +102,7 @@ export class RegisterPage implements OnInit {
         console.log(error);
       });
   }
+
   public listInterests() {
     this.dm
       .listInterests()
@@ -77,30 +115,55 @@ export class RegisterPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.menuCtrl.enable(false);
+    if (this.edit !== 'edit') {
+      this.menuCtrl.enable(false);
+    } else {
+      this.menuCtrl.enable(true);
+    }
   }
 
   ngOnInit() {
-    this.onRegisterForm = this.formBuilder.group({
-      username: [null, Validators.compose([Validators.required])],
-      password: [null, Validators.compose([Validators.required])],
-      confirmPassword: [null, Validators.compose([Validators.required])],
-      email: [
-        null,
-        Validators.compose([Validators.required, Validators.email])
-      ],
-      first_name: [null, Validators.compose([Validators.required])],
-      last_name: [null, Validators.compose([Validators.required])],
-      profesion: [null, null],
-      civilStatus: [null, Validators.compose([Validators.required])],
-      description: [null, Validators.compose([Validators.required])],
-      birthdate: [null, Validators.compose([Validators.required])],
-      gender: [null, Validators.compose([Validators.required])],
-      nationality: [null, Validators.compose([Validators.required])],
-      city: [null, Validators.compose([Validators.required])],
-      languages: [null, Validators.compose([Validators.required])],
-      interests: [null, Validators.compose([Validators.required])]
-    });
+    if (this.edit !== 'edit') {
+      console.log('noo digas hola');
+      this.onRegisterForm = this.formBuilder.group({
+        username: [null, Validators.compose([Validators.required])],
+        password: [null, Validators.compose([Validators.required])],
+        confirmPassword: [null, Validators.compose([Validators.required])],
+        email: [
+          null,
+          Validators.compose([Validators.required, Validators.email])
+        ],
+        first_name: [null, Validators.compose([Validators.required])],
+        last_name: [null, Validators.compose([Validators.required])],
+        profesion: [null, null],
+        civilStatus: [null, Validators.compose([Validators.required])],
+        description: [null, Validators.compose([Validators.required])],
+        birthdate: [null, Validators.compose([Validators.required])],
+        gender: [null, Validators.compose([Validators.required])],
+        nationality: [null, Validators.compose([Validators.required])],
+        city: [null, Validators.compose([Validators.required])],
+        languages: [null, Validators.compose([Validators.required])],
+        interests: [null, Validators.compose([Validators.required])]
+      });
+    } else {
+      this.onRegisterForm = this.formBuilder.group({
+        email: [
+          null,
+          Validators.compose([Validators.required, Validators.email])
+        ],
+        first_name: [null, Validators.compose([Validators.required])],
+        last_name: [null, Validators.compose([Validators.required])],
+        profesion: [null, null],
+        civilStatus: [null, Validators.compose([Validators.required])],
+        description: [null, Validators.compose([Validators.required])],
+        birthdate: [null, Validators.compose([Validators.required])],
+        gender: [null, Validators.compose([Validators.required])],
+        nationality: [null, Validators.compose([Validators.required])],
+        city: [null, Validators.compose([Validators.required])],
+        languages: [null, Validators.compose([Validators.required])],
+        interests: [null, Validators.compose([Validators.required])]
+      });
+    }
   }
 
   confirmPasswordValidation() {
@@ -168,8 +231,8 @@ export class RegisterPage implements OnInit {
             (this.gender = ''),
             (this.nationality = ''),
             (this.city = ''),
-            (this.languages = ''),
-            (this.interests = ''),
+            (this.languages = []),
+            (this.interests = []),
             (this.profilePic = null),
             (this.discoverPic = null);
         }, 1500);
@@ -194,6 +257,54 @@ export class RegisterPage implements OnInit {
         }, 1500);
       });
   }
+  public editUser() {
+    let translationHeader: string = this.translate.instant(
+      'REGISTER.HEADER_SUCCESS_EDIT'
+    );
+    let translationMessage: string = this.translate.instant(
+      'REGISTER.SUCCESS_EDIT'
+    );
+
+    this.dm
+      .editUser(
+        this.email,
+        this.first_name,
+        this.last_name,
+        this.description,
+        this.birthdate.split('T')[0],
+        this.profesion,
+        this.civilStatus,
+        this.gender,
+        this.nationality,
+        this.city,
+        this.languages,
+        this.interests,
+        this.profilePic,
+        this.discoverPic
+      )
+      .then(data => {
+        this.showLoading();
+        setTimeout(() => {
+          this.alertCtrl
+            .create({
+              header: translationHeader,
+              message: translationMessage,
+              buttons: [
+                {
+                  text: 'Ok',
+                  role: 'ok'
+                }
+              ]
+            })
+            .then(alertEl => {
+              alertEl.present();
+            });
+
+          this.events.publish('user:edited');
+        }, 1500);
+      })
+      .catch(error => {});
+  }
   showLoading() {
     const translation2: string = this.translate.instant('DISCOVER.WAIT');
     this.loadingCtrl
@@ -213,76 +324,73 @@ export class RegisterPage implements OnInit {
   }
 
   onProfilePicInputChange(file: File) {
+    this.checkFileIsImage(file[0], 'profPic');
     this.profilePic = file[0];
   }
 
   onDiscoverPicInputChange(file: File) {
+    this.checkFileIsImage(file[0], 'dicPic');
     this.discoverPic = file[0];
+  }
+
+  private checkFileIsImage(file: File, picture: string) {
+    if (!(file.type.split('/')[0] == 'image')) {
+      let translation1: string = this.translate.instant('REGISTER.IMAGE_ERROR');
+
+      this.alertCtrl
+        .create({
+          header: translation1,
+          buttons: [
+            {
+              text: 'Ok',
+              role: 'ok'
+            }
+          ]
+        })
+        .then(alertEl => {
+          alertEl.present();
+        });
+
+      if (picture == 'profPic') {
+        this.profilePic = null;
+        // Aunque de fallo de compilación, funciona
+        (<HTMLInputElement>document.getElementById('procPic')).value = '';
+      }
+
+      if (picture == 'dicPic') {
+        this.discoverPic = null;
+        // Aunque de fallo de compilación, funciona
+        (<HTMLInputElement>document.getElementById('dicoverPic')).value = '';
+      }
+    }
   }
 
   validateBirthdate() {
     const birthdate = new Date(this.birthdate);
     const today = new Date();
-    this.isAdult(birthdate);
 
-    if (birthdate > today || !this.isAdult(birthdate)) {
+    if (birthdate > today) {
       return false;
     }
     return true;
   }
 
-  private isAdult(birthdate: Date): boolean {
+  private isAdult(): boolean {
     const today = new Date();
-    const today_year = today.getFullYear();
-    const today_month = today.getMonth() + 1;
-    const today_day = today.getDate();
+    const birthdate = new Date(this.birthdate);
 
-    let edad = today_year + 1900 - birthdate.getFullYear();
-    if (today_month < birthdate.getMonth()) {
+    var edad = today.getFullYear() - birthdate.getFullYear();
+    var m = today.getMonth() - birthdate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
       edad--;
-    }
-    if (
-      birthdate.getMonth() == today_month &&
-      today_day < birthdate.getDate()
-    ) {
-      edad--;
-    }
-    if (edad > 1900) {
-      edad -= 1900;
-    }
-
-    // calculamos los meses
-    let meses = 0;
-
-    if (today_month > birthdate.getMonth() && birthdate.getDate() > today_day) {
-      meses = today_month - birthdate.getMonth() - 1;
-    } else if (today_month > birthdate.getMonth()) {
-      meses = today_month - birthdate.getMonth();
-    }
-
-    if (today_month < birthdate.getMonth() && birthdate.getDate() < today_day) {
-      meses = 12 - (birthdate.getMonth() - today_month);
-    } else if (today_month < birthdate.getMonth()) {
-      meses = 12 - (birthdate.getMonth() - today_month + 1);
-    }
-
-    if (
-      today_month == birthdate.getMonth() &&
-      birthdate.getDate() > today_day
-    ) {
-      meses = 11;
-    }
-    // calculamos los dias
-    let dias = 0;
-    if (today_day > birthdate.getDate()) {
-      dias = today_day - birthdate.getDate();
-    }
-
-    if (today_day < birthdate.getDate()) {
-      let ultimoDiaMes = new Date(today_year, today_month - 1, 0);
-      dias = ultimoDiaMes.getDate() - (birthdate.getDate() - today_day);
     }
 
     return edad > 18;
+  }
+
+  changeLanguage(selectedValue: { detail: { value: string } }) {
+    this.cookieService.set('lang', selectedValue.detail.value);
+    this.translate.use(selectedValue.detail.value);
   }
 }

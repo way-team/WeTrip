@@ -61,6 +61,47 @@ export class DataManagement {
       });
   }
 
+  public editUser(
+    email: string,
+    first_name: string,
+    last_name: string,
+    description: string,
+    birthdate: string,
+    profesion: string,
+    civilStatus: string,
+    gender: string,
+    nationality: string,
+    city: string,
+    languages: string[],
+    interests: string[],
+    profilePic,
+    discoverPic
+  ): Promise<any> {
+    return this.restService
+      .editUser(
+        email,
+        first_name,
+        last_name,
+        description,
+        birthdate,
+        profesion,
+        civilStatus,
+        gender,
+        nationality,
+        city,
+        languages,
+        interests,
+        profilePic,
+        discoverPic
+      )
+      .then(data => {
+        return Promise.resolve(data);
+      })
+      .catch(error => {
+        return Promise.reject('error');
+      });
+  }
+
   public getUserLogged(token): Promise<any> {
     return this.restService
       .getUserLogged(token)
@@ -209,7 +250,7 @@ export class DataManagement {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price: Number
   ): Promise<any> {
@@ -220,7 +261,7 @@ export class DataManagement {
         start_date,
         end_date,
         trip_type,
-        city,
+        cities,
         userImage,
         price
       )
@@ -239,7 +280,7 @@ export class DataManagement {
     start_date: String,
     end_date: String,
     trip_type: string,
-    city: Number,
+    cities: Number[],
     userImage,
     price: Number
   ): Promise<any> {
@@ -251,7 +292,7 @@ export class DataManagement {
         start_date,
         end_date,
         trip_type,
-        city,
+        cities,
         userImage,
         price
       )
@@ -450,9 +491,9 @@ export class DataManagement {
     });
   }
 
-  public deleteUser(): Promise<any> {
+  public deleteUser(id: Number): Promise<any> {
     return this.restService
-      .deleteUser()
+      .deleteUser(id)
       .then(res => {
         return Promise.resolve(res);
       })
@@ -464,4 +505,16 @@ export class DataManagement {
   public turnOnDjangoServer() {
     this.restService.turnOnDjangoServer();
   }
+
+  public exportData(id: Number): Promise<any> {
+    return this.restService
+      .exportData(id)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
 }

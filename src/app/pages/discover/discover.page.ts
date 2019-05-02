@@ -6,7 +6,8 @@ import {
   ToastController,
   PopoverController,
   ModalController,
-  LoadingController
+  LoadingController,
+  Events
 } from '@ionic/angular';
 
 // Modals
@@ -34,6 +35,7 @@ export class DiscoverPage {
   discover: UserProfile[] = [];
   newData: UserProfile[] = [];
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild('content') private content: any;
   constructor(
     public navCtrl: NavController,
     public menuCtrl: MenuController,
@@ -44,18 +46,29 @@ export class DiscoverPage {
     private _translate: TranslateService,
     public dM: DataManagement,
     public cookieService: CookieService,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    public events: Events
   ) {
-    this.getData(6, 0);
-    this.getDataReload(6, 6);
+    this.getInit(12, 0);
+    this.getData(12, 12);
+    events.subscribe('user:edited', () => {
+      this.getInit(12, 0);
+      this.getData(12, 12);
+    });
+  }
+
+  scrollToTop() {
+    this.content.scrollToTop(300);
   }
   loadData(event) {
-    setTimeout(async () => {
+    setTimeout(() => {
       console.log('Done');
-      await this.getDataReload(6, 6 + this.discover.length);
-      await this.newData.forEach(x => this.discover.push(x));
-      await event.target.complete();
 
+      this.getData(12, this.discover.length + 12);
+
+      this.newData.forEach(x => this.discover.push(x));
+
+      event.target.complete();
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
       if (this.discover.length == 200) {
@@ -68,21 +81,23 @@ export class DiscoverPage {
     this.limitString = '' + limit;
     this.dM
       .getData(this.offsetString, this.limitString)
-      .then((data: any) => {
-        this.discover = data;
+      .then((data: UserProfile[]) => {
+        this.newData = data;
       })
       .catch(error => {});
   }
-  getDataReload(offset: Number, limit: Number) {
+
+  getInit(offset: Number, limit: Number) {
     this.offsetString = '' + offset;
     this.limitString = '' + limit;
     this.dM
       .getData(this.offsetString, this.limitString)
       .then((data: any) => {
-        this.newData = data;
+        this.discover = data;
       })
       .catch(error => {});
   }
+
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
   }
@@ -179,6 +194,7 @@ export class DiscoverPage {
     const translation3: string = this._translate.instant(
       'DISCOVER.ALERT_TITLE'
     );
+    event.stopPropagation();
     this.dM
       .sendFriendInvitation(username)
       .then(res => {
@@ -199,10 +215,10 @@ export class DiscoverPage {
               alertEl.present();
             });
         }, 1500);
-        this.getData(6, 0);
+        this.getInit(12, 0);
       })
       .catch(err => {
-        this.getData(6, 0);
+        this.getInit(12, 0);
       });
   }
 

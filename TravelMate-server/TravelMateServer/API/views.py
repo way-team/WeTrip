@@ -3,18 +3,38 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from django.http import FileResponse, HttpResponse
 from rest_framework import generics, filters
 from .models import UserProfile, Trip, Invitation, City, Rate, Application, Language, Interest
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from django.db.models import Q, Count, StdDev, Avg, Sum, Case, When, IntegerField, Value
 from django.utils.datastructures import MultiValueDictKeyError
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from collections import namedtuple
 from django.contrib.auth.hashers import make_password
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from string import Template
+import smtplib
+import re
+import os
+import json
+import time
+from django.conf import settings
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, BaseDocTemplate, Frame, PageTemplate, Paragraph, Spacer
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from functools import partial
+from reportlab.lib.enums import TA_CENTER
 
 
 def get_user_by_token(request):
@@ -27,13 +47,11 @@ def get_user_by_token(request):
     if user_profile.isPremium:
         today = datetime.today().date()
         datePremium = user_profile.datePremium
-        diff = today - datePremium
-        if diff.days >= 365:
+        if today > datePremium:
             user_profile.isPremium = False
             user_profile.save()
 
     return user_profile
-
 
 
 class GetUserView(APIView):
@@ -181,7 +199,7 @@ def get_friends(user, discover):
         sended_pending = Invitation.objects.filter(sender=user, status="P")
         if sended_pending:
             for j in sended_pending:
-                    pending.append(j.receiver)
+                pending.append(j.receiver)
 
 
     return (friends, pending, rejected)
@@ -449,44 +467,68 @@ class DiscoverPeopleView(APIView):
         offset = int(request.data.get("offset",""))
         discover_people = []
         interests = user.interests.all()
-
         # First, we obtain the people with the same interests
-        #for interest in interests:
         ranking = []
         for interest in interests:
-            l = []
-            l.append(interest)
-            aux = UserProfile.objects.filter(interests__in=l)
-            for person in aux:
+            usersWithInterest = interest.users.all()
+            for person in usersWithInterest:
                 ranking.append(person)
+
+        
+        #Now, we get friends of the user's friends
+        for friend in friends:
+            friendsOfFriend, pendingOfFriend, rejectedOfFriend = get_friends(friend, False)
+
+            for f in friendsOfFriend:
+                ranking.append(f)
+        
+
+        #We get users who are going (or went) on the same trips as the user
+        userApps = Application.objects.filter(applicant= user, status='A')
+        for a in userApps:
+            applications = Application.objects.filter(trip=a.trip, status="A")
+
+
+            for appOfFriend in applications:
+                ranking.append(appOfFriend.applicant)
+
+        #Now the list is sorted by the number of times a user appears in it
         import collections
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
-        discover_people = set(discover_people)
 
-        # After, we obtain the people without the same interests
-        # and append them at the end of the discover list
-        all_users = list(UserProfile.objects.all())
+        
+        #This line gets rid of duplicated users in the list
+        discover_people = list(dict.fromkeys(discover_people))
+        
+
+        '''all_users = list(UserProfile.objects.all())
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.add(person)
+            discover_people.add(person)'''
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
         for person in friends:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         for person in pending:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         for person in rejected:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
         # who are the deleted users and remove them
         deleted_users = get_deleted_users()
         for person in deleted_users:
-            discover_people.discard(person)
+            if(person in discover_people):
+                discover_people.remove(person)
 
-        discover_people.discard(user)
-        discover_people = list(discover_people)
+
+        if(user in discover_people):
+                discover_people.remove(user)
+
         return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
 
@@ -580,6 +622,7 @@ class CreateTrip(APIView):
 
     def post(self, request):
 
+        data = request.data
         #GET TRIP DATA
         #Comment the following line and remove the comment from one after that to test with Postman
         username = request.user.username
@@ -592,12 +635,22 @@ class CreateTrip(APIView):
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
 
-        #GET CITY DATA
-        cityId = request.data.get('city')
+        if data.get('start_date') > data.get('end_date'):
+            raise ValueError("The start date must be before the end date")
 
-        #GET CITY
-        city = City.objects.get(pk=cityId)
-        image_name = city.country.name + '.jpg'
+
+        #GET CITY DATA
+        cities = json.loads(request.data.get('cities'))
+        
+        
+        
+        if(len(cities) == 1):
+            city = City.objects.get(pk=cities[0])
+            image_name = city.country.name + '.jpg'
+        else:
+            image_name = 'World.jpg'
+        
+        
 
         try:
             userImage = request.data['file']
@@ -628,8 +681,9 @@ class CreateTrip(APIView):
             trip.save()
         finally:
             #GET CITY AND ADD TRIP
-            city = City.objects.get(pk=cityId)
-            city.trips.add(trip)
+            for i in cities:
+                city = City.objects.get(pk=i)
+                city.trips.add(trip)
 
             return Response(TripSerializer(trip, many=False).data)
 
@@ -678,32 +732,63 @@ class EditTripView(APIView):
         POST method
         """
         data = request.data
-
+        
         trip = Trip.objects.get(pk=request.data["tripId"])
-        if data.get('file'):
-            trip.userImage = data.get('file')
+        for i in trip.cities.all():
+            i.trips.remove(trip)
+        
+        if trip.tripType == "PUBLIC": 
+            raise ValueError("This trip is public, so it can't be edited ")
 
         stored_creator = trip.user
         user = get_user_by_token(request)
         if stored_creator != user:
             raise ValueError("You are not the creator of this trip")
 
-        if request.data["startDate"] > request.data["endDate"]:
+    
+        if data.get('startDate') > data.get('endDate'):
             raise ValueError("The start date must be before the end date")
 
-        if request.data["tripType"] == "PUBLIC":
-            raise ValueError("This trip is public, so it can't be edited ")
+        if data.get('file'):
+            trip.userImage = data.get('file')
+    
+        cities = json.loads(data.get('cities'))
 
-        serializer = TripSerializer(trip, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            try:
-                new_city = City.objects.get(pk=request.data["city"])
-                new_city.trips.add(trip)
-            except City.DoesNotExist:
-                raise ValueError("The city does not exist")
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+        if(len(cities) == 1):
+            city = City.objects.get(pk=cities[0])
+            trip.image = city.country.name + '.jpg'
+            
+        else:
+            trip.image = 'World.jpg'
+
+        title = data.get('title')
+        description = data.get('description')
+        price = data.get('price')
+        startDate = data.get('startDate')
+        endDate = data.get('endDate')
+        tripType = data.get('tripType')
+       
+
+        trip.title = title
+        trip.description = description
+        trip.price = price
+        trip.startDate = startDate
+        trip.endDate = endDate
+        trip.tripType = tripType
+        try:
+            print(trip)
+            trip.save()
+        except:
+            raise ValueError("Error saving trip")
+        try:
+            for i in cities:
+                city = City.objects.get(pk=i)
+                city.trips.add(trip)
+        except City.DoesNotExist:
+            raise ValueError("The city does not exist")
+
+        return JsonResponse({'message':'Edit success'}, status=201)
+        return JsonResponse({'error':'Error editing'}, status=400)
 
 
 class DashboardData(APIView):
@@ -934,10 +1019,15 @@ class SetUserToPremium(APIView):
 
     def post(self, request):
         usernamepaid = request.user.username
-
         userpaid = User.objects.get(username=usernamepaid)
         userprofilepaid = UserProfile.objects.get(user=userpaid)
-        userprofilepaid.isPremium = True
+
+        if not userprofilepaid.isPremium:
+            userprofilepaid.isPremium = True
+            userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
+        else:
+            userprofilepaid.datePremium += relativedelta(years=1)
+
         userprofilepaid.save()
 
         return Response(
@@ -998,9 +1088,12 @@ class RegisterUser(APIView):
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
         status = 'A'
-        import json
-        languages = json.loads(request.data.get('languages'))
-        interests = json.loads(request.data.get('interests'))
+
+
+        languages_dumps = json.dumps(request.data.get('languages'))
+        languages=json.loads(languages_dumps)
+        interests = json.dumps(request.data.get('interests'))
+        interests=json.loads(interests)
 
         user = User(username=username, password=password)
         user.save()
@@ -1110,6 +1203,449 @@ class RegisterUser(APIView):
 
         finally:
             return JsonResponse({'message':'Sign up performed successfuly'}, status=201)
+
+class EditUser(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    
+    def post(self, request):
+       
+        email = request.data.get('email', '')
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        description = request.data.get('description', '')
+        birthdate = request.data.get('birthdate', '')
+        
+        # To check if > 18 years old
+        today = datetime.today()  
+        birthdate_date = datetime.strptime(birthdate, '%Y-%m-%d')
+        age = today.year - birthdate_date.year - ((today.month, today.day) < (birthdate_date.month, birthdate_date.day))
+        if age < 18:
+            return JsonResponse({'error':'Underage'}, status=500)
+
+        gender = request.data.get('gender', '')
+        nationality = request.data.get('nationality', '')
+        city = request.data.get('city', '')
+        profesion = request.data.get('profesion', '')
+        civilStatus = request.data.get('civilStatus', '')
+        status = 'A'
+        
+        languages = json.loads(request.data.get('languages'))
+        interests = json.loads(request.data.get('interests'))
+
+        user = get_user_by_token(request)
+        for i in user.languages.all():
+            user.languages.remove(i)
+        for i in user.interests.all():
+            user.interests.remove(i)
+
+        try:
+            photo = request.data['photo']
+            discoverPhoto = request.data['discoverPhoto']
+
+            user.email = email
+            user.first_name = first_name
+            user.last_name = last_name
+            user.description = description
+            user.birthdate = birthdate
+            user.gender = gender
+            user.nationality = nationality
+            user.city = city
+            user.status = status
+            user.profesion = profesion
+            user.civilStatus = civilStatus
+            user.photo = photo
+            user.discoverPhoto = discoverPhoto
+
+            user.save()
+            for i in languages:
+                lang = Language.objects.get(name=i)
+                user.languages.add(lang)
+            for i in interests:
+                inter = Interest.objects.get(name=i)
+                inter.users.add(user)
+        except:
+
+            try:
+                photo = request.data['photo']
+
+                user.email = email
+                user.first_name = first_name
+                user.last_name = last_name
+                user.description = description
+                user.birthdate = birthdate
+                user.gender = gender
+                user.nationality = nationality
+                user.city = city
+                user.status = status
+                user.profesion = profesion
+                user.civilStatus = civilStatus
+                user.photo = photo
+
+                user.save()
+                for i in languages:
+                    lang = Language.objects.get(name=i)
+                    user.languages.add(lang)
+                for i in interests:
+                    inter = Interest.objects.get(name=i)
+                    inter.users.add(user)
+            
+            except:
+                try:
+                    discoverPhoto = request.data['discoverPhoto']
+
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+                    user.discoverPhoto = discoverPhoto
+
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+                except:
+                    user.email = email
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.description = description
+                    user.birthdate = birthdate
+                    user.gender = gender
+                    user.nationality = nationality
+                    user.city = city
+                    user.status = status
+                    user.profesion = profesion
+                    user.civilStatus = civilStatus
+
+                    
+                    
+                    user.save()
+                    for i in languages:
+                        lang = Language.objects.get(name=i)
+                        user.languages.add(lang)
+                    for i in interests:
+                        inter = Interest.objects.get(name=i)
+                        inter.users.add(user)
+            
+
+        finally:
+            return JsonResponse({'message':'Edit performed successfuly'}, status=201)
+
+
+class DeleteUser(APIView):
+    """
+    Change the user's status to deleted
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user_id = request.data.get("user_id", "")
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+
+        user.is_active = False
+        user.save()
+
+        userprofile.languages.clear()
+        userprofile.email = "-"
+        userprofile.first_name = "-"
+        userprofile.last_name = "-"
+        userprofile.description = "-"
+        userprofile.city = "-"
+        userprofile.nationality = "-"
+        userprofile.photo = "user/profile/default.jpg"
+        userprofile.discoverPhoto = "user/discover/d_default.jpg"
+        userprofile.averageRate = 0
+        userprofile.numRate = 0
+        userprofile.isPremium = False
+        userprofile.profesion = "-"
+        userprofile.status = "D"
+        userprofile.save()
+
+        Application.objects.filter(applicant=userprofile).delete()
+        Invitation.objects.filter(sender=userprofile).delete()
+        Invitation.objects.filter(receiver=userprofile).delete()
+
+        return Response(UserProfileSerializer(userprofile, many=False).data)
+
+
+def send_mail(subject, body, email, attachment):
+    """
+    Send an email with an attachment
+    """
+    server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    server.starttls()
+    server.login("way.team.soft@gmail.com", "wayteam2019")
+
+    msg = MIMEMultipart()
+
+    msg['From'] = "way.team.soft@gmail.com"
+    msg['To'] = email
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    if attachment != None:
+        part = MIMEApplication(open(attachment, "rb").read())
+        namePattern = re.compile(r"exported_data_.*")
+        name = namePattern.search(attachment).group(0)
+        part.add_header('Content-Disposition', 'attachment', filename=name)
+        msg.attach(part)
+
+    server.send_message(msg)
+    del msg
+
+    server.quit()
+
+
+class ExportUserData(APIView):
+    """
+    Export the user's data as PDF and send it by email
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def personal_table(self, user, userprofile, language):
+        if language == "es":
+            tableData = [["NOMBRE", userprofile.first_name]]
+            tableData.append(["APELLIDOS", userprofile.last_name])
+            tableData.append(["USERNAME", user.username])
+            tableData.append(["DESCRIPCIÓN", userprofile.description])
+            tableData.append(["GÉNERO", userprofile.gender])
+            tableData.append(["CUMPLEAÑOS", userprofile.birthdate])
+            tableData.append(["CIUDAD", userprofile.city])
+            tableData.append(["NACIONALIDAD", userprofile.nationality])
+            tableData.append(["URL DE FOTO", userprofile.photo])
+            tableData.append(["URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto])
+            tableData.append(["VALORACIÓN MEDIA", userprofile.avarageRate])
+            tableData.append(["NÚMERO DE VALORACIONES", userprofile.numRate])
+            if userprofile.isPremium is True:
+                tableData.append(["FECHA DE PREMIUM", userprofile.datePremium])
+
+        else:
+            tableData = [["NAME", userprofile.first_name]]
+            tableData.append(["LAST NAME", userprofile.last_name])
+            tableData.append(["USERNAME", user.username])
+            tableData.append(["DESCRIPTION", userprofile.description])
+            tableData.append(["GENDER", userprofile.gender])
+            tableData.append(["BIRTHDATE", userprofile.birthdate])
+            tableData.append(["CITY", userprofile.city])
+            tableData.append(["NATIONALITY", userprofile.nationality])
+            tableData.append(["PHOTO'S URL", userprofile.photo])
+            tableData.append(["DISCOVER PHOTO'S URL", userprofile.discoverPhoto])
+            tableData.append(["AVERAGE RATE", userprofile.avarageRate])
+            tableData.append(["RATES NUMBER", userprofile.numRate])
+            if userprofile.isPremium is True:
+                tableData.append(["PREMIUM DATE", userprofile.datePremium])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def created_trips_table(self, trips, language):
+        if language == "es":
+            tableData = [["TÍTULO", "TIPO", "ESTADO"]]
+            
+        else:
+            tableData = [["TITLE", "TYPE", "STATUS"]]
+
+        for trip in trips:
+            tableData.append([trip.title, trip.tripType, trip.status])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def invitations_table(self, sended, received, language):
+        if language == "es":
+            tableData = [["REMITENTE", "RECEPTOR", "ESTADO"]]
+            
+        else:
+            tableData = [["SENDER", "RECEIVER", "STATUS"]]
+
+        for sen in sended:
+            tableData.append([sen.sender.get_full_name(), sen.receiver.first_name, sen.status])
+
+        for rec in received:
+            tableData.append([rec.sender.first_name, rec.receiver.get_full_name(), rec.status])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def applications_table(self, applications, language):
+        if language == "es":
+            tableData = [["VIAJE", "ESTADO"]]
+            
+        else:
+            tableData = [["TRIP", "STATUS"]]
+
+        for app in applications:
+            tableData.append([app.trip.title, app.status])
+       
+        table = Table(data=tableData)
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        return table
+
+    def general_table(self, personal_table, created_trips_table, invitations_table, applications_table, language):
+        sp = ParagraphStyle('parrafos',
+                            alignment=TA_CENTER,
+                            fontSize=12)
+        story = []
+
+        if language == "es":
+            pa1 = Paragraph(u"Datos personales", sp)
+            story.append(pa1)
+            story.append(Spacer(0, 5))
+            story.append(personal_table)
+            story.append(Spacer(0, 20))
+
+            if created_trips_table != "":
+                pa2 = Paragraph(u"Datos de trips creados", sp)
+                story.append(pa2)
+                story.append(Spacer(0, 5))
+                story.append(created_trips_table)
+                story.append(Spacer(0, 20))
+
+            if invitations_table != "":
+                pa3 = Paragraph(u"Datos de peticiones", sp)
+                story.append(pa3)
+                story.append(Spacer(0, 5))
+                story.append(invitations_table)
+                story.append(Spacer(0, 20))
+
+            if applications_table != "":
+                pa4 = Paragraph(u"Datos de solicitudes", sp)
+                story.append(pa4)
+                story.append(Spacer(0, 5))
+                story.append(applications_table)
+
+        else:
+            pa1 = Paragraph(u"Personal data", sp)
+            story.append(pa1)
+            story.append(Spacer(0, 5))
+            story.append(personal_table)
+            story.append(Spacer(0, 20))
+
+            if created_trips_table != "":
+                pa2 = Paragraph(u"Created trips data", sp)
+                story.append(pa2)
+                story.append(Spacer(0, 5))
+                story.append(created_trips_table)
+                story.append(Spacer(0, 20))
+
+            if invitations_table != "":
+                pa3 = Paragraph(u"Invitations data", sp)
+                story.append(pa3)
+                story.append(Spacer(0, 5))
+                story.append(invitations_table)
+                story.append(Spacer(0, 20))
+
+            if applications_table != "":
+                pa4 = Paragraph(u"Applications data", sp)
+                story.append(pa4)
+                story.append(Spacer(0, 5))
+                story.append(applications_table)
+
+        return story
+        
+    def post(self, request):
+        user_id = request.data.get("user_id", "")
+        language = request.data.get("language", "")
+
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+
+        trips = Trip.objects.filter(user=userprofile)
+        sended = Invitation.objects.filter(sender=userprofile)
+        received = Invitation.objects.filter(receiver=userprofile)
+        applications = Application.objects.filter(applicant=userprofile)
+        
+        name = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\exported_data_' + userprofile.get_full_name() + '.pdf'   
+        styles = getSampleStyleSheet()
+        styleN = styles['Normal']
+        styleH = styles['Heading1']
+
+        def header(canvas, doc):
+            canvas.saveState()
+            logo_img = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\img\logo.png'
+            canvas.drawImage(logo_img, 40, 740, 120, 90, preserveAspectRatio=True)
+            canvas.setFont("Helvetica", 16)
+            canvas.drawString(230, 790, u"TRAVEL MATE")
+            canvas.setFont("Helvetica", 14)
+            
+            if language == "es":
+                canvas.drawString(218, 770, u"Sus datos exportados")
+                date = str(time.strftime("%d/%m/%y %H:%M:%S"))
+                canvas.setFont("Helvetica", 12)
+                canvas.drawString(440, 780, date)
+
+            else:
+                canvas.drawString(227, 770, u"User data exported")
+                date = str(time.strftime("%y-%m-%d %H:%M:%S"))
+                canvas.setFont("Helvetica", 12)
+                canvas.drawString(440, 780, date)
+            canvas.restoreState()
+
+        doc = BaseDocTemplate(name, pagesize=A4)
+        frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-1.5*cm, id='normal')
+        template = PageTemplate(id='test', frames=frame, onPage=header)
+        doc.addPageTemplates([template])
+
+        personal_table = self.personal_table(user, userprofile, language)
+        created_trips_table = ""
+        invitations_table = ""
+        applications_table = ""
+        if trips:
+            created_trips_table = self.created_trips_table(trips, language)
+        if sended or received:
+            invitations_table = self.invitations_table(sended, received, language)
+        if applications:
+            applications_table = self.applications_table(applications, language)
+
+        story = self.general_table(personal_table, created_trips_table, invitations_table, applications_table, language)
+        doc.build(story)
+
+        if language == "es":  
+            send_mail("Datos exportados", "Estos son los datos exportados de " + userprofile.get_full_name(), userprofile.email, name)
+        else:  
+            send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
+        os.remove(name)
+        return Response(status=200)
 
 
 def backendWakeUp(request):

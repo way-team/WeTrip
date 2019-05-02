@@ -13,6 +13,7 @@ export class UserProfile {
   avarageRate: Number;
   numRate: Number;
   isPremium: boolean;
+  datePremium: Date;
   status: string;
   profesion: string;
   civilStatus: string;
@@ -86,4 +87,9 @@ export class application_user {
     this.applicantName = applicantName;
     this.applicationId = applicationId;
   }
+}
+
+export class CreatorAndTrip {
+  status: string;
+  trip: Trip;
 }
