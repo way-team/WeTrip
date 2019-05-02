@@ -156,11 +156,18 @@
               {{ 'REGISTER.REQUIRED_FIELD' | translate}}
             </ion-text>
           </p>
-          <p ion-text color="warning" class="text08" *ngIf="!validateBirthdate()">
+          <p ion-text color="warning" class="text08"
+            *ngIf="onRegisterForm.get('birthdate').touched && !validateBirthdate()">
             <ion-text color="warning">
               {{ 'REGISTER.FUTURE_BIRTHDATE' | translate}}
             </ion-text>
           </p>
+          <p ion-text color="warning" class="text08" *ngIf="onRegisterForm.get('birthdate').touched && !isAdult()">
+            <ion-text color="warning">
+              {{ 'REGISTER.NOT_ADULT' | translate}}
+            </ion-text>
+          </p>
+
           <ion-item no-padding>
             <ion-label position="floating">
               <ion-icon name="briefcase" item-start></ion-icon>
@@ -331,7 +338,8 @@
     <br>
     <div margin-top>
       <ion-button *ngIf="edit !== 'edit'" icon-left size="medium" expand="full" shape="round" color="dark"
-        (click)="signUp()" [disabled]="!onRegisterForm.valid || !confirmPasswordValidation() || !validateBirthdate()"
+        (click)="signUp()"
+        [disabled]="!onRegisterForm.valid || !confirmPasswordValidation() || !validateBirthdate() || !isAdult()"
         tappable>
         <ion-icon name="log-in"></ion-icon>
         {{ 'REGISTER.SIGN_UP' | translate}}
@@ -340,7 +348,7 @@
     </div>
     <div margin-top>
       <ion-button *ngIf="edit === 'edit'" icon-left size="medium" expand="full" shape="round" color="dark"
-        (click)="editUser()" [disabled]="!onRegisterForm.valid  || !validateBirthdate()" tappable>
+        (click)="editUser()" [disabled]="!onRegisterForm.valid  || !validateBirthdate() || !isAdult()" tappable>
         <ion-icon name="log-in"></ion-icon>
         {{ 'REGISTER.EDIT' | translate}}
       </ion-button>

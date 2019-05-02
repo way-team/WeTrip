@@ -365,64 +365,22 @@ export class RegisterPage implements OnInit {
   validateBirthdate() {
     const birthdate = new Date(this.birthdate);
     const today = new Date();
-    this.isAdult(birthdate);
 
-    if (birthdate > today || !this.isAdult(birthdate)) {
+    if (birthdate > today) {
       return false;
     }
     return true;
   }
 
-  private isAdult(birthdate: Date): boolean {
+  private isAdult(): boolean {
     const today = new Date();
-    const today_year = today.getFullYear();
-    const today_month = today.getMonth() + 1;
-    const today_day = today.getDate();
+    const birthdate = new Date(this.birthdate);
 
-    let edad = today_year + 1900 - birthdate.getFullYear();
-    if (today_month < birthdate.getMonth()) {
+    var edad = today.getFullYear() - birthdate.getFullYear();
+    var m = today.getMonth() - birthdate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
       edad--;
-    }
-    if (
-      birthdate.getMonth() == today_month &&
-      today_day < birthdate.getDate()
-    ) {
-      edad--;
-    }
-    if (edad > 1900) {
-      edad -= 1900;
-    }
-
-    // calculamos los meses
-    let meses = 0;
-
-    if (today_month > birthdate.getMonth() && birthdate.getDate() > today_day) {
-      meses = today_month - birthdate.getMonth() - 1;
-    } else if (today_month > birthdate.getMonth()) {
-      meses = today_month - birthdate.getMonth();
-    }
-
-    if (today_month < birthdate.getMonth() && birthdate.getDate() < today_day) {
-      meses = 12 - (birthdate.getMonth() - today_month);
-    } else if (today_month < birthdate.getMonth()) {
-      meses = 12 - (birthdate.getMonth() - today_month + 1);
-    }
-
-    if (
-      today_month == birthdate.getMonth() &&
-      birthdate.getDate() > today_day
-    ) {
-      meses = 11;
-    }
-    // calculamos los dias
-    let dias = 0;
-    if (today_day > birthdate.getDate()) {
-      dias = today_day - birthdate.getDate();
-    }
-
-    if (today_day < birthdate.getDate()) {
-      let ultimoDiaMes = new Date(today_year, today_month - 1, 0);
-      dias = ultimoDiaMes.getDate() - (birthdate.getDate() - today_day);
     }
 
     return edad > 18;

@@ -300,7 +300,8 @@
     "THIS_FIELD_IS_REQUIRED": "Este campo es obligatorio",
     "USERNAME": "Usuario",
     "WIDOW": "Viudo",
-    "WIDOWER": "Viuda"
+    "WIDOWER": "Viuda",
+    "NOT_ADULT": "Debes tener más de 18 años"
   },
   "SEARCH": {
     "MY_TRIPS": "Acceder a Mis viajes creados",
