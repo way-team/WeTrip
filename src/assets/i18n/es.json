@@ -324,14 +324,19 @@
     "SPANISH": "Español",
     "TYPE": "Tipo"
   },
-  "SETTIGNS": {
+  "SETTINGS": {
     "APP_LANGUAGE": "Idioma de la aplicación",
     "APP_SETTINGS": "Configuración de la aplicación",
     "GENERAL": "General",
     "LOGOUT": "Cerrar sesión",
-    "PROFILE": "Perfil"
-  },
-  "SETTINGS": {
+    "PROFILE": "Perfil",
+    "EXPORT": "Exportar información",
+    "EXPLICATION_EXPORT": "Si continúa, se enviará un mensaje con todos sus datos a su correo electrónico.",
+    "CONFIRM_QUESTION": "¿Desea contiuar?",
+    "EXPORT_ERROR_1": "Lo sentimos, ha ocurrido un error mientras exportábamos los datos.",
+    "EXPORT_ERROR_2": "Si el error persiste contacte con un administrador.",
+    "EXPORT_OK_1": "Se han exportado todos sus datos correctamente",
+    "EXPORT_OK_2": "Muchas gracias por confiar en TravelMate.",
     "EXPORT_DATA": "Exportar tus datos"
   },
   "TRIPS": {
