@@ -2,7 +2,7 @@
   "ABOUT": {
     "ABOUTUS": "About us",
     "BACK_DEVELOPER": "Back-end developer",
-    "DESCRIPTION_1": "If you want to travel somewhere around the world but you can’t find anyone to go with you, we have a solution.",
+    "DESCRIPTION_1": "If you want to travel somewhere around the world but you can’t find anyone to go with you, we have the solution.",
     "DESCRIPTION_2": "Our goal is to help people in this situation by finding the best partner to travel together, so you can have a wonderful experience.",
     "FRONT_DEVELOPER": "Front-end developer",
     "MANAGER_AND_FRONT_DEVELOPER": "Manager and Front-end developer",
@@ -18,11 +18,11 @@
     "ALERT_MESSAGE_CANCEL": "Cancel",
     "ALERT_MESSAGE_CONFIRM": "Confirm",
     "ALERT_MESSAGE_HEADER": "Remove friend",
-    "ALERT_MESSAGE_MESSAGE": "Are you sure of removing this user? Remember to rate him to preserve Travelmate's community safety",
+    "ALERT_MESSAGE_MESSAGE": "Are you sure you want to remove this user? Remember to rate him to preserve Travelmate's community safety.",
     "ALERT_MESSAGE_SUCCESS": "Friend deleted successfully!",
     "CONTACTS": "Contacts",
     "THEY_WANT_TO_MEET_YOU": "They want to meet you",
-    "YOU_WANT_TO_MEET": "you want to meet (pending acceptance)"
+    "YOU_WANT_TO_MEET": "You want to meet (pending acceptance)"
   },
   "CREATE_TRIP": {
     "CITY": "Cities",
@@ -36,8 +36,8 @@
     "PRIVACY_POLICIES": "Privacy policies",
     "PRIVATE": "Private",
     "PUBLIC": "Public",
-    "PUBLIC_ALERT": "You've selected Public",
-    "PUBLIC_ALERT_M": "If you save this mode, you will not be able to edit this trip and people could start applying it",
+    "PUBLIC_ALERT": "You've selected Public mode.",
+    "PUBLIC_ALERT_M": "If you save the trip in this mode, you will not be able to edit it and people will be able to start applying to it.",
     "REQUIRED_FIELD": "Required field",
     "SAVE": "Save",
     "START_DATE": "Start date",
@@ -46,7 +46,7 @@
     "TRIP": "Trip",
     "TYPE": "Type",
     "UPLOAD_AN_IMAGE": "Upload an image",
-    "WARNING_DATE": "End date can not been set before the start date",
+    "WARNING_DATE": "End date can not be set before the start date",
     "WARNING_DATE_MIN": "Can not set a past date"
   },
   "DASHBOARD": {
@@ -108,7 +108,7 @@
   },
   "DISCOVER": {
     "ALERT_MESSAGE": "Pending acceptance",
-    "ALERT_TITLE": "Friendship invitation send",
+    "ALERT_TITLE": "Friendship invitation sent",
     "CONTACT": "Contact",
     "DISCOVER": "Discover",
     "LOADING": "Loading more data...",
@@ -126,7 +126,7 @@
     "TEXT_13": ".",
     "TEXT_14": ".",
     "TEXT_15": "What happens when you interact with another user?",
-    "TEXT_16": "Travelmate will store any interaction you make with other users, contact requests and rejections you make to update your preferences and adapt the application to your wishes. The messages in the chat, will be stored too for later recoveries. That is why we will store them in our servers and ",
+    "TEXT_16": "Travelmate will store any interaction you make with other users, contact requests and rejections you make to update your preferences and adapt the application to your wishes. The messages in the chat will be stored too for later recoveries. That is why we will store them in our servers and ",
     "TEXT_17": "What happens when you join a trip?",
     "TEXT_18": " We will store that information on our servers and ",
     "TEXT_18B": " and it will be shown to the rest of the users as part of the trip information, that way they know that if they join the trip, they are traveling with you.",
@@ -198,14 +198,14 @@
   },
   "NOTIFICATIONS": {
     "NOTIFICATIONS": "Notifications",
-    "THERE_ARE_NOT_NOTIFICATIONS": "Ther are not notifications."
+    "THERE_ARE_NOT_NOTIFICATIONS": "There aren't any new notifications."
   },
   "PREMIUM": {
     "EXPIRATION": "Expiration date: ",
     "IS_PREMIUM": "You are Premium",
     "JOIN": "Our Premium club",
     "LANG": "en_US",
-    "NEW_PREMIUM": "Congratulations! You are a member of our Premium club",
+    "NEW_PREMIUM": "Congratulations! You are now a member of our Premium club",
     "PREMIUM": "Premium",
     "TEXT_1": "With the premium version, you will enjoy our app without ads and your trips will have preferential location.",
     "TEXT_2": "Also, you guarantee your identity and your possible companions will feel at ease."
@@ -223,9 +223,9 @@
     "DELETED": "User deleted",
     "DELETE_BUTTON": "Delete account",
     "DELETE_ERROR_1": "Sorry, current operation failed.",
-    "DELETE_ERROR_2": "If you can not delete your data, contact an administrator.",
-    "DELETE_USER_1": "You are close to delete all your application data.",
-    "DELETE_USER_2": "This operation can not be undone and you will not be able to access the application with this account later.",
+    "DELETE_ERROR_2": "If you can not delete your data, contact an administrator at way.team.soft@gmail.com.",
+    "DELETE_USER_1": "You are about to delete all your data stored in our application.",
+    "DELETE_USER_2": "This operation can not be undone and you will not be able to access the application with this account anymore.",
     "DELETE_USER_3": " Do you wish to continue?",
     "DIVORCED": "Divorced",
     "EDIT_PROFILE": "Edit profile",
@@ -233,7 +233,7 @@
     "EMAIL": "Email",
     "FEMALE": "Female",
     "FULL_NAME": "Full name",
-    "FUTURE_VISIT": "Trips where I am applied",
+    "FUTURE_VISIT": "Trips I joined",
     "GENDER": "Gender",
     "HAS_VISITED": "Has visited",
     "LANGUAGES": "Languages",
@@ -257,7 +257,7 @@
   "RATING": {
     "RATE": "Rate",
     "RATING": "Rating",
-    "SUCCESS": "Thanks!. When you rate you are helping other users"
+    "SUCCESS": "Thanks! When you rate you are helping other users."
   },
   "REGISTER": {
     "BIRTHDATE": "Birthdate",
@@ -332,10 +332,10 @@
     "LOGOUT": "Logout",
     "PROFILE": "Profile",
     "EXPORT": "Data export",
-    "EXPLICATION_EXPORT": "If you continue, we will send all data in a message to your email account.",
+    "EXPLICATION_EXPORT": "If you continue, we will send all your data in a message to your email account.",
     "CONFIRM_QUESTION": "Do you wish to continue?",
-    "EXPORT_ERROR_1": "Sorry, an error has ocurred while we was exporting data.",
-    "EXPORT_ERROR_2": "If the error persists, contact an administrator.",
+    "EXPORT_ERROR_1": "Sorry, an error has ocurred while we were exporting your data.",
+    "EXPORT_ERROR_2": "If the error persists, please contact an administrator at way.team.soft@gmail.com",
     "EXPORT_OK_1": "All data was exported successfully",
     "EXPORT_OK_2": "Thank you very much for trusting TravelMate.",
     "EXPORT_DATA": "Export your data"
@@ -344,7 +344,7 @@
     "APPLICATION_SEND": "Your application has been sent.",
     "CONGRATULATION": "Congratulations!",
     "CREATE_NEW_TRIP": "Create a new trip",
-    "ERROR": "Something went wrong. Contact travelmate way.team.soft@gmail.com",
+    "ERROR": "Something went wrong. Contact travelmate at way.team.soft@gmail.com",
     "TRIPS": "My created trips",
     "WITHOUT_TRIPS": "You don't have any trip yet"
   },
