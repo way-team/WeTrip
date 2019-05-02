@@ -6,7 +6,8 @@ import {
   ToastController,
   PopoverController,
   ModalController,
-  LoadingController
+  LoadingController,
+  Events
 } from '@ionic/angular';
 
 // Modals
@@ -45,10 +46,15 @@ export class DiscoverPage {
     private _translate: TranslateService,
     public dM: DataManagement,
     public cookieService: CookieService,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    public events: Events
   ) {
     this.getInit(12, 0);
     this.getData(12, 12);
+    events.subscribe('user:edited', () => {
+      this.getInit(12, 0);
+      this.getData(12, 12);
+    });
   }
 
   scrollToTop() {
