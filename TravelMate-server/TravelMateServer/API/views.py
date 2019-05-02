@@ -635,7 +635,7 @@ class CreateTrip(APIView):
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
 
-        if data.get["startDate"] > data.get["endDate"]:
+        if data.get('start_date') > data.get('end_date'):
             raise ValueError("The start date must be before the end date")
 
 
