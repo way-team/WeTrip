@@ -37,11 +37,10 @@
       </ion-card-header>
       <ion-card-content>
         <form [formGroup]="onRegisterForm">
-          <ng-component *ngIf="edit !== 'edit'">
+          <div *ngIf="edit !== 'edit'">
             <ion-item>
               <ion-label position="floating">
-                <ion-icon name="person" item-start></ion-icon>
-                {{ 'REGISTER.USERNAME' | translate}}
+                <ion-icon name="person" item-start></ion-icon>{{ 'REGISTER.USERNAME' | translate}}
               </ion-label>
               <ion-input color="secondary" type="text" maxlength="30" formControlName="username" [(ngModel)]="username">
               </ion-input>
@@ -88,7 +87,7 @@
                 {{ 'REGISTER.PASSWORD_VALIDATION_FALSE' | translate}}
               </ion-text>
             </p>
-          </ng-component>
+          </div>
 
           <ion-item no-padding>
             <ion-label position="floating">

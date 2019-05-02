@@ -37,10 +37,10 @@ export class AppComponent {
     events.subscribe('user:edited', () => {
       this.dm.getUserLogged(this.cookieService.get('token')).then(res => {
         this.userLogged = res;
+        this.events.publish('user:updateDiscover');
         this.navCtrl.navigateForward('/discover');
       });
     });
-    console.log('hola');
     if (!this.cookieService.check('token')) {
       this.userLogged = null;
     } else {
