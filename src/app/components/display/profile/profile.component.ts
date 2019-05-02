@@ -43,31 +43,23 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.isMyProfile();
 
-    console.log("pasado");
     this.creatorsAndPastTrips = this.createAndTripFunction(this.user.past_joined_trips);
-    console.log("futuro");
     this.creatorsAndFutureTrips = this.createAndTripFunction(this.user.future_joined_trips);
   }
 
   createAndTripFunction(listTrip: Trip[]){
-    console.log("accediendo a funcion");
-    console.log(listTrip);
     var creatorsAndTrips: CreatorAndTrip[] = [];
     for(let trip of listTrip){
       this.dm
       .getUserBy(trip.creator, this.cookieService.get('token'))
       .then(userProfile => {
-        console.log("insertando viaje");
         this.creator = userProfile;
         this.creatorAndTrip = new CreatorAndTrip;
         this.creatorAndTrip.status = this.creator.status;
-        console.log(this.creatorAndTrip.status);
         this.creatorAndTrip.trip = trip;
-        console.log(this.creatorAndTrip.trip);
         creatorsAndTrips.push(this.creatorAndTrip);
       });
     }
-    console.log(creatorsAndTrips);
 
     return creatorsAndTrips;
   }

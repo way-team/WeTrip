@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from django.http import FileResponse, HttpResponse
 from rest_framework import generics, filters
 from .models import UserProfile, Trip, Invitation, City, Rate, Application, Language, Interest
 from django.contrib.auth.models import User
@@ -22,9 +23,16 @@ from email.mime.application import MIMEApplication
 from string import Template
 import smtplib
 import re
+import os
 import json
+import time
 from io import BytesIO
-#from reportlab.pdfgen import canvas
+from django.conf import settings
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
 
 
 def get_user_by_token(request):
@@ -467,7 +475,7 @@ class DiscoverPeopleView(APIView):
         
         #Now, we get friends of the user's friends
         for friend in friends:
-            friendsOfFriend, pending, rejected = get_friends(friend, False)
+            friendsOfFriend, pendingOfFriend, rejectedOfFriend = get_friends(friend, False)
 
             for f in friendsOfFriend:
                 ranking.append(f)
@@ -476,7 +484,6 @@ class DiscoverPeopleView(APIView):
         #We get users who are going (or went) on the same trips as the user
         userApps = Application.objects.filter(applicant= user, status='A')
         for a in userApps:
-            print(a.trip)
             applications = Application.objects.filter(trip=a.trip, status="A")
 
 
@@ -488,9 +495,10 @@ class DiscoverPeopleView(APIView):
         ranking = collections.Counter(ranking).most_common()
         discover_people = [i[0] for i in ranking]
 
+        
         #This line gets rid of duplicated users in the list
         discover_people = list(dict.fromkeys(discover_people))
-
+        
 
         '''all_users = list(UserProfile.objects.all())
         for person in discover_people:
@@ -1358,9 +1366,13 @@ class DeleteUser(APIView):
         userprofile.status = "D"
         userprofile.save()
 
+        Application.objects.filter(applicant=userprofile).delete()
+        Invitation.objects.filter(sender=userprofile).delete()
+        Invitation.objects.filter(receiver=userprofile).delete()
+
         return Response(UserProfileSerializer(userprofile, many=False).data)
 
-
+"""
 def send_mail(subject, body, email, attachment):
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
@@ -1385,112 +1397,76 @@ def send_mail(subject, body, email, attachment):
     del msg
 
     server.quit()
+"""
 
-# En desarrollo
+
+# TODO: Cambiar el idioma de los textos según el idioma seleccionado -> Recibir el idioma en el POST
+# TODO: Lista de viajes creados
+# TODO: Lista de viajes a los que está apuntado -> Devolver las applicants, nos los viajes en sí
+# TODO: Lista de amigos agregados
+# TODO: Poner una leyenda antes de cada tabla
 class ExportUserData(APIView):
     """
-    Export the user's data and send it to his email
+    Export the user's data as PDF
     """
+    #permission_classes = (IsAuthenticated, )
+    #authentication_classes = (TokenAuthentication, SessionAuthentication)
+
     def header(self, pdf):
-        #Utilizamos el archivo logo_django.png que está guardado en la carpeta media/imagenes
-        archivo_imagen = settings.MEDIA_ROOT+'/imagenes/logo_django.png'
-        #Definimos el tamaño de la imagen a cargar y las coordenadas correspondientes
-        pdf.drawImage(archivo_imagen, 40, 750, 120, 90, preserveAspectRatio=True)
-        #Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
+        logo_img = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\img\logo.png'
+        pdf.drawImage(logo_img, 40, 740, 120, 90, preserveAspectRatio=True)
         pdf.setFont("Helvetica", 16)
-        #Dibujamos una cadena en la ubicación X,Y especificada
-        pdf.drawString(230, 790, u"PYTHON PIURA")
+        pdf.drawString(230, 790, u"TRAVEL MATE")
         pdf.setFont("Helvetica", 14)
-        pdf.drawString(200, 770, u"REPORTE DE PERSONAS")
+        pdf.drawString(227, 770, u"User data exported")
+        date = str(time.strftime("%d/%m/%y %H:%M:%S"))
+        pdf.setFont("Helvetica", 12)
+        pdf.drawString(440, 780, date)
 
-    def table(self, pdf, y):
-        #Creamos una tupla de encabezados para neustra tabla
-        encabezados = ('DNI', 'Nombre', 'Apellido Paterno', 'Apellido Materno')
-        #Creamos una lista de tuplas que van a contener a las personas
-        detalles = [(persona.dni, persona.nombre, persona.apellido_paterno, persona.apellido_materno) for persona in Persona.objects.all()]
-        #Establecemos el tamaño de cada una de las columnas de la tabla
-        detalle_orden = Table([encabezados] + detalles, colWidths=[2 * cm, 5 * cm, 5 * cm, 5 * cm])
-        #Aplicamos estilos a las celdas de la tabla
-        detalle_orden.setStyle(TableStyle(
-            [
-                #La primera fila(encabezados) va a estar centrada
-                ('ALIGN',(0,0),(3,0),'CENTER'),
-                #Los bordes de todas las celdas serán de color negro y con un grosor de 1
-                ('GRID', (0, 0), (-1, -1), 1, colors.black), 
-                #El tamaño de las letras de cada una de las celdas será de 10
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ]
-        ))
-        #Establecemos el tamaño de la hoja que ocupará la tabla 
-        detalle_orden.wrapOn(pdf, 800, 600)
-        #Definimos la coordenada donde se dibujará la tabla
-        detalle_orden.drawOn(pdf, 60, y)
+    def table(self, pdf, user, userprofile):
+        tableData = [["NOMBRE", userprofile.first_name]]
+        tableData.append(["APELLIDOS", userprofile.last_name])
+        tableData.append(["USERNAME", user.username])
+        tableData.append(["DESCRIPCIÓN", userprofile.description])
+        tableData.append(["GÉNERO", userprofile.gender])
+        tableData.append(["CUMPLEAÑOS", userprofile.birthdate])
+        tableData.append(["CIUDAD", userprofile.city])
+        tableData.append(["NACIONALIDAD", userprofile.nationality])
+        tableData.append(["URL DE FOTO", userprofile.photo])
+        tableData.append(["URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto])
+        tableData.append(["VALORACIÓN MEDIA", userprofile.avarageRate])
+        tableData.append(["NÚMERO DE VALORACIONES", userprofile.numRate])
+        if userprofile.isPremium is True:
+            tableData.append(["FECHA DE PREMIUM", userprofile.datePremium])
+       
+        table = Table(data=tableData)   #colWidths=[2*cm, 5*cm, 5*cm, 5*cm]
+        table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                   ('INNERGRID', (0, 0), (0, 1), 0.5, colors.black),
+                                   ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                   ('FONTSIZE', (0, 0), (-1, -1), 10),
+                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        table.wrapOn(pdf, 800, 600)
+        table.drawOn(pdf, 60, 500)
+    
+    def post(self, request):
+        user_id = request.data.get("user_id", "")
 
-    def get(self, request, *args, **kwargs):
-        #Indicamos el tipo de contenido a devolver, en este caso un pdf
+        user = User.objects.get(pk=user_id)
+        userprofile = user.userprofile
+        
         response = HttpResponse(content_type='application/pdf')
-        #La clase io.BytesIO permite tratar un array de bytes como un fichero binario, se utiliza como almacenamiento temporal
         buffer = BytesIO()
-        #Canvas nos permite hacer el reporte con coordenadas X y Y
-        pdf = canvas.Canvas(buffer)
-        #Llamo al método cabecera donde están definidos los datos que aparecen en la cabecera del reporte.
-        self.cabecera(pdf)
-        y = 600
-        self.tabla(pdf, y)
-        #Con show page hacemos un corte de página para pasar a la siguiente
+        pdf = canvas.Canvas(buffer, pagesize=A4)
+        self.header(pdf)
+        self.table(pdf, user, userprofile)
         pdf.showPage()
         pdf.save()
         pdf = buffer.getvalue()
         buffer.close()
         response.write(pdf)
         return response
-
-"""
-    def post(self, request):
-        user_id = request.data.get("user_id", "")
-        email = request.data.get("email", "")
-
-        user = User.objects.get(pk=user_id)
-        userprofile = user.userprofile
-
-        # date = time.strftime("%d-%m-%y_%H-%M-%S")
-
-        tableData = [("NOMBRE", userprofile.first_name)]
-        tableData.append([("APELLIDOS", userprofile.last_name)])
-        tableData.append([("USERNAME", user.username)])
-        tableData.append([("DESCRIPCIÓN", userprofile.description)])
-        tableData.append([("GÉNERO", userprofile.gender)])
-        tableData.append([("CUMPLEAÑOS", userprofile.birthdate)])
-        tableData.append([("CIUDAD", userprofile.city)])
-        tableData.append([("NACIONALIDAD", userprofile.nationality)])
-        tableData.append([("URL DE FOTO", userprofile.photo)])
-        tableData.append([("URL DE FOTO DEL DISCOVER", userprofile.discoverPhoto)])
-        tableData.append([("VALORACIÓN MEDIA", userprofile.averageRate)])
-        tableData.append([("NÚMERO DE VALORACIONES", userprofile.numRate)])
-        if userprofile.isPremium is True:
-            tableData.append([("FECHA DE PREMIUM", userprofile.datePremium)])
-
-        estiloHoja = getSampleStyleSheet()
-        story = []
-
-        # TODO: Cambiar estilo de la tabla y añadir cabeceras, fechas, nombre de la compañia, etc
-        tabla = Table(data=tableData)
-        tabla.setStyle(TableStyle([('ALIGN', (1, 1), (-2, -2), 'RIGHT'),
-                                   ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                                   ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                                   ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                                   ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
-
-        story.append(tabla)
-        
-        # Problema actual: el doc se tendria que guardar en alguna carpeta del proyecto antes de enviarlo
-        doc = SimpleDocTemplate("exported_data_" + user.username + ".pdf", pagesize=A4, leftMargin=1, rightMargin=1, topMargin=2, bottomMargin=2)
-        doc.build(story)
-        
-        send_mail("Exported data", "This is the exported data of " + user.username, email, "exported_data_" + user.username + ".pdf")
-
-        os.remove("exported_data_" + user.username + ".pdf")
-"""
+        #return FileResponse(buffer, as_attachment=True, filename='exported_data.pdf')
 
 
 def backendWakeUp(request):

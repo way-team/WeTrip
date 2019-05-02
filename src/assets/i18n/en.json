@@ -300,7 +300,8 @@
     "THIS_FIELD_IS_REQUIRED": "This field is required",
     "USERNAME": "Username",
     "WIDOW": "Widow",
-    "WIDOWER": "Widower"
+    "WIDOWER": "Widower",
+    "NOT_ADULT": "You must be over 18 years old"
   },
   "SEARCH": {
     "MY_TRIPS": "Access to My created trips",
