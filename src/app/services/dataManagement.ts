@@ -505,4 +505,16 @@ export class DataManagement {
   public turnOnDjangoServer() {
     this.restService.turnOnDjangoServer();
   }
+
+  public exportData(id: Number): Promise<any> {
+    return this.restService
+      .exportData(id)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(error => {
+        return Promise.reject(error);
+      });
+  }
+
 }

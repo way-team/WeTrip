@@ -13,7 +13,7 @@
     <div *ngIf="edit !== 'edit'" class="arriba">
       <ion-item style="width:350px; float: right;">
         <ion-icon name="md-globe" slot="start" color="light"></ion-icon>
-        <ion-label color="light">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
+        <ion-label color="light">{{ 'SETTINGS.APP_LANGUAGE' | translate}}</ion-label>
         <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
           <ion-select-option value="es">Español</ion-select-option>
           <ion-select-option value="en">English</ion-select-option>
@@ -348,7 +348,7 @@
     </div>
     <div margin-top>
       <ion-button *ngIf="edit === 'edit'" icon-left size="medium" expand="full" shape="round" color="dark"
-        (click)="editUser()" [disabled]="!onRegisterForm.valid  || !validateBirthdate() || !isAdult()" tappable>
+        (click)="editUser()" [disabled]="!onRegisterForm.valid  || !validateBirthdate() " tappable>
         <ion-icon name="log-in"></ion-icon>
         {{ 'REGISTER.EDIT' | translate}}
       </ion-button>

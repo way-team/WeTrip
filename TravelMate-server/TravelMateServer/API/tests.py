@@ -812,44 +812,53 @@ class TravelMateTests(APITestCase):
   
   
   
-    def test_get_discover_view(self):
-        """The method 'getDiscover' has to return a list with all the users with a few of interest same of yours."""
+    
 
-        # We log in as user4
-        self.user = self.user4
+
+    def test_create_trip(self):
+        """The method 'createTrip' allows users to create their own trips"""
+      
+        # We log in as user1
+        self.user = self.user1
         self.token = Token.objects.create(user=self.user)
         self.api_authentication()
+        
+        #Let's check the current number of trips
+        numTripsBefore = Trip.objects.count()
 
-        # We are still logged as user4
-        data = {"token":self.token.key, "limit": "0", "offset": "3"}
-        response = self.client.post(reverse('get_discover'), data, format='json')
+        # This is the trip we want to create. We add two cities to the trip - city1 and city2
+        cities = []
+        cities.append(1)
+        cities.append(2)
+        cities = json.dumps(cities)
+        
+        data = {
+        "user_id": "1" , 
+        "title": "trip13", 
+        "description": "trip13 description", 
+        "price": 7200, 
+        "start_date": "2019-05-24", 
+        "end_date": "2019-05-31", 
+        "tripType": "PUBLIC", 
+        "cities": cities,
+        "file": ""
+        }
+
+        response = self.client.post(reverse('create_trip'), data, format='json')
        
+        # Let's check the HTTP status of the response
         self.assertEqual(200, response.status_code)
 
-        # will response wiht users with ordered for the number of coincidences on trips, friends and interest. user2 and 4 have the more coincidences and dont have an Invitation on pending, accepted or rejected
-        jsonResponse = response.json()
-    
-        # let's check it
-        self.assertEqual(jsonResponse[0]['user']['username'], self.user2.username)
+        #Let's check the number of trips now
+        numTripsAfter = Trip.objects.count()
 
+        #A new trip was created
+        self.assertEqual(numTripsBefore+1, numTripsAfter)
 
-    #def test_create_trip(self):
-    #    """The method 'createTrip' is used to create a trip related with the user logged."""
-      
-          # We log in as user1
-    #    self.user = self.user1
-    #    self.token = Token.objects.create(user=self.user)
-    #    self.api_authentication()
-        
-    #    data = {'username':'user1','file':'trip/default_trip.jpg', 'cities': ['Sofía'], 'end_date':'28-06-2019','start_date':'20-06-2019', 'price': 2000, 'description': 'new trip descrption','title':'new Trip', 'trip_type':'PUBLIC'}
+        #Let's check that the new trip really has 2 cities
+        self.assertTrue(Trip.objects.get(pk=13).cities.count() == 2)
 
-    #    response = self.client.post(reverse('create_trip'), data=json.dumps(data), content_type='application/json')
        
-    #    self.assertEqual(200, response.status_code)
-
-        #The trip has been created.
-    #    self.assertIn(Trip.objects.get(title=trip13) , Trip.objects)
-
 
 
     def test_get_trip(self):
@@ -875,39 +884,19 @@ class TravelMateTests(APITestCase):
 
 
 
-    #def test_edit_trip(self):
-    #    """The method 'editTrip' is used to edit a trip self made and  in private mode."""
-      
-        # We log in as user2
-    #    self.user = self.user2
-    #    self.token = Token.objects.create(user=self.user)
-    #    self.api_authentication()
-
-        # Let's check the current name of the title trip
-    #    data = {"token":self.token.key, "tripId": "4" , "username": "user2" , "title": "tripEdited", "description": "trip13 description", "price": "2000", "startDate": "20-05-2019", "endDate": "20-06-2019", "tripType": "PUBLIC"}
-    #    self.assertEqual(self.trip4.title, 'trip4')
-        
-
-    #    response = self.client.post(reverse('edit_trip'), data, format='json')
-       
-    #    self.assertEqual(200, response.status_code)
-
-        # Let's see how the title has been changed
-    #    self.assertEqual(self.trip4.title, 'tripEdited')
-        
-    #def test_register_user(self):
-    #   The method 'registerUser' is used to regist an user on the application.
-    #   
-    #   data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"language1":"english"}, "interests": {"interest1":"cooking"}}
-
-    #   response = self.client.post(reverse('register_user'), data, format='json')
-       
-    #   self.assertEqual(200, response.status_code)
-
-        #The user has been registed.
-    #   statusAfter = UserProfile.objects
-    #   self.assertIn(self.userprofile7 ,statusAfter)
     
+        
+
+    def test_register_user(self):
+        """The method 'registerUser' is used to regist an user."""
+      
+        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"english"}, "interests":{"cooking"}}
+
+        response = self.client.post(reverse('register_user'), data, format='json')
+       
+        self.assertEqual(201, response.status_code)
+        #The user has been registed.
+        self.assertEqual(UserProfile.objects.get(pk=7).user.username, 'user7')  
 
 
 
@@ -1021,6 +1010,27 @@ class TravelMateTests(APITestCase):
         serializer = UserSerializer(user, many=False)
 
         self.assertEqual(jsonResponse['user'], serializer.data)
+
+    
+def test_get_discover_view(self):
+        """The method 'getDiscover' has to return a list with all the users with a few of interest same of yours."""
+
+        # We log in as user4
+        self.user = self.user4
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        # We are still logged as user4
+        data = {"token":self.token.key, "limit": "0", "offset": "3"}
+        response = self.client.post(reverse('get_discover'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
+
+        # will response wiht users with ordered for the number of coincidences on trips, friends and interest. user2 and 4 have the more coincidences and dont have an Invitation on pending, accepted or rejected
+        jsonResponse = response.json()
+    
+        # let's check it
+        self.assertEqual(jsonResponse[0]['user']['username'], self.user2.username)
 
     
       
