@@ -631,10 +631,27 @@ export class RestWS extends AbstractWS {
 
   public deleteUser(id) {
     const fd = new FormData();
-    const Authorization = this.cookieService.get('token');
-    fd.append('token', Authorization);
+    const authorization = this.cookieService.get('token');
+    fd.append('token', authorization);
     fd.append('user_id', id);
-    return this.makePostRequest(this.path + 'deleteUser/', fd, Authorization)
+    return this.makePostRequest(this.path + 'deleteUser/', fd, authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+        return Promise.reject(err);
+      });
+  }
+
+  public exportData(id) {
+    const fd = new FormData();
+    const authorization = this.cookieService.get('token');
+    const language = this.cookieService.get('lang');
+    fd.append('token', authorization);
+    fd.append('user_id', id);
+    fd.append('language', language);
+    return this.makePostRequest(this.path + 'exportData/', fd, authorization)
       .then(res => {
         return Promise.resolve(res);
       })

@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-back-button color="primary"></ion-back-button>
     </ion-buttons>
-    <ion-title color="light">{{ 'SETTIGNS.APP_SETTINGS' | translate}}</ion-title>
+    <ion-title color="light">{{ 'SETTINGS.APP_SETTINGS' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="userLogged">
   <ion-item class="bg-profile">
     <ion-avatar slot="start">
-      <img src="{{userLogged.photo}}" class="user-avatar" alt="{{ 'SETTIGNS.PROFILE' | translate}}">
+      <img src="{{userLogged.photo}}" class="user-avatar" alt="{{ 'SETTINGS.PROFILE' | translate}}">
     </ion-avatar>
     <ion-label>
       <ion-text color="light">
@@ -26,7 +26,7 @@
 
       <ion-button icon-left size="small" shape="round" color="secondary" (click)="logout()">
         <ion-icon name="log-out"></ion-icon>
-        {{ 'SETTIGNS.LOGOUT' | translate}}
+        {{ 'SETTINGS.LOGOUT' | translate}}
       </ion-button>
     </ion-label>
   </ion-item>
@@ -34,18 +34,23 @@
   <ion-list no-border>
     <ion-list-header>
       <ion-text color="dark">
-        <h5>{{ 'SETTIGNS.GENERAL' | translate}}</h5>
+        <h5>{{ 'SETTINGS.GENERAL' | translate}}</h5>
       </ion-text>
     </ion-list-header>
     <ion-item>
       <ion-icon name="settings" slot="start" color="primary"></ion-icon>
-      <ion-label color="primary">{{ 'SETTIGNS.APP_LANGUAGE' | translate}}</ion-label>
+      <ion-label color="primary">{{ 'SETTINGS.APP_LANGUAGE' | translate}}</ion-label>
       <ion-select [(ngModel)]="idioma" (ionChange)="changeLanguage($event)">
         <ion-select-option value="es">Español</ion-select-option>
         <ion-select-option value="en">English</ion-select-option>
       </ion-select>
     </ion-item>
 
+    <ion-item>
+      <div style="text-align:center;" (click)="exportData()">
+        <ion-button color="primary">{{ 'SETTINGS.EXPORT_DATA' | translate }}</ion-button>
+      </div>
+    </ion-item>
   </ion-list>
 
 
