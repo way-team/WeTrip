@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="trip && isReady">
+<ion-content *ngIf="trip && creatorAndTrip && isReady">
 
 
   <div class="image-container"
@@ -71,11 +71,21 @@
           <strong> {{ 'TRIP_DETAILS.CREATED_BY' | translate }} </strong>
         </h2>
       </ion-text>
-      <ion-text color="warning">
+      
+      <div *ngIf="creatorAndTrip.status=='D'">
+        <ion-text color="medium">
+          {{ 'PROFILE.CREATOR_DELETED' | translate }}
+        </ion-text>
+      </div>
+      <div *ngIf="creatorAndTrip.status=='A'">
+        <ion-text color="warning">
         <h3 style="cursor: pointer" (click)="goTo('user-profile/', creator.user.username)">
-          {{ trip.creator }}
+          {{ creatorAndTrip.trip.creator }}
         </h3>
       </ion-text>
+      </div>
+
+      
 
       <ng-container *ngIf="!myTrip && showJoinButton()">
         <ion-button icon-left size="small" shape="round" color="secondary" (click)="join()">

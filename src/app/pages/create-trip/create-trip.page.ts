@@ -49,7 +49,7 @@ export class CreateTripPage implements OnInit {
   }
 
   ngOnInit() {
-    this.priceRegex = new RegExp('^[1-9][0-9]{0,7}$');
+    this.priceRegex = new RegExp('^[0-9][0-9]{0,7}$');
     this.onCreateForm = this.formBuilder.group({
       title: [null, Validators.compose([Validators.required])],
       start_date: [null, Validators.compose([Validators.required])],

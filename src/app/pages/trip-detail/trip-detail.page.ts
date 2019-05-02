@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Trip, UserProfile, application_user } from 'src/app/app.data.model';
+import { Trip, UserProfile, application_user, CreatorAndTrip } from 'src/app/app.data.model';
 import { ActivatedRoute } from '@angular/router';
 import { DataManagement } from 'src/app/services/dataManagement';
 import { CookieService } from 'ngx-cookie-service';
@@ -25,6 +25,7 @@ export class TripdetailPage {
   usersAccepted: application_user[] = [];
   usersPending: application_user[] = [];
   usersRejected: application_user[] = [];
+  creatorAndTrip: CreatorAndTrip;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -34,6 +35,10 @@ export class TripdetailPage {
     private translate: TranslateService,
     private navCtrl: NavController
   ) {
+  }
+
+  
+  ngOnInit() {
     this.getItems();
   }
 
@@ -50,6 +55,8 @@ export class TripdetailPage {
     Promise.all([prom1, prom2])
       .then(response => {
         this.trip = response[0]['trip'];
+
+        this.creatorAndTrip = this.createAndTripFunction(this.trip);
 
         this.applicationsAccepted = response[0]['applicationsList'];
         this.applicationsPending = response[0]['pendingsList'];
@@ -73,6 +80,7 @@ export class TripdetailPage {
           .catch(_ => { });
       })
       .catch(_ => { });
+
   }
 
   join() {
@@ -173,5 +181,19 @@ export class TripdetailPage {
       ) != undefined;
     pastTrip || accepted || pending || rejected ? (show = false) : (show = true);
     return show;
+  }
+
+
+  createAndTripFunction(trip: Trip) {
+    this.dm
+      .getUserBy(trip.creator, this.cookieService.get('token'))
+      .then(userProfile => {
+        this.creator = userProfile;
+        this.creatorAndTrip = new CreatorAndTrip;
+        this.creatorAndTrip.status = this.creator.status;
+        this.creatorAndTrip.trip = trip;
+      });
+
+    return this.creatorAndTrip;
   }
 }
