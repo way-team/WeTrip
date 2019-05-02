@@ -28,9 +28,13 @@ import json
 import time
 from django.conf import settings
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, BaseDocTemplate, Frame, PageTemplate, Paragraph, Spacer
 from reportlab.lib import colors
+from reportlab.lib.units import cm
 from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from functools import partial
+from reportlab.lib.enums import TA_CENTER
 
 
 def get_user_by_token(request):
@@ -1408,25 +1412,6 @@ class ExportUserData(APIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication)
 
-    def header(self, pdf, language):
-        logo_img = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\img\logo.png'
-        pdf.drawImage(logo_img, 40, 740, 120, 90, preserveAspectRatio=True)
-        pdf.setFont("Helvetica", 16)
-        pdf.drawString(230, 790, u"TRAVEL MATE")
-        pdf.setFont("Helvetica", 14)
-        
-        if language == "es":
-            pdf.drawString(227, 770, u"Sus datos exportados")
-            date = str(time.strftime("%d/%m/%y %H:%M:%S"))
-            pdf.setFont("Helvetica", 12)
-            pdf.drawString(420, 780, date)
-
-        if language == "en":
-            pdf.drawString(227, 770, u"User data exported")
-            date = str(time.strftime("%y-%m-%d %H:%M:%S"))
-            pdf.setFont("Helvetica", 12)
-            pdf.drawString(440, 780, date)
-
     def personal_table(self, user, userprofile, language):
         if language == "es":
             tableData = [["NOMBRE", userprofile.first_name]]
@@ -1444,7 +1429,7 @@ class ExportUserData(APIView):
             if userprofile.isPremium is True:
                 tableData.append(["FECHA DE PREMIUM", userprofile.datePremium])
 
-        if language == "en":
+        if language == "en" or language is None:
             tableData = [["NAME", userprofile.first_name]]
             tableData.append(["LAST NAME", userprofile.last_name])
             tableData.append(["USERNAME", user.username])
@@ -1473,7 +1458,7 @@ class ExportUserData(APIView):
         if language == "es":
             tableData = [["TÍTULO", "TIPO", "ESTADO"]]
             
-        if language == "en":
+        if language == "en" or language is None:
             tableData = [["TITLE", "TYPE", "STATUS"]]
 
         for trip in trips:
@@ -1492,7 +1477,7 @@ class ExportUserData(APIView):
         if language == "es":
             tableData = [["REMITENTE", "RECEPTOR", "ESTADO"]]
             
-        if language == "en":
+        if language == "en" or language is None:
             tableData = [["SENDER", "RECEIVER", "STATUS"]]
 
         for sen in sended:
@@ -1514,7 +1499,7 @@ class ExportUserData(APIView):
         if language == "es":
             tableData = [["VIAJE", "ESTADO"]]
             
-        if language == "en":
+        if language == "en" or language is None:
             tableData = [["TRIP", "STATUS"]]
 
         for app in applications:
@@ -1529,65 +1514,67 @@ class ExportUserData(APIView):
                                    ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
         return table
 
-    def general_table(self, pdf, personal_table, created_trips_table, invitations_table, applications_table, language):
+    def general_table(self, personal_table, created_trips_table, invitations_table, applications_table, language):
+        sp = ParagraphStyle('parrafos',
+                            alignment=TA_CENTER,
+                            fontSize=12)
+        story = []
+
         if language == "es":
-            data = [["Datos personales"]]
-            data.append([personal_table])
-            data.append([" "])
-            if created_trips_table != "":
-                data.append(["Datos de trips creados"])
-                data.append([created_trips_table])
-                data.append([" "])
-            if created_trips_table == "":
-                data.append(["Datos de viajes creados"])
-                data.append(["No ha creado ningún viaje"])
-                data.append([" "])
-            if invitations_table != "":
-                data.append(["Datos de peticiones"])
-                data.append([invitations_table])
-                data.append([" "])
-            if invitations_table == "":
-                data.append(["Datos de peticiones"])
-                data.append(["No ha contactado con ninguna persona"])
-                data.append([" "])
-            if applications_table != "":
-                data.append(["Datos de solicitudes"])
-                data.append([applications_table])
-            if applications_table == "":
-                data.append(["Datos de solicitudes"])
-                data.append(["No se ha apuntado a ningún viaje"])
-            general_table = Table(data)
+            pa1 = Paragraph(u"Datos personales", sp)
+            story.append(pa1)
+            story.append(Spacer(0, 5))
+            story.append(personal_table)
+            story.append(Spacer(0, 20))
 
-        if language == "en":
-            data = [["Personal data"]]
-            data.append([personal_table])
-            data.append([" "])
             if created_trips_table != "":
-                data.append(["Created trips data"])
-                data.append([created_trips_table])
-                data.append([" "])
-            if created_trips_table == "":
-                data.append(["Created trips data"])
-                data.append(["You have not created any trip"])
-                data.append([" "])
-            if invitations_table != "":
-                data.append(["Invitations data"])
-                data.append([invitations_table])
-                data.append([" "])
-            if invitations_table == "":
-                data.append(["Invitations data"])
-                data.append(["You have not contacted with any person"])
-                data.append([" "])
-            if applications_table != "":
-                data.append(["Applications data"])
-                data.append([applications_table])
-            if applications_table == "":
-                data.append(["Applications data"])
-                data.append(["You have not apply to any trip"])
-            general_table = Table(data)
+                pa2 = Paragraph(u"Datos de trips creados", sp)
+                story.append(pa2)
+                story.append(Spacer(0, 5))
+                story.append(created_trips_table)
+                story.append(Spacer(0, 20))
 
-        general_table.wrapOn(pdf, 800, 600)
-        general_table.drawOn(pdf, 170, 200)
+            if invitations_table != "":
+                pa3 = Paragraph(u"Datos de peticiones", sp)
+                story.append(pa3)
+                story.append(Spacer(0, 5))
+                story.append(invitations_table)
+                story.append(Spacer(0, 20))
+
+            if applications_table != "":
+                pa4 = Paragraph(u"Datos de solicitudes", sp)
+                story.append(pa4)
+                story.append(Spacer(0, 5))
+                story.append(applications_table)
+
+        if language == "en" or language is None:
+            pa1 = Paragraph(u"Personal data", sp)
+            story.append(pa1)
+            story.append(Spacer(0, 5))
+            story.append(personal_table)
+            story.append(Spacer(0, 20))
+
+            if created_trips_table != "":
+                pa2 = Paragraph(u"Created trips data", sp)
+                story.append(pa2)
+                story.append(Spacer(0, 5))
+                story.append(created_trips_table)
+                story.append(Spacer(0, 20))
+
+            if invitations_table != "":
+                pa3 = Paragraph(u"Invitations data", sp)
+                story.append(pa3)
+                story.append(Spacer(0, 5))
+                story.append(invitations_table)
+                story.append(Spacer(0, 20))
+
+            if applications_table != "":
+                pa4 = Paragraph(u"Applications data", sp)
+                story.append(pa4)
+                story.append(Spacer(0, 5))
+                story.append(applications_table)
+
+        return story
         
     def post(self, request):
         user_id = request.data.get("user_id", "")
@@ -1601,11 +1588,37 @@ class ExportUserData(APIView):
         received = Invitation.objects.filter(receiver=userprofile)
         applications = Application.objects.filter(applicant=userprofile)
         
-        response = HttpResponse(content_type='application/pdf')
-        name = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\exported_data_' + userprofile.get_full_name() + '.pdf'
-        pdf = canvas.Canvas(name, pagesize=A4)
+        name = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\exported_data_' + userprofile.get_full_name() + '.pdf'   
+        styles = getSampleStyleSheet()
+        styleN = styles['Normal']
+        styleH = styles['Heading1']
 
-        self.header(pdf, language)
+        def header(canvas, doc):
+            canvas.saveState()
+            logo_img = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\img\logo.png'
+            canvas.drawImage(logo_img, 40, 740, 120, 90, preserveAspectRatio=True)
+            canvas.setFont("Helvetica", 16)
+            canvas.drawString(230, 790, u"TRAVEL MATE")
+            canvas.setFont("Helvetica", 14)
+            
+            if language == "es":
+                canvas.drawString(218, 770, u"Sus datos exportados")
+                date = str(time.strftime("%d/%m/%y %H:%M:%S"))
+                canvas.setFont("Helvetica", 12)
+                canvas.drawString(440, 780, date)
+
+            if language == "en" or language is None:
+                canvas.drawString(227, 770, u"User data exported")
+                date = str(time.strftime("%y-%m-%d %H:%M:%S"))
+                canvas.setFont("Helvetica", 12)
+                canvas.drawString(440, 780, date)
+            canvas.restoreState()
+
+        doc = BaseDocTemplate(name, pagesize=A4)
+        frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height-1.5*cm, id='normal')
+        template = PageTemplate(id='test', frames=frame, onPage=header)
+        doc.addPageTemplates([template])
+
         personal_table = self.personal_table(user, userprofile, language)
         created_trips_table = ""
         invitations_table = ""
@@ -1616,11 +1629,14 @@ class ExportUserData(APIView):
             invitations_table = self.invitations_table(sended, received, language)
         if applications:
             applications_table = self.applications_table(applications, language)
-        self.general_table(pdf, personal_table, created_trips_table, invitations_table, applications_table, language)
 
-        pdf.showPage()
-        pdf.save()  
-        send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
+        story = self.general_table(personal_table, created_trips_table, invitations_table, applications_table, language)
+        doc.build(story)
+
+        if language == "en" or language is None:  
+            send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
+        if language == "es":  
+            send_mail("Datos exportados", "Estos son los datos exportados de " + userprofile.get_full_name(), userprofile.email, name)
         os.remove(name)
         return Response(status=200)
 
