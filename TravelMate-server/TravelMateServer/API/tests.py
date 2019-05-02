@@ -811,9 +811,6 @@ class TravelMateTests(APITestCase):
         self.assertEqual(jsonResponse[0]['user']['id'], self.user5.id)
   
   
-  
-    
-
 
     def test_create_trip(self):
         """The method 'createTrip' allows users to create their own trips"""
@@ -883,9 +880,48 @@ class TravelMateTests(APITestCase):
         self.assertEqual(jsonResponse['trip'], serializer.data)
 
 
-
-    
+    def test_edit_trip(self):
+        """The method 'createTrip' allows users to create their own trips"""
+      
+        # We log in as user1
+        self.user = self.user2
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
         
+
+        # This is the trip we want to create. We add two cities to the trip - city1 and city2
+        cities = []
+        cities.append(1)
+        cities.append(2)
+        cities = json.dumps(cities)
+        
+        data = {
+        "token":self.token.key, 
+        "tripId":4,
+        "user_id": "2" , 
+        "title": "editedTrip", 
+        "file": "trip/default_trip.jpg",
+        "description": "edited trip13 description", 
+        "price": 7200, 
+        "startDate": datetime.date(2019, 5, 1), 
+        "endDate": datetime.date(2019, 5, 31), 
+        "tripType": "PUBLIC", 
+        "cities": cities,
+        }
+        
+            
+        # Let's check the current name of the title trip
+        self.assertEqual(self.trip4.title, 'trip4')
+
+        response = self.client.post(reverse('edit_trip'), data, format='json')
+       
+        # Let's check the HTTP status of the response
+        self.assertEqual(201, response.status_code)
+        
+        # Let's see how the title has been changed
+        self.assertEqual(Trip.objects.get(pk=4).title, 'editedTrip')
+
+
 
     def test_register_user(self):
         """The method 'registerUser' is used to regist an user."""

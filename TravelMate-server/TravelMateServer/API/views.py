@@ -736,7 +736,8 @@ class EditTripView(APIView):
         if stored_creator != user:
             raise ValueError("You are not the creator of this trip")
 
-        if request.data["startDate"] > request.data["endDate"]:
+    
+        if data.get('startDate') > data.get('endDate'):
             raise ValueError("The start date must be before the end date")
 
         if data.get('file'):
@@ -766,6 +767,7 @@ class EditTripView(APIView):
         trip.endDate = endDate
         trip.tripType = tripType
         try:
+            print(trip)
             trip.save()
         except:
             raise ValueError("Error saving trip")
