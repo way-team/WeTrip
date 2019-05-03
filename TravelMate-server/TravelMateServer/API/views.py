@@ -330,9 +330,15 @@ class SendInvitation(APIView):
             elif invitation.sender == sender and invitation.receiver == receiver and invitation.status == "A":
                 control = "F"
                 break
-            elif sender == receiver:
-                control = "G"
-                break
+
+        if sender == receiver:
+            control = "G"
+            
+        if sender.status == "D":
+            control = "H"
+
+        if receiver.status == "D":
+            control = "I"
 
         if control == "A":
             raise ValueError(
@@ -350,6 +356,10 @@ class SendInvitation(APIView):
             raise ValueError("You are already friends")
         elif control == "G":
             raise ValueError("You can't be your own friend")
+        elif control == "H":
+            raise ValueError("A deleted user cannot send an invitation")
+        elif control == "I":
+            raise ValueError("You cannot send an invitation to a deleted user")
         elif control == None:
             newinvitation = Invitation(
                 sender=sender, receiver=receiver, status="P")
