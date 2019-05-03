@@ -526,12 +526,12 @@ class DiscoverPeopleView(APIView):
         #This line gets rid of duplicated users in the list
         discover_people = list(dict.fromkeys(discover_people))
         
-
-        '''all_users = list(UserProfile.objects.all())
+        #Append the rest of the users
+        all_users = list(UserProfile.objects.all())
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.add(person)'''
+            discover_people.append(person)
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
