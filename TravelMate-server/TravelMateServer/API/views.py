@@ -1602,7 +1602,7 @@ class ExportUserData(APIView):
 
         def header(canvas, doc):
             canvas.saveState()
-            logo_img = os.path.join(settings.BASE_DIR, 'TravelMateServer') + '\static\img\logo.png'
+            logo_img = 'https://s3.amazonaws.com/wayteam-static/static/img/logo.png'
             canvas.drawImage(logo_img, 40, 740, 120, 90, preserveAspectRatio=True)
             canvas.setFont("Helvetica", 16)
             canvas.drawString(230, 790, u"TRAVEL MATE")
