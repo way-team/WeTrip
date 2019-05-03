@@ -1174,11 +1174,9 @@ class RegisterUser(APIView):
         status = 'A'
 
 
-        languages_dumps = json.dumps(request.data.get('languages'))
-        languages=json.loads(languages_dumps)
-        interests = json.dumps(request.data.get('interests'))
-        interests=json.loads(interests)
-
+        languages = json.loads(request.data.get('languages'))
+        interests = json.loads(request.data.get('interests'))
+        
         user = User(username=username, password=password)
         user.save()
         try:
