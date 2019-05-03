@@ -1507,11 +1507,11 @@ def send_mail(subject, body, email, attachment):
     """
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
-    server.login("wayteam2019@gmail.com", "travelmate2019@")
+    server.login("wayteam.travelmate@gmail.com", "wayteam2019")
 
     msg = MIMEMultipart()
 
-    msg['From'] = "wayteam2019@gmail.com"
+    msg['From'] = "wayteam.travelmate@gmail.com"
     msg['To'] = email
     msg['Subject'] = subject
 
