@@ -552,7 +552,7 @@ class DiscoverPeopleView(APIView):
 
 
         if(user in discover_people):
-                discover_people.remove(user)
+            discover_people.remove(user)
 
         return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
@@ -1741,6 +1741,40 @@ class ExportUserData(APIView):
             send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
         os.remove(name)
         return Response(status=200)
+
+
+class NotifyBreach(APIView):
+    """
+    Send an email to all the users notifying a security breach
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user_id = request.data.get("user_id", "")
+        logged_user = User.objects.get(pk=user_id)
+
+        if logged_user.is_staff is False:
+            return JsonResponse({'error':'The user is not an admin'}, status=500)
+
+        all_users = list(User.objects.all())
+        all_users.remove(logged_user)
+        
+        for user in all_users:
+            for lan in user.userprofile.languages.all():
+                if lan.name == "Spanish":
+                    send_mail("Brecha de seguridad", 
+                            "Estimad@ " + user.userprofile.get_full_name() + ",\n\nDesde WayTeam quisieramos informarle que se ha producido una brecha de seguridad en nuestra aplicación TravelMate.\n\nSentimos las molestias.", 
+                            user.userprofile.email, None)
+                    break
+                send_mail("Brecha de seguridad", 
+                        "Dear " + user.userprofile.get_full_name() + ",\n\nFrom WayTeam we would like to inform you that there has been a security breach in our application TravelMate.\n\nWe apologize for the inconveniences.", 
+                        user.userprofile.email, None)
+
+        return JsonResponse({'message':'Notified breach'}, status=200)
 
 
 def backendWakeUp(request):

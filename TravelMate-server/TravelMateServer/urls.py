@@ -65,5 +65,6 @@ urlpatterns = [
     path('backend-wakeup/', views.backendWakeUp, name='backend-wakeup'),
     path('deleteUser/', views.DeleteUser.as_view(), name='delete_user'),
     path('exportData/', views.ExportUserData.as_view()),
+    path('notifyBreach/', views.NotifyBreach.as_view()),
 ] + static(
     settings.STATIC_URL, document_root=settings.STATICFILES_STORAGE)
