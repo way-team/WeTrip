@@ -1052,13 +1052,18 @@ class SetUserToPremium(APIView):
         userpaid = User.objects.get(username=usernamepaid)
         userprofilepaid = UserProfile.objects.get(user=userpaid)
 
-        if not userprofilepaid.isPremium:
-            userprofilepaid.isPremium = True
-            userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
+        if userprofilepaid.status == "D":
+            raise ValueError("Deleted users can't be Premium")
+        
         else:
-            userprofilepaid.datePremium += relativedelta(years=1)
 
-        userprofilepaid.save()
+            if not userprofilepaid.isPremium:
+                userprofilepaid.isPremium = True
+                userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
+            else:
+                userprofilepaid.datePremium += relativedelta(years=1)
+
+            userprofilepaid.save()
 
         return Response(
             UserProfileSerializer(userprofilepaid, many=False).data)
