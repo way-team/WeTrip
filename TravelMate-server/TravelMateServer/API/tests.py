@@ -995,6 +995,33 @@ class TravelMateTests(APITestCase):
         self.assertEqual(201, response.status_code)
         #The user has been edited.
         self.assertEqual(UserProfile.objects.get(pk=1).first_name, 'user7') 
+
+    def test_delete_user(self):
+        """The method 'delete_user' is used to edit a user."""
+
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+       
+        data = {"user_id": "1"}
+
+        # Let's check the status
+        statusBefore = UserProfile.objects.get(user=self.user).status
+        self.assertEqual(statusBefore, 'A')
+
+        response = self.client.post(reverse('delete_user'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
+        #The user has been deleted.
+
+        #Let's check the status
+        statusAfter = UserProfile.objects.get(user=self.user).status
+        self.assertEqual(statusAfter, 'D')
+
+
+    
         
 
 
