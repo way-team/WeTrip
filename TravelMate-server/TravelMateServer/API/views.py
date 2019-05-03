@@ -1123,11 +1123,22 @@ class RegisterUser(APIView):
         if age < 18:
             return JsonResponse({'error':'Underage'}, status=500)
 
+
         gender = request.data.get('gender', '')
+
+        if not (gender == "M" or gender == "W"):
+            return JsonResponse({'error':'Invalid gender'}, status=500)
+
+
+    
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
+
+        if not (civilStatus == "M" or civilStatus == "S" or civilStatus=="R" or civilStatus == "W" or civilStatus == "D"):
+            return JsonResponse({'error':'Invalid civil status'}, status=500)
+
         status = 'A'
 
 
@@ -1265,10 +1276,19 @@ class EditUser(APIView):
             return JsonResponse({'error':'Underage'}, status=500)
 
         gender = request.data.get('gender', '')
+
+        if not (gender == "M" or gender == "W"):
+            return JsonResponse({'error':'Invalid gender'}, status=500)
+
+
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
+
+        if not (civilStatus == "M" or civilStatus == "S" or civilStatus=="R" or civilStatus == "W" or civilStatus == "D"):
+            return JsonResponse({'error':'Invalid civil status'}, status=500)
+
         status = 'A'
         
         languages = json.loads(request.data.get('languages'))

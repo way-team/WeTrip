@@ -889,6 +889,7 @@ class TravelMateTests(APITestCase):
 
         #Let's check that the new trip really has 2 cities
         self.assertTrue(Trip.objects.get(pk=13).cities.count() == 2)
+        
        
        
 
@@ -968,7 +969,7 @@ class TravelMateTests(APITestCase):
         self.assertEqual(201, response.status_code)
         #The user has been registed.
         self.assertEqual(UserProfile.objects.get(pk=7).user.username, 'user7')  
-
+        
 
     def test_edit_user(self):
         """The method 'editUser' is used to edit a user."""
@@ -979,13 +980,13 @@ class TravelMateTests(APITestCase):
         self.api_authentication()
 
         interests = []
-        interests.append("hockey")
-        interests.append("watching TV")
+        interests.append("tennis")
+        interests.append("shopping")
         interests = json.dumps(interests)
 
         languages = []
         languages.append("english")
-        languages.append("greek")
+        languages.append("french")
         languages = json.dumps(languages)
 
         data = {"token": self.token.key, "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "english", "city": "London", "profesion": "N/A","civilStatus": "M", "languages": languages, "interests":interests}
