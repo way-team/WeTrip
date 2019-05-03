@@ -776,6 +776,10 @@ class EditTripView(APIView):
         for i in trip.cities.all():
             i.trips.remove(trip)
         
+
+        if trip.status == False:
+            raise ValueError("This trip is deleted")
+
         if trip.tripType == "PUBLIC": 
             raise ValueError("This trip is public, so it can't be edited ")
 
@@ -806,6 +810,12 @@ class EditTripView(APIView):
         startDate = data.get('startDate')
         endDate = data.get('endDate')
         tripType = data.get('tripType')
+
+        if not (tripType == 'PUBLIC' or tripType == 'PRIVATE'):
+            raise ValueError("Invalid trip type")
+
+        if int(price) < 0:
+            raise ValueError("Price can't be negative")
        
 
         trip.title = title
@@ -1295,6 +1305,10 @@ class EditUser(APIView):
         interests = json.loads(request.data.get('interests'))
 
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            return JsonResponse({'error':'Deleted user'}, status=500)
+
         for i in user.languages.all():
             user.languages.remove(i)
         for i in user.interests.all():
