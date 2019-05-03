@@ -62,6 +62,9 @@ class GetUserView(APIView):
 
 
 class GetUserByIdView(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    
     def post(self, request):
         user_id = request.data.get('user_id', '')
         user_profile = UserProfile.objects.get(pk=user_id)
