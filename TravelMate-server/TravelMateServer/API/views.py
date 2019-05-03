@@ -112,37 +112,42 @@ class RateUser(APIView):
         voted0 = User.objects.get(username=votedusername)
         voteduser = UserProfile.objects.get(user=voted0)
 
-        value = request.data.get('rating', '0')
-
-        areFriends = False
-        friends, pending, rejected = get_friends(voter, False)
-        for f in friends:
-            if f == voteduser:
-                areFriends = True
-                break
-
-        oldRating = Rate.objects.filter(voter=voter, voted=voteduser).first()
-        if areFriends:
-            actualrating = int(voteduser.avarageRate)
-            numTimes = int(voteduser.numRate)
-            new = int(value)
-
-            if oldRating:
-                oldRating.delete()
-                old = int(oldRating.value)
-                voteduser.avarageRate = int(
-                    (actualrating * numTimes + new - old) / (numTimes))
-
-            else:
-                voteduser.avarageRate = int(
-                    (actualrating * numTimes + new) / (numTimes + 1))
-                voteduser.numRate = numTimes + 1
-
-            rate = Rate(voter=voter, voted=voteduser, value=value)
-            voteduser.save()
-            rate.save()
+        if voter.status == "D" :
+            raise ValueError("Deleted users are not allowed to rate other users")
+        elif voteduser.status == "D" :
+            raise ValueError("You cannot rate a deleted user")
         else:
-            raise ValueError("You can not rate this user")
+            value = request.data.get('rating', '0')
+
+            areFriends = False
+            friends, pending, rejected = get_friends(voter, False)
+            for f in friends:
+                if f == voteduser:
+                    areFriends = True
+                    break
+
+            oldRating = Rate.objects.filter(voter=voter, voted=voteduser).first()
+            if areFriends:
+                actualrating = int(voteduser.avarageRate)
+                numTimes = int(voteduser.numRate)
+                new = int(value)
+
+                if oldRating:
+                    oldRating.delete()
+                    old = int(oldRating.value)
+                    voteduser.avarageRate = int(
+                        (actualrating * numTimes + new - old) / (numTimes))
+
+                else:
+                    voteduser.avarageRate = int(
+                        (actualrating * numTimes + new) / (numTimes + 1))
+                    voteduser.numRate = numTimes + 1
+
+                rate = Rate(voter=voter, voted=voteduser, value=value)
+                voteduser.save()
+                rate.save()
+            else:
+                raise ValueError("You can not rate this user")
 
         return Response(UserProfileSerializer(voteduser, many=False).data)
 
