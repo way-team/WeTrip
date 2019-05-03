@@ -526,12 +526,12 @@ class DiscoverPeopleView(APIView):
         #This line gets rid of duplicated users in the list
         discover_people = list(dict.fromkeys(discover_people))
         
-
-        '''all_users = list(UserProfile.objects.all())
+        #Append the rest of the users
+        all_users = list(UserProfile.objects.all())
         for person in discover_people:
             all_users.remove(person)
         for person in all_users:
-            discover_people.add(person)'''
+            discover_people.append(person)
 
         # Finally, we remove from the discover list the people
         # who are our friends or pending friends
@@ -1181,7 +1181,7 @@ class RegisterUser(APIView):
 
         gender = request.data.get('gender', '')
 
-        if not (gender == "M" or gender == "W" or gender == "N"):
+        if not (gender == "M" or gender == "F" or gender == "N"):
             return JsonResponse({'error':'Invalid gender'}, status=500)
 
 
@@ -1330,7 +1330,7 @@ class EditUser(APIView):
 
         gender = request.data.get('gender', '')
 
-        if not (gender == "M" or gender == "W" or gender == "N"):
+        if not (gender == "M" or gender == "F" or gender == "N"):
             return JsonResponse({'error':'Invalid gender'}, status=500)
 
 
@@ -1507,11 +1507,11 @@ def send_mail(subject, body, email, attachment):
     """
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
-    server.login("wayteam2019@gmail.com", "travelmate2019@")
+    server.login("wayteam.travelmate@gmail.com", "wayteam2019")
 
     msg = MIMEMultipart()
 
-    msg['From'] = "wayteam2019@gmail.com"
+    msg['From'] = "wayteam.travelmate@gmail.com"
     msg['To'] = email
     msg['Subject'] = subject
 
