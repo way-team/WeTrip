@@ -387,6 +387,9 @@ class AcceptFriend(APIView):
         """
         user = get_user_by_token(request)
 
+        if user.status == "D":
+            raise ValueError("Deleted users can't accept friend invitations")
+
         sendername = request.data.get("sendername", "")
         sender = User.objects.get(username=sendername).userprofile
 
@@ -419,6 +422,9 @@ class RejectFriend(APIView):
         POST method
         """
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            raise ValueError("Deleted users can't reject friend invitations")
 
         sendername = request.data.get("sendername", "")
         sender = User.objects.get(username=sendername).userprofile
@@ -668,6 +674,9 @@ class CreateTrip(APIView):
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
 
+        if user.status == "D":
+            raise ValueError("Deleted users can't create trips")
+
         if data.get('start_date') > data.get('end_date'):
             raise ValueError("The start date must be before the end date")
 
@@ -744,6 +753,10 @@ class GetTripView(APIView):
         trip_id = kwargs.get("trip_id", "")
         try:
             trip = Trip.objects.get(pk=trip_id)
+
+            if trip.status == False:
+                raise ValueError("This trip is deleted")
+
             applications = Application.objects.filter(trip=trip, status="A")
             pendings = Application.objects.filter(trip=trip, status="P")
             rejected = Application.objects.filter(trip=trip, status="R")
@@ -980,6 +993,9 @@ class ApplyTripView(APIView):
         """
         user = get_user_by_token(request)
 
+        if user.status == "D":
+            raise ValueError("Deleted users can't apply for trips")
+
         trip_id = request.data.get("trip_id", "")
         trip = Trip.objects.get(pk=trip_id)
 
@@ -1006,6 +1022,9 @@ class AcceptApplicationView(APIView):
         POST method
         """
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            raise ValueError("Deleted users can't accept applications")
 
         aplication_id = request.data.get("application_id", "")
 
@@ -1037,6 +1056,9 @@ class RejectApplicationView(APIView):
         POST method
         """
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            raise ValueError("Deleted users can't reject applications")
 
         aplication_id = request.data.get("application_id", "")
 
