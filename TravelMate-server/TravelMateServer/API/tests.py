@@ -962,7 +962,17 @@ class TravelMateTests(APITestCase):
     def test_register_user(self):
         """The method 'registerUser' is used to register a user."""
       
-        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"english"}, "interests":{"cooking"}}
+
+        languages = []
+        languages.append('English')
+        languages.append('French')
+        languages = json.dumps(languages)
+
+        interests = []
+        interests.append("swimming")
+        interests = json.dumps(interests)
+        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": languages, "interests":interests}
+
 
         response = self.client.post(reverse('register_user'), data, format='json')
        
