@@ -257,7 +257,42 @@ class TravelMateTests(APITestCase):
         data = {"token":self.token.key, "trip_id": "11"}
         #user2 has already applied for trip11.
         
-        with self.assertRaisesMessage(ValueError, 'You have already applied to this trip'):
+        with self.assertRaisesMessage(ValueError, "You can't apply for this trip."):
+            response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
+        
+        # We see that nothing has changed
+        numApplicationsAfter = Application.objects.count()
+        self.assertEqual(numApplicationsBefore, numApplicationsAfter)
+        
+        #------------------------------------------------------------------------------------------
+
+
+        # We are still logged as user2
+     
+        #Let's see the current number of applications
+        numApplicationsBefore = Application.objects.count()
+
+        data = {"token":self.token.key, "trip_id": "5"}
+        #user2 can't apply for trip5 because trip5 has already finished
+        
+        with self.assertRaisesMessage(ValueError, "You can't apply for this trip."):
+            response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
+        
+        # We see that nothing has changed
+        numApplicationsAfter = Application.objects.count()
+        self.assertEqual(numApplicationsBefore, numApplicationsAfter)
+        
+        #------------------------------------------------------------------------------------------
+
+        # We are still logged as user2
+      
+        #Let's see the current number of applications
+        numApplicationsBefore = Application.objects.count()
+
+        data = {"token":self.token.key, "trip_id": "12"}
+        #user2 can't apply for trip12 because trip12 is private.
+        
+        with self.assertRaisesMessage(ValueError, "You can't apply for this trip."):
             response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
         
         # We see that nothing has changed

@@ -557,6 +557,35 @@ class MyTripsList(generics.ListAPIView):
             user__user=self.request.user).order_by('-startDate')
 
 
+def get_available_trips(user_profile):
+
+    today = datetime.today()
+    
+    myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+    myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
+    premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
+
+    return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
+        Q(status=True) & Q(startDate__gte=today) & Q(
+            tripType='PUBLIC')).exclude(
+                user=user_profile).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
+
+
+def get_available_trips_for_apply(user_profile):
+
+    today = datetime.today()
+    
+    myApplications = Application.objects.filter(applicant_id = user_profile.id)
+    myAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+    premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
+
+    return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
+        Q(status=True) & Q(startDate__gte=today) & Q(
+            tripType='PUBLIC')).exclude(
+                user=user_profile).exclude(id__in=myAppTripsIds).order_by('-isPremiumUser')
+
+
+
 class AvailableTripsList(generics.ListAPIView):
     ''' Gets trips available (Application not rejected) '''
     
@@ -566,17 +595,9 @@ class AvailableTripsList(generics.ListAPIView):
     serializer_class = TripSerializer
 
     def get_queryset(self):
-        today = datetime.today()
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
-        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
-        premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
-
-        return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
-            Q(status=True) & Q(startDate__gte=today) & Q(
-                tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
+        return get_available_trips(user_profile)
 
 
 class AvailableTripsSearch(generics.ListAPIView):
@@ -588,17 +609,10 @@ class AvailableTripsSearch(generics.ListAPIView):
     serializer_class = TripSerializer
 
     def get_queryset(self):
-        today = datetime.today()
+
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
-        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
-        premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
-
-        return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
-            Q(status=True) & Q(startDate__gte=today) & Q(
-                tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
+        return get_available_trips(user_profile)
 
     queryset = get_queryset
     serializer_class = TripSerializer
@@ -948,17 +962,14 @@ class ApplyTripView(APIView):
         trip_id = request.data.get("trip_id", "")
         trip = Trip.objects.get(pk=trip_id)
 
-        try:
-            query = Application.objects.filter(trip=trip).get(applicant=user)
-        except Application.DoesNotExist:
-            query = None
+        available_trips_list = get_available_trips_for_apply(user)
 
-        if query is None:
+        if trip not in available_trips_list:
+            raise ValueError("You can't apply for this trip.")
+        else:
             application = Application(applicant=user, trip=trip, status="P")
             application.save()
-        else:
-            raise ValueError("You have already applied to this trip")
-
+            
         return Response(TripSerializer(trip, many=False).data)
 
 
