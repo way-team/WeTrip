@@ -871,7 +871,7 @@ class TravelMateTests(APITestCase):
         "price": 7200, 
         "start_date": "2019-05-24", 
         "end_date": "2019-05-31", 
-        "tripType": "PUBLIC", 
+        "trip_type": "PRIVATE", 
         "cities": cities,
         "file": ""
         }
@@ -889,7 +889,7 @@ class TravelMateTests(APITestCase):
 
         #Let's check that the new trip really has 2 cities
         self.assertTrue(Trip.objects.get(pk=13).cities.count() == 2)
-
+       
        
 
 

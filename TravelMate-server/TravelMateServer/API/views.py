@@ -671,6 +671,12 @@ class CreateTrip(APIView):
         if data.get('start_date') > data.get('end_date'):
             raise ValueError("The start date must be before the end date")
 
+        if not (tripType == 'PUBLIC' or tripType == 'PRIVATE'):
+            raise ValueError("Invalid trip type")
+
+        if int(price) < 0:
+            raise ValueError("Price can't be negative")
+
 
         #GET CITY DATA
         cities = json.loads(request.data.get('cities'))
