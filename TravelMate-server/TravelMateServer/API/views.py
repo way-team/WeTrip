@@ -696,7 +696,20 @@ class CreateTrip(APIView):
             city = City.objects.get(pk=cities[0])
             image_name = city.country.name + '.jpg'
         else:
-            image_name = 'World.jpg'
+            first_country = City.objects.get(pk=cities[0]).country
+            world = False
+            for i in cities:
+                country = City.objects.get(pk=i).country
+                if(country != first_country):
+                    world = True
+                    break
+
+            if(world):
+                image_name = 'World.jpg'
+            else:
+                image_name = first_country.name + '.jpg'
+
+            
         
         
 
@@ -812,10 +825,20 @@ class EditTripView(APIView):
 
         if(len(cities) == 1):
             city = City.objects.get(pk=cities[0])
-            trip.image = city.country.name + '.jpg'
-            
+            image_name = city.country.name + '.jpg'
         else:
-            trip.image = 'World.jpg'
+            first_country = City.objects.get(pk=cities[0]).country
+            world = False
+            for i in cities:
+                country = City.objects.get(pk=i).country
+                if(country != first_country):
+                    world = True
+                    break
+
+            if(world):
+                image_name = 'World.jpg'
+            else:
+                image_name = first_country.name + '.jpg'
 
         title = data.get('title')
         description = data.get('description')
@@ -837,8 +860,8 @@ class EditTripView(APIView):
         trip.startDate = startDate
         trip.endDate = endDate
         trip.tripType = tripType
+        trip.image = image_name
         try:
-            print(trip)
             trip.save()
         except:
             raise ValueError("Error saving trip")
@@ -1176,7 +1199,7 @@ class RegisterUser(APIView):
 
         languages = json.loads(request.data.get('languages'))
         interests = json.loads(request.data.get('interests'))
-        
+
         user = User(username=username, password=password)
         user.save()
         try:
