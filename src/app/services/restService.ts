@@ -664,4 +664,19 @@ export class RestWS extends AbstractWS {
   public turnOnDjangoServer() {
     this.makeGetRequest(this.path + 'backend-wakeup/', null);
   }
+
+  public sendEmail(user_id) {
+    const fd = new FormData();
+    const authorization = this.cookieService.get('token');
+    fd.append('token', authorization);
+    fd.append('user_id', user_id);
+    return this.makePostRequest(this.path + 'notifyBreach/', fd, authorization)
+      .then(res => {
+        return Promise.resolve(res);
+      })
+      .catch(err => {
+        console.log('Error: ' + err);
+        return Promise.reject(err);
+      });
+  }
 }

@@ -50,6 +50,11 @@
       <div style="text-align:center;" (click)="exportData()">
         <ion-button color="primary">{{ 'SETTINGS.EXPORT_DATA' | translate }}</ion-button>
       </div>
+      <ng-container *ngIf="userLogged.user.is_staff">
+        <div style="text-align:center;" (click)="sendEmail()">
+          <ion-button color="primary">{{ 'SETTINGS.SEND_EMAIL' | translate }}</ion-button>
+        </div>
+      </ng-container>
     </ion-item>
   </ion-list>
 

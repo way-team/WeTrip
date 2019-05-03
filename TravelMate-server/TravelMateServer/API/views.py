@@ -62,6 +62,9 @@ class GetUserView(APIView):
 
 
 class GetUserByIdView(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
     def post(self, request):
         user_id = request.data.get('user_id', '')
         user_profile = UserProfile.objects.get(pk=user_id)
@@ -109,37 +112,42 @@ class RateUser(APIView):
         voted0 = User.objects.get(username=votedusername)
         voteduser = UserProfile.objects.get(user=voted0)
 
-        value = request.data.get('rating', '0')
-
-        areFriends = False
-        friends, pending, rejected = get_friends(voter, False)
-        for f in friends:
-            if f == voteduser:
-                areFriends = True
-                break
-
-        oldRating = Rate.objects.filter(voter=voter, voted=voteduser).first()
-        if areFriends:
-            actualrating = int(voteduser.avarageRate)
-            numTimes = int(voteduser.numRate)
-            new = int(value)
-
-            if oldRating:
-                oldRating.delete()
-                old = int(oldRating.value)
-                voteduser.avarageRate = int(
-                    (actualrating * numTimes + new - old) / (numTimes))
-
-            else:
-                voteduser.avarageRate = int(
-                    (actualrating * numTimes + new) / (numTimes + 1))
-                voteduser.numRate = numTimes + 1
-
-            rate = Rate(voter=voter, voted=voteduser, value=value)
-            voteduser.save()
-            rate.save()
+        if voter.status == "D" :
+            raise ValueError("Deleted users are not allowed to rate other users")
+        elif voteduser.status == "D" :
+            raise ValueError("You cannot rate a deleted user")
         else:
-            raise ValueError("You can not rate this user")
+            value = request.data.get('rating', '0')
+
+            areFriends = False
+            friends, pending, rejected = get_friends(voter, False)
+            for f in friends:
+                if f == voteduser:
+                    areFriends = True
+                    break
+
+            oldRating = Rate.objects.filter(voter=voter, voted=voteduser).first()
+            if areFriends:
+                actualrating = int(voteduser.avarageRate)
+                numTimes = int(voteduser.numRate)
+                new = int(value)
+
+                if oldRating:
+                    oldRating.delete()
+                    old = int(oldRating.value)
+                    voteduser.avarageRate = int(
+                        (actualrating * numTimes + new - old) / (numTimes))
+
+                else:
+                    voteduser.avarageRate = int(
+                        (actualrating * numTimes + new) / (numTimes + 1))
+                    voteduser.numRate = numTimes + 1
+
+                rate = Rate(voter=voter, voted=voteduser, value=value)
+                voteduser.save()
+                rate.save()
+            else:
+                raise ValueError("You can not rate this user")
 
         return Response(UserProfileSerializer(voteduser, many=False).data)
 
@@ -269,6 +277,7 @@ class GetPendingInvitationsView(APIView):
         pendingInvitations = get_pendingInvitations(user, False)
         if pendingInvitations:
             for i in pendingInvitations:
+                if i.receiver.status=='A':
                     pendingI.append(i.receiver)
 
         return Response(UserProfileSerializer(pendingI, many=True).data)
@@ -326,9 +335,15 @@ class SendInvitation(APIView):
             elif invitation.sender == sender and invitation.receiver == receiver and invitation.status == "A":
                 control = "F"
                 break
-            elif sender == receiver:
-                control = "G"
-                break
+
+        if sender == receiver:
+            control = "G"
+            
+        if sender.status == "D":
+            control = "H"
+
+        if receiver.status == "D":
+            control = "I"
 
         if control == "A":
             raise ValueError(
@@ -346,6 +361,10 @@ class SendInvitation(APIView):
             raise ValueError("You are already friends")
         elif control == "G":
             raise ValueError("You can't be your own friend")
+        elif control == "H":
+            raise ValueError("A deleted user cannot send an invitation")
+        elif control == "I":
+            raise ValueError("You cannot send an invitation to a deleted user")
         elif control == None:
             newinvitation = Invitation(
                 sender=sender, receiver=receiver, status="P")
@@ -367,6 +386,9 @@ class AcceptFriend(APIView):
         POST method
         """
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            raise ValueError("Deleted users can't accept friend invitations")
 
         sendername = request.data.get("sendername", "")
         sender = User.objects.get(username=sendername).userprofile
@@ -400,6 +422,9 @@ class RejectFriend(APIView):
         POST method
         """
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            raise ValueError("Deleted users can't reject friend invitations")
 
         sendername = request.data.get("sendername", "")
         sender = User.objects.get(username=sendername).userprofile
@@ -527,7 +552,7 @@ class DiscoverPeopleView(APIView):
 
 
         if(user in discover_people):
-                discover_people.remove(user)
+            discover_people.remove(user)
 
         return Response(UserProfileSerializer(discover_people[limit:limit+offset], many=True).data)
 
@@ -543,6 +568,35 @@ class MyTripsList(generics.ListAPIView):
             user__user=self.request.user).order_by('-startDate')
 
 
+def get_available_trips(user_profile):
+
+    today = datetime.today()
+    
+    myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
+    myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
+    premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
+
+    return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
+        Q(status=True) & Q(startDate__gte=today) & Q(
+            tripType='PUBLIC')).exclude(
+                user=user_profile).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
+
+
+def get_available_trips_for_apply(user_profile):
+
+    today = datetime.today()
+    
+    myApplications = Application.objects.filter(applicant_id = user_profile.id)
+    myAppTripsIds = Trip.objects.filter(applications__in=myApplications).values_list('id', flat=True)
+    premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
+
+    return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
+        Q(status=True) & Q(startDate__gte=today) & Q(
+            tripType='PUBLIC')).exclude(
+                user=user_profile).exclude(id__in=myAppTripsIds).order_by('-isPremiumUser')
+
+
+
 class AvailableTripsList(generics.ListAPIView):
     ''' Gets trips available (Application not rejected) '''
     
@@ -552,17 +606,9 @@ class AvailableTripsList(generics.ListAPIView):
     serializer_class = TripSerializer
 
     def get_queryset(self):
-        today = datetime.today()
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
-        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
-        premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
-
-        return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
-            Q(status=True) & Q(startDate__gte=today) & Q(
-                tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
+        return get_available_trips(user_profile)
 
 
 class AvailableTripsSearch(generics.ListAPIView):
@@ -574,17 +620,10 @@ class AvailableTripsSearch(generics.ListAPIView):
     serializer_class = TripSerializer
 
     def get_queryset(self):
-        today = datetime.today()
+
         user_profile = UserProfile.objects.get(user=self.request.user)
 
-        myRejectedApplications = Application.objects.filter(applicant_id = user_profile.id, status='R')
-        myRejectedAppTripsIds = Trip.objects.filter(applications__in=myRejectedApplications).values_list('id', flat=True)
-        premiumUsers = UserProfile.objects.filter(isPremium=1).values_list('id', flat=True)
-
-        return Trip.objects.annotate(isPremiumUser=Case(When(user_id__in=premiumUsers, then=Value(1)),default=Value(0),output_field=IntegerField())).filter(
-            Q(status=True) & Q(startDate__gte=today) & Q(
-                tripType='PUBLIC')).exclude(
-                    user__user=self.request.user).exclude(id__in=myRejectedAppTripsIds).order_by('-isPremiumUser')
+        return get_available_trips(user_profile)
 
     queryset = get_queryset
     serializer_class = TripSerializer
@@ -635,8 +674,17 @@ class CreateTrip(APIView):
         endDate = request.data.get('end_date', '')
         tripType = request.data.get('trip_type', '')
 
+        if user.status == "D":
+            raise ValueError("Deleted users can't create trips")
+
         if data.get('start_date') > data.get('end_date'):
             raise ValueError("The start date must be before the end date")
+
+        if not (tripType == 'PUBLIC' or tripType == 'PRIVATE'):
+            raise ValueError("Invalid trip type")
+
+        if int(price) < 0:
+            raise ValueError("Price can't be negative")
 
 
         #GET CITY DATA
@@ -648,7 +696,20 @@ class CreateTrip(APIView):
             city = City.objects.get(pk=cities[0])
             image_name = city.country.name + '.jpg'
         else:
-            image_name = 'World.jpg'
+            first_country = City.objects.get(pk=cities[0]).country
+            world = False
+            for i in cities:
+                country = City.objects.get(pk=i).country
+                if(country != first_country):
+                    world = True
+                    break
+
+            if(world):
+                image_name = 'World.jpg'
+            else:
+                image_name = first_country.name + '.jpg'
+
+            
         
         
 
@@ -705,6 +766,10 @@ class GetTripView(APIView):
         trip_id = kwargs.get("trip_id", "")
         try:
             trip = Trip.objects.get(pk=trip_id)
+
+            if trip.status == False:
+                raise ValueError("This trip is deleted")
+
             applications = Application.objects.filter(trip=trip, status="A")
             pendings = Application.objects.filter(trip=trip, status="P")
             rejected = Application.objects.filter(trip=trip, status="R")
@@ -737,6 +802,10 @@ class EditTripView(APIView):
         for i in trip.cities.all():
             i.trips.remove(trip)
         
+
+        if trip.status == False:
+            raise ValueError("This trip is deleted")
+
         if trip.tripType == "PUBLIC": 
             raise ValueError("This trip is public, so it can't be edited ")
 
@@ -756,10 +825,20 @@ class EditTripView(APIView):
 
         if(len(cities) == 1):
             city = City.objects.get(pk=cities[0])
-            trip.image = city.country.name + '.jpg'
-            
+            image_name = city.country.name + '.jpg'
         else:
-            trip.image = 'World.jpg'
+            first_country = City.objects.get(pk=cities[0]).country
+            world = False
+            for i in cities:
+                country = City.objects.get(pk=i).country
+                if(country != first_country):
+                    world = True
+                    break
+
+            if(world):
+                image_name = 'World.jpg'
+            else:
+                image_name = first_country.name + '.jpg'
 
         title = data.get('title')
         description = data.get('description')
@@ -767,6 +846,12 @@ class EditTripView(APIView):
         startDate = data.get('startDate')
         endDate = data.get('endDate')
         tripType = data.get('tripType')
+
+        if not (tripType == 'PUBLIC' or tripType == 'PRIVATE'):
+            raise ValueError("Invalid trip type")
+
+        if int(price) < 0:
+            raise ValueError("Price can't be negative")
        
 
         trip.title = title
@@ -775,8 +860,8 @@ class EditTripView(APIView):
         trip.startDate = startDate
         trip.endDate = endDate
         trip.tripType = tripType
+        trip.image = image_name
         try:
-            print(trip)
             trip.save()
         except:
             raise ValueError("Error saving trip")
@@ -931,20 +1016,20 @@ class ApplyTripView(APIView):
         """
         user = get_user_by_token(request)
 
+        if user.status == "D":
+            raise ValueError("Deleted users can't apply for trips")
+
         trip_id = request.data.get("trip_id", "")
         trip = Trip.objects.get(pk=trip_id)
 
-        try:
-            query = Application.objects.filter(trip=trip).get(applicant=user)
-        except Application.DoesNotExist:
-            query = None
+        available_trips_list = get_available_trips_for_apply(user)
 
-        if query is None:
+        if trip not in available_trips_list:
+            raise ValueError("You can't apply for this trip.")
+        else:
             application = Application(applicant=user, trip=trip, status="P")
             application.save()
-        else:
-            raise ValueError("You have already applied to this trip")
-
+            
         return Response(TripSerializer(trip, many=False).data)
 
 
@@ -960,6 +1045,9 @@ class AcceptApplicationView(APIView):
         POST method
         """
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            raise ValueError("Deleted users can't accept applications")
 
         aplication_id = request.data.get("application_id", "")
 
@@ -992,6 +1080,9 @@ class RejectApplicationView(APIView):
         """
         user = get_user_by_token(request)
 
+        if user.status == "D":
+            raise ValueError("Deleted users can't reject applications")
+
         aplication_id = request.data.get("application_id", "")
 
         try:
@@ -1022,13 +1113,18 @@ class SetUserToPremium(APIView):
         userpaid = User.objects.get(username=usernamepaid)
         userprofilepaid = UserProfile.objects.get(user=userpaid)
 
-        if not userprofilepaid.isPremium:
-            userprofilepaid.isPremium = True
-            userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
+        if userprofilepaid.status == "D":
+            raise ValueError("Deleted users can't be Premium")
+        
         else:
-            userprofilepaid.datePremium += relativedelta(years=1)
 
-        userprofilepaid.save()
+            if not userprofilepaid.isPremium:
+                userprofilepaid.isPremium = True
+                userprofilepaid.datePremium = datetime.today().date() + relativedelta(years=1)
+            else:
+                userprofilepaid.datePremium += relativedelta(years=1)
+
+            userprofilepaid.save()
 
         return Response(
             UserProfileSerializer(userprofilepaid, many=False).data)
@@ -1082,18 +1178,27 @@ class RegisterUser(APIView):
         if age < 18:
             return JsonResponse({'error':'Underage'}, status=500)
 
+
         gender = request.data.get('gender', '')
+
+        if not (gender == "M" or gender == "W" or gender == "N"):
+            return JsonResponse({'error':'Invalid gender'}, status=500)
+
+
+    
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
+
+        if not (civilStatus == "M" or civilStatus == "S" or civilStatus=="R" or civilStatus == "W" or civilStatus == "D"):
+            return JsonResponse({'error':'Invalid civil status'}, status=500)
+
         status = 'A'
 
 
-        languages_dumps = json.dumps(request.data.get('languages'))
-        languages=json.loads(languages_dumps)
-        interests = json.dumps(request.data.get('interests'))
-        interests=json.loads(interests)
+        languages = json.loads(request.data.get('languages'))
+        interests = json.loads(request.data.get('interests'))
 
         user = User(username=username, password=password)
         user.save()
@@ -1224,16 +1329,29 @@ class EditUser(APIView):
             return JsonResponse({'error':'Underage'}, status=500)
 
         gender = request.data.get('gender', '')
+
+        if not (gender == "M" or gender == "W" or gender == "N"):
+            return JsonResponse({'error':'Invalid gender'}, status=500)
+
+
         nationality = request.data.get('nationality', '')
         city = request.data.get('city', '')
         profesion = request.data.get('profesion', '')
         civilStatus = request.data.get('civilStatus', '')
+
+        if not (civilStatus == "M" or civilStatus == "S" or civilStatus=="R" or civilStatus == "W" or civilStatus == "D"):
+            return JsonResponse({'error':'Invalid civil status'}, status=500)
+
         status = 'A'
         
         languages = json.loads(request.data.get('languages'))
         interests = json.loads(request.data.get('interests'))
 
         user = get_user_by_token(request)
+
+        if user.status == "D":
+            return JsonResponse({'error':'Deleted user'}, status=500)
+
         for i in user.languages.all():
             user.languages.remove(i)
         for i in user.interests.all():
@@ -1389,11 +1507,11 @@ def send_mail(subject, body, email, attachment):
     """
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
-    server.login("way.team.soft@gmail.com", "wayteam2019")
+    server.login("wayteam2019@gmail.com", "travelmate2019@")
 
     msg = MIMEMultipart()
 
-    msg['From'] = "way.team.soft@gmail.com"
+    msg['From'] = "wayteam2019@gmail.com"
     msg['To'] = email
     msg['Subject'] = subject
 
@@ -1646,6 +1764,40 @@ class ExportUserData(APIView):
             send_mail("Exported data", "This is the " + userprofile.get_full_name() + "'s exported data", userprofile.email, name)
         os.remove(name)
         return Response(status=200)
+
+
+class NotifyBreach(APIView):
+    """
+    Send an email to all the users notifying a security breach
+    """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication)
+
+    def post(self, request):
+        """
+        POST method
+        """
+        user_id = request.data.get("user_id", "")
+        logged_user = User.objects.get(pk=user_id)
+
+        if logged_user.is_staff is False:
+            return JsonResponse({'error':'The user is not an admin'}, status=500)
+
+        all_users = list(User.objects.all())
+        all_users.remove(logged_user)
+        
+        for user in all_users:
+            for lan in user.userprofile.languages.all():
+                if lan.name == "Spanish":
+                    send_mail("Brecha de seguridad", 
+                            "Estimad@ " + user.userprofile.get_full_name() + ",\n\nDesde WayTeam quisieramos informarle que se ha producido una brecha de seguridad en nuestra aplicación TravelMate.\n\nSentimos las molestias.", 
+                            user.userprofile.email, None)
+                    break
+                send_mail("Brecha de seguridad", 
+                        "Dear " + user.userprofile.get_full_name() + ",\n\nFrom WayTeam we would like to inform you that there has been a security breach in our application TravelMate.\n\nWe apologize for the inconveniences.", 
+                        user.userprofile.email, None)
+
+        return JsonResponse({'message':'Notified breach'}, status=200)
 
 
 def backendWakeUp(request):

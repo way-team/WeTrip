@@ -152,10 +152,10 @@
     "TEXT_35": " According to the regulation (EU) 2016/679 of the European Parliament and the Council of April 27, 2016, regarding the protection of natural persons with regard to the processing of personal data, the consent on the part of the user must be absolutely clear. If this is the first time you visit us (or you have deleted our cookies) a pop-up window will be displayed so that you accept our privacy policy in such a way that if you ignore the message and continue browsing you will be accepting our privacy.",
     "TEXT_36": "Handling of data breaches",
     "TEXT_37": "A data breach is any occasion where security measures have been deliberately or accidentally circumvented in order to access, alter, disclose or destroy personal information.",
-    "TEXT_38": "For example, if unauthorised parties have gained access to and potentially obtained copies of your personal information from our systems.",
-    "TEXT_39": "In the unlikely event that there is a personal data breach that represents a risk to individuals or their businesses,",
+    "TEXT_38": "For example, if unauthorised parties have gained access to and potentially obtained copies of our information systems.",
+    "TEXT_39": "In that case, we will inform the Information Commissioners Office (ICO) within 72 hours of becoming aware of it. And in the unlikely event that there is a personal data breach that represents a risk to individuals or their businesses,",
     "TEXT_4": "In Travelmate we do not store personal data that we do not need to facilitate users to travel together. We want you to know what happens when you enjoy our application, so we will show you the scenarios in which you give us personal data. That way you will be aware and you can exercise your rights.",
-    "TEXT_40": "we will inform the Information Commissioners Office (ICO) within 72 hours of becoming aware of it.",
+    "TEXT_40": "we will inform you by email within 72 hours too.",
     "TEXT_41": " way.team.soft@gmail.com.",
     "TEXT_5": "What happens when you sing up?",
     "TEXT_6": "In this case we are storing the data you provide in the form in our servers and in the Heroku’s server. These data are necessary to know who you are and show your information to other users. Heroku has secure servers that use encrypted connections for transfering the data. Its privacy policy can be found ",
@@ -338,7 +338,10 @@
     "EXPORT_ERROR_2": "If the error persists, please contact an administrator at way.team.soft@gmail.com",
     "EXPORT_OK_1": "All data was exported successfully",
     "EXPORT_OK_2": "Thank you very much for trusting TravelMate.",
-    "EXPORT_DATA": "Export your data"
+    "EXPORT_DATA": "Export your data",
+    "SEND_EMAIL": "Notification",
+    "SEND_OK_1": "The notifacation order has been sent",
+    "SEND_OK_2": "Users will receive the email in a few moments"
   },
   "TRIPS": {
     "APPLICATION_SEND": "Your application has been sent.",

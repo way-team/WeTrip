@@ -257,7 +257,42 @@ class TravelMateTests(APITestCase):
         data = {"token":self.token.key, "trip_id": "11"}
         #user2 has already applied for trip11.
         
-        with self.assertRaisesMessage(ValueError, 'You have already applied to this trip'):
+        with self.assertRaisesMessage(ValueError, "You can't apply for this trip."):
+            response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
+        
+        # We see that nothing has changed
+        numApplicationsAfter = Application.objects.count()
+        self.assertEqual(numApplicationsBefore, numApplicationsAfter)
+        
+        #------------------------------------------------------------------------------------------
+
+
+        # We are still logged as user2
+     
+        #Let's see the current number of applications
+        numApplicationsBefore = Application.objects.count()
+
+        data = {"token":self.token.key, "trip_id": "5"}
+        #user2 can't apply for trip5 because trip5 has already finished
+        
+        with self.assertRaisesMessage(ValueError, "You can't apply for this trip."):
+            response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
+        
+        # We see that nothing has changed
+        numApplicationsAfter = Application.objects.count()
+        self.assertEqual(numApplicationsBefore, numApplicationsAfter)
+        
+        #------------------------------------------------------------------------------------------
+
+        # We are still logged as user2
+      
+        #Let's see the current number of applications
+        numApplicationsBefore = Application.objects.count()
+
+        data = {"token":self.token.key, "trip_id": "12"}
+        #user2 can't apply for trip12 because trip12 is private.
+        
+        with self.assertRaisesMessage(ValueError, "You can't apply for this trip."):
             response = self.client.post(reverse('apply_trip'), data=json.dumps(data), content_type='application/json')
         
         # We see that nothing has changed
@@ -836,7 +871,7 @@ class TravelMateTests(APITestCase):
         "price": 7200, 
         "start_date": "2019-05-24", 
         "end_date": "2019-05-31", 
-        "tripType": "PUBLIC", 
+        "trip_type": "PRIVATE", 
         "cities": cities,
         "file": ""
         }
@@ -854,7 +889,8 @@ class TravelMateTests(APITestCase):
 
         #Let's check that the new trip really has 2 cities
         self.assertTrue(Trip.objects.get(pk=13).cities.count() == 2)
-
+        
+       
        
 
 
@@ -924,15 +960,80 @@ class TravelMateTests(APITestCase):
 
 
     def test_register_user(self):
-        """The method 'registerUser' is used to regist an user."""
+        """The method 'registerUser' is used to register a user."""
       
-        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"english"}, "interests":{"cooking"}}
+
+        languages = []
+        languages.append('English')
+        languages.append('French')
+        languages = json.dumps(languages)
+
+        interests = []
+        interests.append("swimming")
+        interests = json.dumps(interests)
+        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": languages, "interests":interests}
+
 
         response = self.client.post(reverse('register_user'), data, format='json')
        
         self.assertEqual(201, response.status_code)
         #The user has been registed.
         self.assertEqual(UserProfile.objects.get(pk=7).user.username, 'user7')  
+        
+
+    def test_edit_user(self):
+        """The method 'editUser' is used to edit a user."""
+
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        interests = []
+        interests.append("tennis")
+        interests.append("shopping")
+        interests = json.dumps(interests)
+
+        languages = []
+        languages.append("english")
+        languages.append("french")
+        languages = json.dumps(languages)
+
+        data = {"token": self.token.key, "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "english", "city": "London", "profesion": "N/A","civilStatus": "M", "languages": languages, "interests":interests}
+
+        response = self.client.post(reverse('edit_user'), data, format='json')
+       
+        self.assertEqual(201, response.status_code)
+        #The user has been edited.
+        self.assertEqual(UserProfile.objects.get(pk=1).first_name, 'user7') 
+
+    def test_delete_user(self):
+        """The method 'delete_user' is used to edit a user."""
+
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+       
+        data = {"user_id": "1"}
+
+        # Let's check the status
+        statusBefore = UserProfile.objects.get(user=self.user).status
+        self.assertEqual(statusBefore, 'A')
+
+        response = self.client.post(reverse('delete_user'), data, format='json')
+       
+        self.assertEqual(200, response.status_code)
+        #The user has been deleted.
+
+        #Let's check the status
+        statusAfter = UserProfile.objects.get(user=self.user).status
+        self.assertEqual(statusAfter, 'D')
+
+
+    
+        
 
 
 
