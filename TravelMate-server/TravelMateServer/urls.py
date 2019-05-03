@@ -60,7 +60,7 @@ urlpatterns = [
     path('paid/', views.SetUserToPremium.as_view(), name='set_user_to_premium'),
     path('register/', views.RegisterUser.as_view(), name='register_user'),
     path('list-languages/', views.ListLanguages.as_view(), name='list_languages'),
-    path('editUser/', views.EditUser.as_view()),
+    path('editUser/', views.EditUser.as_view(), name='edit_user'),
     path('list-interests/', views.ListInterest.as_view(), name='list_interest'),
     path('backend-wakeup/', views.backendWakeUp, name='backend-wakeup'),
     path('deleteUser/', views.DeleteUser.as_view()),

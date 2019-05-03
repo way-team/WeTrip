@@ -959,15 +959,43 @@ class TravelMateTests(APITestCase):
 
 
     def test_register_user(self):
-        """The method 'registerUser' is used to regist an user."""
+        """The method 'registerUser' is used to register a user."""
       
-        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "firstName": "user7", "lastName": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"english"}, "interests":{"cooking"}}
+        data = {"username": "user7", "status": "A" , "password": "user7", "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "spanish", "city": "Madrid", "profesion": "N/A","civilStatus": "M", "languages": {"english"}, "interests":{"cooking"}}
 
         response = self.client.post(reverse('register_user'), data, format='json')
        
         self.assertEqual(201, response.status_code)
         #The user has been registed.
         self.assertEqual(UserProfile.objects.get(pk=7).user.username, 'user7')  
+
+
+    def test_edit_user(self):
+        """The method 'editUser' is used to edit a user."""
+
+        # We log in as user1
+        self.user = self.user1
+        self.token = Token.objects.create(user=self.user)
+        self.api_authentication()
+
+        interests = []
+        interests.append("hockey")
+        interests.append("watching TV")
+        interests = json.dumps(interests)
+
+        languages = []
+        languages.append("english")
+        languages.append("greek")
+        languages = json.dumps(languages)
+
+        data = {"token": self.token.key, "email": "user7@gmail.com", "first_name": "user7", "last_name": "user7", "description": "user7 description", "birthdate": "1991-03-30", "gender": "M", "nationality": "english", "city": "London", "profesion": "N/A","civilStatus": "M", "languages": languages, "interests":interests}
+
+        response = self.client.post(reverse('edit_user'), data, format='json')
+       
+        self.assertEqual(201, response.status_code)
+        #The user has been edited.
+        self.assertEqual(UserProfile.objects.get(pk=1).first_name, 'user7') 
+        
 
 
 
