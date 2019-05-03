@@ -108,6 +108,30 @@ export class SettingsPage implements OnInit {
       });
   }
 
+  sendEmail() {
+    this.dm.sendEmail(this.userLogged.user.id);
+    let translationOk1: string = this.translate.instant(
+      'SETTINGS.SEND_OK_1'
+    );
+    let translationOk2: string = this.translate.instant(
+      'SETTINGS.SEND_OK_2'
+    );
+    this.alertCtrl
+      .create({
+        header: translationOk1,
+        message: translationOk2,
+        buttons: [
+          {
+            text: 'Ok',
+            role: 'ok'
+          }
+        ]
+      })
+      .then(alertEl => {
+        alertEl.present();
+      });
+  }
+
   isExported(bool: boolean) {
     let translationError1: string = this.translate.instant(
       'SETTINGS.EXPORT_ERROR_1'

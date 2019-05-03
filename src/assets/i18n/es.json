@@ -339,7 +339,10 @@
     "EXPORT_ERROR_2": "Si el error persiste contacte con un administrador en way.team.soft@gmail.com.",
     "EXPORT_OK_1": "Se han exportado todos sus datos correctamente",
     "EXPORT_OK_2": "Muchas gracias por confiar en TravelMate.",
-    "EXPORT_DATA": "Exportar tus datos"
+    "EXPORT_DATA": "Exportar tus datos",
+    "SEND_EMAIL": "Notificación",
+    "SEND_OK_1": "Se ha dado la orden de envio",
+    "SEND_OK_2": "Los usuarios recibirán el correo en breves momentos"
   },
   "TRIPS": {
     "APPLICATION_SEND": "Su solicitud se ha enviado.",
