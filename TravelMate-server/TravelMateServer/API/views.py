@@ -1330,7 +1330,7 @@ class EditUser(APIView):
 
         gender = request.data.get('gender', '')
 
-        if not (gender == "M" or gender == "W" or gender == "N"):
+        if not (gender == "M" or gender == "F" or gender == "N"):
             return JsonResponse({'error':'Invalid gender'}, status=500)
 
 
